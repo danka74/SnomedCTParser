@@ -97,7 +97,7 @@ public class TestSCTExpressionParser {
 
 		logger.info("Loading SNOMED CT ontology...");
 		ontology = manager.loadOntologyFromOntologyDocument(IRI
-				.create("file:///home/daniel/snomed.owl"));
+				.create("src/test/resources/snomed.owl"));
 		dataFactory = manager.getOWLDataFactory();
 
 		OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
