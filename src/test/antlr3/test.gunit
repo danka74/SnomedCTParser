@@ -1,0 +1,15 @@
+gunit SCTExpression;
+
+@header {
+package se.liu.imt.mi.snomedct.expression;
+}
+
+expression:
+"12" OK
+"12|åöä123@test.com, hejsan привет там ہیلو وہاں|" OK
+"12+13:14=15" OK
+"12+13:{14=15}" OK  
+"12|hejsan| + 13|tjo hej | : 14 = 15" OK
+"12:12:" FAIL
+"12+13:14=(15+16:17=18,19=20)" OK
+"12+(14=15)" FAIL
