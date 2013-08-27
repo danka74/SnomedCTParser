@@ -1,7 +1,9 @@
+package test;
 
 import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.StringWriter;
 import java.util.Date;
@@ -52,7 +54,13 @@ public class TestSCTExpressionParser {
 	private OWLOntology ontology;
 	private OWLDataFactory dataFactory;
 	private OWLReasoner reasoner;
-
+	
+	private static final String PC_IRI = "http://www.imt.liu.se/mi/snomedct#PC_";
+	private static final String SCTID_IRI = "http://www.ihtsdo.org/#SCTID_";
+	private static final String SCTOP_IRI = "http://www.ihtsdo.org/#SCTOP_";
+	private static final String ROLEGROUP_IRI = "http://www.ihtsdo.org/#RoleGroup";
+	
+	
 	static Logger logger = Logger.getLogger(TestSCTExpressionParser.class);
 
 	@Before
@@ -71,11 +79,15 @@ public class TestSCTExpressionParser {
 		dataFactory = manager.getOWLDataFactory();
 
 		while ((strLine = testCaseReader.readLine()) != null) {
-			logger.info(strLine);
+			
 			if (strLine.startsWith("#"))
 				continue;
+			
+			String[] strTokens = strLine.split("\t");
 
-			CharStream input = new ANTLRStringStream(strLine);
+			logger.info(strTokens[0]);
+			
+			CharStream input = new ANTLRStringStream(strTokens[0]);
 			SCTExpressionLexer lexer = new SCTExpressionLexer(input);
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
 			SCTExpressionParser parser = new SCTExpressionParser(tokens);
@@ -84,7 +96,8 @@ public class TestSCTExpressionParser {
 			String sortedResult = buildSortedOutput((Tree) result.getTree());
 			// printTree((Tree) result.getTree(), 0);
 			logger.info("Sorted: " + sortedResult);
-
+			
+			assertTrue(sortedResult.equals(strTokens[1]));
 		}
 
 		testCaseReader.close();
@@ -96,8 +109,7 @@ public class TestSCTExpressionParser {
 		manager = OWLManager.createOWLOntologyManager();
 
 		logger.info("Loading SNOMED CT ontology...");
-		ontology = manager.loadOntologyFromOntologyDocument(IRI
-				.create("src/test/resources/snomed.owl"));
+		ontology = manager.loadOntologyFromOntologyDocument(new File("src/test/resources/snomed.owl"));
 		dataFactory = manager.getOWLDataFactory();
 
 		OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
@@ -117,11 +129,14 @@ public class TestSCTExpressionParser {
 
 		String strLine;
 		while ((strLine = testCaseReader.readLine()) != null) {
-			logger.info(strLine);
 			if (strLine.startsWith("#"))
 				continue;
+			
+			String[] strTokens = strLine.split("\t");
 
-			CharStream input = new ANTLRStringStream(strLine);
+			logger.info(strTokens[0]);
+
+			CharStream input = new ANTLRStringStream(strTokens[0]);
 			SCTExpressionLexer lexer = new SCTExpressionLexer(input);
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
 			SCTExpressionParser parser = new SCTExpressionParser(tokens);
@@ -130,7 +145,7 @@ public class TestSCTExpressionParser {
 			t1 = (new Date()).getTime();
 
 			OWLClass new_pc_concept = dataFactory.getOWLClass(IRI
-					.create("http://www.imt.liu.se/mi/snomedct#PC_"
+					.create(PC_IRI
 							+ UUID.randomUUID()));
 
 			// translate SCT expression syntax to OWL
@@ -172,31 +187,29 @@ public class TestSCTExpressionParser {
 					+ ", time: " + interval + " ms");
 
 			StringBuffer sb = new StringBuffer();
-			logger.info("Parents: ");
 			for (Node<OWLClass> n : parents) {
 				for (OWLClass c : n.getEntities()) {
 					sb.append(c.toString());
 					sb.append(' ');
 				}
 			}
-			logger.info(sb.toString());
+			logger.info("Parents: " + sb.toString());
 
 			sb.setLength(0);
-			logger.info("Children: ");
 			for (Node<OWLClass> n : children) {
 				for (OWLClass c : n.getEntities()) {
 					sb.append(c.toString());
 					sb.append(' ');
 				}
 			}
-			logger.info(sb.toString());
+			logger.info("Children: " + sb.toString());
 
 			sb.setLength(0);
-			logger.info("Eq: ");
 			for (OWLClass c : equivalentClasses) {
 				sb.append(c.toString());
 				sb.append(' ');
 			}
+			logger.info("Equivalences: " + sb.toString());
 		}
 
 		testCaseReader.close();
@@ -293,15 +306,13 @@ public class TestSCTExpressionParser {
 				System.out
 						.println("TestSCTExpressionParser.translate(): SCTID "
 								+ ast.getText());
-				IRI iri = IRI.create("http://www.ihtsdo.org/#SCTID_"
-						+ ast.getText());
+				IRI iri = IRI.create(SCTID_IRI + ast.getText());
 				return dataFactory.getOWLClass(iri);
 			}
 			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.SOME: {
 				System.out.println("TestSCTExpressionParser.translate(): SOME "
 						+ ast.getChild(0).getText());
-				IRI iri = IRI.create("http://www.ihtsdo.org/#SCTOP_"
-						+ ast.getChild(0).getText());
+				IRI iri = IRI.create(SCTOP_IRI + ast.getChild(0).getText());
 				return dataFactory.getOWLObjectSomeValuesFrom(
 						dataFactory.getOWLObjectProperty(iri),
 						translateToOWL_nocheck(ast.getChild(1)));
@@ -311,8 +322,7 @@ public class TestSCTExpressionParser {
 				System.out
 						.println("TestSCTExpressionParser.translate(): ROLEGROUP");
 				return dataFactory.getOWLObjectSomeValuesFrom(dataFactory
-						.getOWLObjectProperty(IRI
-								.create("http://www.ihtsdo.org/#RoleGroup")),
+						.getOWLObjectProperty(IRI.create(ROLEGROUP_IRI)),
 						translateToOWL_nocheck(ast.getChild(0)));
 			}
 			default:
