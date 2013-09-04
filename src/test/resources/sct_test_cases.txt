@@ -3,6 +3,6 @@
 85919009|disorder of intestine|:263502005|clinical course|=255227004|Recurrent (qualifier value)|, {116676008|assoc morph|=23583003|inflammation|}	85919009:263502005=255227004,{116676008=23583003}
 85919009|disorder of intestine|:{363698007|finding site|=66754008|appendix|,116676008|assoc morph|=23583003|inflammation|}	85919009:{116676008=23583003,363698007=66754008}
 #83152002 | oophorectomy |:	260686004 | method | =264594007 |laser action|
-#397956004 | prosthetic arthroplasty of the hip |: 363704007 | procedure site | = ( 24136001| hip joint structure |: 272741003| laterality | = 7771000| left |)
+397956004 | prosthetic arthroplasty of the hip |: 363704007 | procedure site | = ( 24136001| hip joint structure |: 272741003| laterality | = 7771000| left |)	397956004:363704007=(24136001:272741003=7771000)
 #125605004 | fracture of bone | : 363698007 | finding site | = 71341001 | bone structure of femur |
 #52734007 | total hip replacement |: 363699004|direct device| = 314580008|Sheehan total hip prosthesis|

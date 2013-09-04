@@ -17,7 +17,9 @@ import java.util.UUID;
 
 import se.liu.imt.mi.snomedct.expression.*;
 import se.liu.imt.mi.snomedct.expression.SCTExpressionParser.expressionOrQuery_return;
-import se.liu.imt.mi.snomedct.tools.SCTOWLExpressionBuilder;
+import se.liu.imt.mi.snomedct.expression.tools.SCTOWLExpressionBuilder;
+import se.liu.imt.mi.snomedct.expression.tools.SCTSortedExpressionBuilder;
+import se.liu.imt.mi.snomedct.expression.tools.SnomedCTParser;
 import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxObjectRenderer;
 import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
 import uk.ac.manchester.cs.owlapi.dlsyntax.DLSyntaxOntologyFormat;
@@ -55,12 +57,6 @@ public class TestSCTExpressionParser {
 	private OWLDataFactory dataFactory;
 	private OWLReasoner reasoner;
 	
-	private static final String PC_IRI = "http://www.imt.liu.se/mi/snomedct#PC_";
-	private static final String SCTID_IRI = "http://www.ihtsdo.org/#SCTID_";
-	private static final String SCTOP_IRI = "http://www.ihtsdo.org/#SCTOP_";
-	private static final String ROLEGROUP_IRI = "http://www.ihtsdo.org/#RoleGroup";
-	
-	
 	static Logger logger = Logger.getLogger(TestSCTExpressionParser.class);
 
 	@Before
@@ -87,14 +83,10 @@ public class TestSCTExpressionParser {
 
 			logger.info(strTokens[0]);
 			
-			CharStream input = new ANTLRStringStream(strTokens[0]);
-			SCTExpressionLexer lexer = new SCTExpressionLexer(input);
-			CommonTokenStream tokens = new CommonTokenStream(lexer);
-			SCTExpressionParser parser = new SCTExpressionParser(tokens);
-			expressionOrQuery_return result = parser.expressionOrQuery();
+			Tree result = SnomedCTParser.parseQuery(strTokens[0]);
+			
+			String sortedResult = SCTSortedExpressionBuilder.buildSortedExpression(result);
 
-			String sortedResult = buildSortedOutput((Tree) result.getTree());
-			// printTree((Tree) result.getTree(), 0);
 			logger.info("Sorted: " + sortedResult);
 			
 			assertTrue(sortedResult.equals(strTokens[1]));
@@ -144,8 +136,9 @@ public class TestSCTExpressionParser {
 
 			t1 = (new Date()).getTime();
 
+			// 
 			OWLClass new_pc_concept = dataFactory.getOWLClass(IRI
-					.create(PC_IRI
+					.create(se.liu.imt.mi.snomedct.expression.tools.SCTOWLExpressionBuilder.PC_IRI
 							+ UUID.randomUUID()));
 
 			// translate SCT expression syntax to OWL
@@ -186,11 +179,10 @@ public class TestSCTExpressionParser {
 			logger.info("# eq classes: " + equivalentClasses.getSize()
 					+ ", time: " + interval + " ms");
 
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			for (Node<OWLClass> n : parents) {
 				for (OWLClass c : n.getEntities()) {
-					sb.append(c.toString());
-					sb.append(' ');
+					sb.append(c.toString()).append(' ');
 				}
 			}
 			logger.info("Parents: " + sb.toString());
@@ -198,16 +190,14 @@ public class TestSCTExpressionParser {
 			sb.setLength(0);
 			for (Node<OWLClass> n : children) {
 				for (OWLClass c : n.getEntities()) {
-					sb.append(c.toString());
-					sb.append(' ');
+					sb.append(c.toString()).append(' ');
 				}
 			}
 			logger.info("Children: " + sb.toString());
 
 			sb.setLength(0);
 			for (OWLClass c : equivalentClasses) {
-				sb.append(c.toString());
-				sb.append(' ');
+				sb.append(c.toString()).append(' ');
 			}
 			logger.info("Equivalences: " + sb.toString());
 		}
@@ -216,121 +206,6 @@ public class TestSCTExpressionParser {
 
 		assertTrue(true);
 
-	}
-
-	/**
-	 * Translates an AST from the parser to an <code>OWLClassExpression</code>.
-	 * 
-	 * @param ast
-	 *            The tree to translate
-	 * @return An <code>OWLClassExpression</code>
-	 * @throws Exception
-	 */
-	private OWLClassExpression translateToOWL(Tree ast) throws Exception {
-		if (ast != null) {
-			switch (ast.getType()) {
-			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.DIFF:
-			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.GENUS:
-			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.AND:
-			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.TOP_AND: {
-				logger.info(SCTExpressionParser.tokenNames[ast.getType()]
-						+ ", children=" + ast.getChildCount());
-
-				if (ast.getChildCount() > 1) {
-					Set<OWLClassExpression> conceptSet = new HashSet<OWLClassExpression>();
-					for (int i = 0; i < ast.getChildCount(); i++)
-						conceptSet.add(translateToOWL(ast.getChild(i)));
-					return dataFactory.getOWLObjectIntersectionOf(conceptSet);
-				} else
-					return translateToOWL(ast.getChild(0));
-			}
-			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.SCTID: {
-				// System.out
-				// .println("TestSCTExpressionParser.translate(): SCTID "
-				// + ast.getText());
-				IRI iri = IRI.create("http://www.ihtsdo.org/#SCTID_"
-						+ ast.getText());
-				if (ontology.containsClassInSignature(iri))
-					return dataFactory.getOWLClass(iri);
-				else
-					throw new Exception("Non-existing SCT concept: " + iri);
-			}
-			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.SOME: {
-				// System.out.println("TestSCTExpressionParser.translate(): SOME "
-				// + ast.getChild(0).getText());
-				IRI iri = IRI.create("http://www.ihtsdo.org/#SCTOP_"
-						+ ast.getChild(0).getText());
-				if (ontology.containsObjectPropertyInSignature(iri))
-					return dataFactory.getOWLObjectSomeValuesFrom(
-							dataFactory.getOWLObjectProperty(iri),
-							translateToOWL(ast.getChild(1)));
-				else
-					throw new Exception("Non-existing SCT attribute: " + iri);
-			}
-			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.ROLEGROUP: {
-				// System.out
-				// .println("TestSCTExpressionParser.translate(): ROLEGROUP");
-				return dataFactory.getOWLObjectSomeValuesFrom(dataFactory
-						.getOWLObjectProperty(IRI
-								.create("http://www.ihtsdo.org/RoleGroup")),
-						translateToOWL(ast.getChild(0)));
-			}
-			default:
-				throw new Exception("Undetermined AST node type: "
-						+ ast.getType());
-			}
-		} else
-			return null;
-	}
-
-	private OWLClassExpression translateToOWL_nocheck(Tree ast)
-			throws Exception {
-		if (ast != null) {
-			switch (ast.getType()) {
-			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.DIFF:
-			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.GENUS:
-			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.AND:
-			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.TOP_AND: {
-				logger.info(SCTExpressionParser.tokenNames[ast.getType()]
-						+ ", children=" + ast.getChildCount());
-
-				if (ast.getChildCount() > 1) {
-					Set<OWLClassExpression> conceptSet = new HashSet<OWLClassExpression>();
-					for (int i = 0; i < ast.getChildCount(); i++)
-						conceptSet.add(translateToOWL_nocheck(ast.getChild(i)));
-					return dataFactory.getOWLObjectIntersectionOf(conceptSet);
-				} else
-					return translateToOWL_nocheck(ast.getChild(0));
-			}
-			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.SCTID: {
-				System.out
-						.println("TestSCTExpressionParser.translate(): SCTID "
-								+ ast.getText());
-				IRI iri = IRI.create(SCTID_IRI + ast.getText());
-				return dataFactory.getOWLClass(iri);
-			}
-			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.SOME: {
-				System.out.println("TestSCTExpressionParser.translate(): SOME "
-						+ ast.getChild(0).getText());
-				IRI iri = IRI.create(SCTOP_IRI + ast.getChild(0).getText());
-				return dataFactory.getOWLObjectSomeValuesFrom(
-						dataFactory.getOWLObjectProperty(iri),
-						translateToOWL_nocheck(ast.getChild(1)));
-
-			}
-			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.ROLEGROUP: {
-				System.out
-						.println("TestSCTExpressionParser.translate(): ROLEGROUP");
-				return dataFactory.getOWLObjectSomeValuesFrom(dataFactory
-						.getOWLObjectProperty(IRI.create(ROLEGROUP_IRI)),
-						translateToOWL_nocheck(ast.getChild(0)));
-			}
-			default:
-				throw new Exception("Undetermined AST node type: "
-						+ ast.getType());
-			}
-		} else
-			return null;
 	}
 
 	public static void printTree(Tree tree, int indent) {
@@ -343,75 +218,6 @@ public class TestSCTExpressionParser {
 		for (int i = 0; i < tree.getChildCount(); i++) {
 			printTree(tree.getChild(i), indent + 2);
 		}
-	}
-
-	private String buildSortedOutput(Tree t) {
-
-		String result = "";
-
-		if (t.getType() == se.liu.imt.mi.snomedct.expression.SCTExpressionParser.TOP_AND) {
-
-			Tree genera = t.getChild(0);
-			TreeSet<String> sortedGenera = new TreeSet<String>();
-			for (int i = 0; i < genera.getChildCount(); i++)
-				sortedGenera.add(genera.getChild(i).toString());
-			for (Iterator<String> i = sortedGenera.iterator(); i.hasNext();) {
-				result += i.next();
-				if (i.hasNext())
-					result += "+";
-			}
-
-			Tree diff = t.getChild(1);
-			if (diff != null) {
-				TreeSet<String> sortedDiff = new TreeSet<String>();
-				if (diff.getChildCount() > 0)
-					result += ":";
-
-				for (int i = 0; i < diff.getChildCount(); i++)
-					sortedDiff.add(buildSortedOutput(diff.getChild(i)));
-
-				for (Iterator<String> i = sortedDiff.iterator(); i.hasNext();) {
-					result += i.next();
-					if (i.hasNext())
-						result += ",";
-				}
-			}
-
-		}
-
-		if (t.getType() == se.liu.imt.mi.snomedct.expression.SCTExpressionParser.AND
-				|| t.getType() == se.liu.imt.mi.snomedct.expression.SCTExpressionParser.ROLEGROUP) {
-
-			TreeSet<String> sortedList = new TreeSet<String>();
-
-			for (int i = 0; i < t.getChildCount(); i++)
-				sortedList.add(buildSortedOutput(t.getChild(i)));
-
-			if (t.getType() == se.liu.imt.mi.snomedct.expression.SCTExpressionParser.ROLEGROUP)
-				result += "{";
-
-			for (Iterator<String> i = sortedList.iterator(); i.hasNext();) {
-				result += i.next();
-				if (i.hasNext())
-					result += ",";
-			}
-
-			if (t.getType() == se.liu.imt.mi.snomedct.expression.SCTExpressionParser.ROLEGROUP)
-				result += "}";
-		}
-
-		if (t.getType() == se.liu.imt.mi.snomedct.expression.SCTExpressionParser.SOME) {
-			Tree attr = t.getChild(0);
-			Tree value = t.getChild(1);
-			if (value.getType() == se.liu.imt.mi.snomedct.expression.SCTExpressionParser.SCTID) {
-				result += attr.toString() + "=" + value.toString();
-			} else {
-				result += attr.toString() + "=(" + buildSortedOutput(value)
-						+ ")";
-			}
-		}
-
-		return result;
 	}
 
 }
