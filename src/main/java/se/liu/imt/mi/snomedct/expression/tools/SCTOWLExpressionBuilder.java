@@ -68,19 +68,20 @@ public class SCTOWLExpressionBuilder {
 			}
 			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.SCTID: {
 				IRI iri = IRI.create(SCTID_IRI + ast.getText());
-				if (ontology.containsClassInSignature(iri))
+				//if (ontology.containsClassInSignature(iri))
 					return dataFactory.getOWLClass(iri);
-				else
-					throw new Exception("Non-existing SCT concept: " + iri);
+				//else
+					//return dataFactory.getOWLClass(iri);
+					//throw new Exception("Non-existing SCT concept: " + iri);
 			}
 			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.SOME: {
 				IRI iri = IRI.create(SCTOP_IRI + ast.getChild(0).getText());
-				if (ontology.containsObjectPropertyInSignature(iri))
+				//if (ontology.containsObjectPropertyInSignature(iri))
 					return dataFactory.getOWLObjectSomeValuesFrom(
 							dataFactory.getOWLObjectProperty(iri),
 							translateToOWL(ast.getChild(1)));
-				else
-					throw new Exception("Non-existing SCT attribute: " + iri);
+				//else
+				//	throw new Exception("Non-existing SCT attribute: " + iri);
 			}
 			case se.liu.imt.mi.snomedct.expression.SCTExpressionParser.ROLEGROUP: {
 				return dataFactory.getOWLObjectSomeValuesFrom(dataFactory
