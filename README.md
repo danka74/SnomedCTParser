@@ -3,6 +3,7 @@ SnomedCTParser
 ANTLR parser for SNOMED CT Compositional Grammar and some parts of the SNOMED CT Query Specification.
 
 OWL API compliant classes for loading and storing SNOMED CT Compositional Grammar expressions in a tab separated file format.
+<expression> \t <label>
 
 An OWL file containing SNOMED CT will have to be added to src/test/resources directory for the tests, see test.TestSNOMEDCTExpressionParser.testConvertToOWL().
 
