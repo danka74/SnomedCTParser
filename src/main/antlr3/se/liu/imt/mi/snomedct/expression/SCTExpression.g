@@ -46,12 +46,13 @@ expressionOrQuery
   ;
 
 expression
-  : concept ('+' concept)* (':' refinements)? -> ^(TOP_AND ^(GENUS concept+) ^(DIFF refinements?))
+  : concept ('+' concept)* -> ^(TOP_AND ^(GENUS concept+)) 
+  | concept ('+' concept)* (':' refinements) -> ^(TOP_AND ^(GENUS concept+) ^(DIFF refinements))
   ;
   
 concept
   : SCTID 
-  | SCTID TERM -> SCTID
+  | SCTID TERM -> ^(SCTID TERM)
   ;
   
 refinements

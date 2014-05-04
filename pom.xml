@@ -6,7 +6,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
 		<antlr.version>3.5</antlr.version>
-		<owlapi.version>3.4.5</owlapi.version>
+		<owlapi.version>3.5.1-SNAPSHOT</owlapi.version>
 	</properties>
 	<build>
 		<plugins>

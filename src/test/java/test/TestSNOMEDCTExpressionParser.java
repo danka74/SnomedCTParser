@@ -7,16 +7,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.StringWriter;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.UUID;
 
 import se.liu.imt.mi.snomedct.expression.*;
-import se.liu.imt.mi.snomedct.expression.SCTExpressionParser.expressionOrQuery_return;
 import se.liu.imt.mi.snomedct.expression.tools.SCTOWLExpressionBuilder;
 import se.liu.imt.mi.snomedct.expression.tools.SCTSortedExpressionBuilder;
 import se.liu.imt.mi.snomedct.expression.tools.SnomedCTParser;
@@ -50,14 +45,16 @@ import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
-public class TestSCTExpressionParser {
+public class TestSNOMEDCTExpressionParser {
 
 	private OWLOntologyManager manager;
 	private OWLOntology ontology;
 	private OWLDataFactory dataFactory;
 	private OWLReasoner reasoner;
 	
-	static Logger logger = Logger.getLogger(TestSCTExpressionParser.class);
+	static Logger logger = Logger.getLogger(TestSNOMEDCTExpressionParser.class);
+	
+	public static final String PC_IRI = "http://snomed.info/expid/";
 
 	@Before
 	public void setUp() throws OWLOntologyCreationException {
@@ -89,19 +86,20 @@ public class TestSCTExpressionParser {
 
 			logger.info("Sorted: " + sortedResult);
 			
+			printTree(result, 2);
+			
 			assertTrue(sortedResult.equals(strTokens[1]));
 		}
 
 		testCaseReader.close();
 	}
 
-	@Test
+	//@Test
 	public void testConvertToOWL() throws Exception {
-
 		manager = OWLManager.createOWLOntologyManager();
 
 		logger.info("Loading SNOMED CT ontology...");
-		ontology = manager.loadOntologyFromOntologyDocument(new File("src/test/resources/snomed.owl"));
+		ontology = manager.loadOntologyFromOntologyDocument(new File("src/test/resources/res_StatedOWLF_Core_INT_20140131.owl"));
 		dataFactory = manager.getOWLDataFactory();
 
 		OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
@@ -138,12 +136,11 @@ public class TestSCTExpressionParser {
 
 			// 
 			OWLClass new_pc_concept = dataFactory.getOWLClass(IRI
-					.create(se.liu.imt.mi.snomedct.expression.tools.SCTOWLExpressionBuilder.PC_IRI
-							+ UUID.randomUUID()));
+					.create(PC_IRI + UUID.randomUUID()));
 
 			// translate SCT expression syntax to OWL
 			OWLClassExpression e = owlBuilder.translateToOWL((Tree) result
-					.getTree());
+					.getTree(), null);
 
 			List<OWLOntologyChange> axiomList = new LinkedList<OWLOntologyChange>();
 			axiomList.add(new AddAxiom(ontology, dataFactory

@@ -19,10 +19,12 @@ import org.antlr.runtime.tree.Tree;
  */
 public class SCTSortedExpressionBuilder {
 	/**
-	 * Method for building a lexicographically sorted expression from a parse tree.
+	 * Method for building a lexicographically sorted expression from a parse
+	 * tree.
 	 * 
-	 * @param t		parse tree, output from SNOMED CT ANTLR parser
-	 * @return		sorted String representation of expression
+	 * @param t
+	 *            parse tree, output from SNOMED CT ANTLR parser
+	 * @return sorted String representation of expression
 	 */
 	public static String buildSortedExpression(Tree t) {
 
@@ -40,20 +42,21 @@ public class SCTSortedExpressionBuilder {
 					result.append('+');
 			}
 
-			Tree diff = t.getChild(1);
-			TreeSet<String> sortedDiff = new TreeSet<String>();
-			if (diff.getChildCount() > 0)
-				result.append(':');
+			if (t.getChildCount() > 1) {
+				Tree diff = t.getChild(1);
+				TreeSet<String> sortedDiff = new TreeSet<String>();
+				if (diff.getChildCount() > 0)
+					result.append(':');
 
-			for (int i = 0; i < diff.getChildCount(); i++)
-				sortedDiff.add(buildSortedExpression(diff.getChild(i)));
+				for (int i = 0; i < diff.getChildCount(); i++)
+					sortedDiff.add(buildSortedExpression(diff.getChild(i)));
 
-			for (Iterator<String> i = sortedDiff.iterator(); i.hasNext();) {
-				result.append(i.next());
-				if (i.hasNext())
-					result.append(',');
+				for (Iterator<String> i = sortedDiff.iterator(); i.hasNext();) {
+					result.append(i.next());
+					if (i.hasNext())
+						result.append(',');
+				}
 			}
-
 		}
 
 		if (t.getType() == se.liu.imt.mi.snomedct.expression.SCTExpressionParser.AND

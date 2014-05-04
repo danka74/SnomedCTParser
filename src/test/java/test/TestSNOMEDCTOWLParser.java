@@ -3,8 +3,6 @@
  */
 package test;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 
 import org.apache.log4j.Logger;
@@ -14,11 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.OWLParserFactoryRegistry;
-import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
-import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyFormat;
@@ -26,6 +21,8 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
+import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyFormat;
+import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorer;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTParserFactory;
 
 /**
@@ -56,7 +53,7 @@ public class TestSNOMEDCTOWLParser {
 		dataFactory = manager.getOWLDataFactory();
 		
 		OWLParserFactoryRegistry.getInstance().registerParserFactory(new SNOMEDCTParserFactory());
-
+		manager.addOntologyStorer(new SNOMEDCTOntologyStorer());
 		
 		
 	}
@@ -84,7 +81,7 @@ public class TestSNOMEDCTOWLParser {
 		ontology = manager.loadOntologyFromOntologyDocument(new File("src/test/resources/expressions.scg"));
 		
 		//Create a file for the new format
-		File output = new File("output.owl");
+		File output = new File("output_as_Turtle.owl");
 		//Save the ontology in a different format
 		OWLOntologyFormat format = manager.getOntologyFormat(ontology);
 		TurtleOntologyFormat turtleFormat = new TurtleOntologyFormat();
@@ -92,6 +89,10 @@ public class TestSNOMEDCTOWLParser {
 		  turtleFormat.copyPrefixesFrom(format.asPrefixOWLOntologyFormat()); 
 		}
 		manager.saveOntology(ontology, turtleFormat, IRI.create(output.toURI()));
+		
+		File output2 = new File("output_as_SNOMED_CT_CG.owl");
+		SNOMEDCTOntologyFormat snomedCTFormat = new SNOMEDCTOntologyFormat();
+		manager.saveOntology(ontology, snomedCTFormat, IRI.create(output2.toURI()));
 	}
 
 }
