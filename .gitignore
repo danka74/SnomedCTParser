@@ -1,2 +1,4 @@
 /target
 /output.owl
+/output_as_Turtle.owl
+/output_as_SNOMED_CT_CG.owl
