@@ -1,0 +1,231 @@
+@prefix : <http://www.semanticweb.org/owl/owlapi/turtle#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.w3.org/2002/07/owl#> .
+
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://snomed.info/id/246075003
+
+<http://snomed.info/id/246075003> rdfs:label "kausativt agens"^^xsd:string .
+
+
+
+###  http://snomed.info/id/363698007
+
+<http://snomed.info/id/363698007> rdfs:label "finding site"^^xsd:string .
+
+
+
+###  http://snomed.info/id/370135005
+
+<http://snomed.info/id/370135005> rdfs:label "patologisk process"^^xsd:string .
+
+
+
+###  http://snomed.info/id/609096000
+
+<http://snomed.info/id/609096000> rdf:type owl:ObjectProperty .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://snomed.info/expid/1
+
+<http://snomed.info/expid/1> rdf:type owl:Class ;
+                             
+                             rdfs:label "fracture of femur"^^xsd:string ;
+                             
+                             owl:equivalentClass [ rdf:type owl:Class ;
+                                                   owl:intersectionOf ( <http://snomed.info/id/125605004>
+                                                                        [ rdf:type owl:Restriction ;
+                                                                          owl:onProperty <http://snomed.info/id/609096000> ;
+                                                                          owl:allValuesFrom [ rdf:type owl:Restriction ;
+                                                                                              owl:onProperty <http://snomed.info/id/363698007> ;
+                                                                                              owl:someValuesFrom <http://snomed.info/id/71341001>
+                                                                                            ]
+                                                                        ]
+                                                                      )
+                                                 ] ;
+                             
+                             rdfs:comment "This case will fail as it contains a value restriction" .
+
+
+
+###  http://snomed.info/expid/2
+
+<http://snomed.info/expid/2> rdf:type owl:Class ;
+                             
+                             rdfs:label "cardiovascular disease"^^xsd:string ;
+                             
+                             owl:equivalentClass [ rdf:type owl:Class ;
+                                                   owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                                          owl:onProperty <http://snomed.info/id/609096000> ;
+                                                                          owl:someValuesFrom [ rdf:type owl:Restriction ;
+                                                                                               owl:onProperty <http://snomed.info/id/363698007> ;
+                                                                                               owl:someValuesFrom <http://snomed.info/id/113257007>
+                                                                                             ]
+                                                                        ]
+                                                                      )
+                                                 ] ;
+                             
+                             rdfs:comment "This case will fail as there is no genus" .
+
+
+###  http://snomed.info/expid/3
+
+<http://snomed.info/expid/3> rdf:type owl:Class ;
+                             
+                             rdfs:label "some pneumonia"^^xsd:string ;
+                             
+                             owl:equivalentClass [ rdf:type owl:Class ;
+                                                   owl:intersectionOf ( <http://snomed.info/id/128997002>
+                                                                        <http://snomed.info/id/19829001>
+                                                                        [ rdf:type owl:Class ;
+                                                                          owl:intersectionOf ( [ rdf:type owl:Class ;
+                                                                                                 owl:complementOf [ rdf:type owl:Restriction ;
+                                                                                                                    owl:onProperty <http://snomed.info/id/246075003> ;
+                                                                                                                    owl:someValuesFrom <http://snomed.info/id/113858008>
+                                                                                                                  ]
+                                                                                               ]
+                                                                                               [ rdf:type owl:Restriction ;
+                                                                                                 owl:onProperty <http://snomed.info/id/370135005> ;
+                                                                                                 owl:someValuesFrom <http://snomed.info/id/441862004>
+                                                                                               ]
+                                                                                             )
+                                                                        ]
+                                                                      )
+                                                 ] ;
+                             
+                             rdfs:comment "This case will fail as it contains negation" .
+
+
+
+###  http://snomed.info/expid/4
+
+<http://snomed.info/expid/4> rdf:type owl:Class ;
+                             
+                             rdfs:label "some other pneumonia"^^xsd:string ;
+                             
+                             owl:equivalentClass [ rdf:type owl:Class ;
+                                                   owl:intersectionOf ( [ rdf:type owl:Class ;
+                                                                          owl:intersectionOf ( <http://snomed.info/id/128997002>
+                                                                                               <http://snomed.info/id/19829001>
+                                                                                             )
+                                                                        ]
+                                                                        [ rdf:type owl:Restriction ;
+                                                                          owl:onProperty <http://snomed.info/id/609096000> ;
+                                                                          owl:someValuesFrom [ rdf:type owl:Restriction ;
+                                                                                               owl:onProperty <http://snomed.info/id/246075003> ;
+                                                                                               owl:someValuesFrom [ rdf:type owl:Restriction ;
+                                                                                                                    owl:onProperty <http://snomed.info/id/363698007> ;
+                                                                                                                    owl:someValuesFrom <http://snomed.info/id/24136001>
+                                                                                                                  ]
+                                                                                             ]
+                                                                        ]
+                                                                      )
+                                                 ] ;
+                             
+                             rdfs:comment "This case will fail as the nested expression contains no genus" .
+
+
+###  http://snomed.info/id/113257007
+
+<http://snomed.info/id/113257007> rdfs:label "Structure of cardiovascular system"^^xsd:string .
+
+
+
+###  http://snomed.info/id/113858008
+
+<http://snomed.info/id/113858008> rdfs:label "Mycobacterium tuberculosis-komplex"^^xsd:string .
+
+
+
+###  http://snomed.info/id/125605004
+
+<http://snomed.info/id/125605004> rdf:type owl:Class ;
+                                  
+                                  rdfs:label " fracture of bone "^^xsd:string .
+
+
+
+###  http://snomed.info/id/128997002
+
+<http://snomed.info/id/128997002> rdfs:label "inflammatorisk sjukdom i nedre luftvägar"^^xsd:string .
+
+
+
+###  http://snomed.info/id/19829001
+
+<http://snomed.info/id/19829001> rdfs:label "lungsjukdom"^^xsd:string .
+
+
+
+###  http://snomed.info/id/24136001
+
+<http://snomed.info/id/24136001> rdfs:label " hip joint structure "^^xsd:string .
+
+
+
+###  http://snomed.info/id/441862004
+
+<http://snomed.info/id/441862004> rdfs:label "infektionsförlopp"^^xsd:string .
+
+
+
+###  http://snomed.info/id/71341001
+
+<http://snomed.info/id/71341001> rdfs:label "bone structure of femur"^^xsd:string .
+
+
+
+
+
+#################################################################
+#
+#    Annotations
+#
+#################################################################
+
+
+<http://snomed.info/id/64572001> rdfs:label "Disease"^^xsd:string .
+
+
+
+<http://snomed.info/id/7771000> rdfs:label " left "^^xsd:string .
+
+
+
+<http://snomed.info/id/397956004> rdfs:label " prosthetic arthroplasty of the hip "^^xsd:string .
+
+
+
+<http://snomed.info/id/272741003> rdfs:label " laterality "^^xsd:string .
+
+
+
+<http://snomed.info/id/363704007> rdfs:label " procedure site "^^xsd:string .
+
+
+
+
+###  Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net
+
