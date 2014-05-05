@@ -4,6 +4,7 @@
 package se.liu.imt.mi.snomedct.parser;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -116,6 +117,10 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 			OWLRendererException {
 		logger.info(axiom.toString());
 
+		// create local writer to ensure that content isn't written if the
+		// expression has errors
+		StringWriter localWriter = new StringWriter();
+
 		// get the operands of the OWL equivalent classes axiom
 		List<OWLClassExpression> classExpressions = axiom
 				.getClassExpressionsAsList();
@@ -138,11 +143,11 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 		// OWL expression
 		if (expressionDefinition.getClassExpressionType() == ClassExpressionType.OBJECT_INTERSECTION_OF)
 			writeIntersection((OWLObjectIntersectionOf) expressionDefinition,
-					ontology, writer);
+					ontology, localWriter);
 		// the exception being when there is exactly one class, i.e. a statement
 		// of equivalence between two named classes, probably not that common
 		else if (expressionDefinition.getClassExpressionType() == ClassExpressionType.OWL_CLASS)
-			writeEntity((OWLClass) expressionDefinition, ontology, writer);
+			writeEntity((OWLClass) expressionDefinition, ontology, localWriter);
 		// other expression types are not allowed in Compositional
 		// Grammar
 		else
@@ -154,10 +159,10 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 		// if the expression class has a label, write that label after tab
 		String label = getLabel((OWLClass) expressionClass, ontology);
 		if (label != null)
-			writer.write("\t" + label);
+			localWriter.write("\t" + label);
 
-		// expression written, new line
-		writer.write('\n');
+		// expression is finally written, new line
+		writer.write(localWriter.toString() + '\n');
 
 	}
 
@@ -287,10 +292,17 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 	 * 
 	 * @param operands
 	 * @param genera
+	 *            Set of OWL classes, changed through side effect
 	 * @param differentia
+	 *            Set of OWL existential restrictions, changed through side
+	 *            effects
+	 * @throws OWLRendererException
+	 *             Thrown if the OWL expression cannot be rendered as a
+	 *             Compositional Grammar statement.
 	 */
 	private void collectGeneraAndDifferentia(Set<OWLClassExpression> operands,
-			Set<OWLClass> genera, Set<OWLObjectSomeValuesFrom> differentia) {
+			Set<OWLClass> genera, Set<OWLObjectSomeValuesFrom> differentia)
+			throws OWLRendererException {
 		for (OWLClassExpression operand : operands) {
 			switch (operand.getClassExpressionType()) {
 			case OWL_CLASS:
@@ -303,8 +315,10 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 				break;
 			case OBJECT_SOME_VALUES_FROM:
 				differentia.add((OWLObjectSomeValuesFrom) operand);
-			default:
 				break;
+			default:
+				throw new OWLRendererException("Class expression not allowed: "
+						+ operand.getClassExpressionType().toString());
 			}
 		}
 	}
@@ -343,7 +357,7 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 			writeEntity((OWLClass) filler, ontology, writer);
 		else
 			throw new OWLRendererException(
-					"Type of the filler of an existational restriction can only be a class or an intersection: "
+					"Type of the filler of an existentional restriction can only be a class or an intersection: "
 							+ filler.getClassExpressionType().toString());
 
 	}

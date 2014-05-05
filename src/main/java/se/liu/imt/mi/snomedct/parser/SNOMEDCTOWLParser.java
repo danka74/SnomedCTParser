@@ -27,6 +27,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.UnloadableImportException;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
+import se.liu.imt.mi.snomedct.expression.tools.ExpressionSyntaxError;
 import se.liu.imt.mi.snomedct.expression.tools.SCTOWLExpressionBuilder;
 import se.liu.imt.mi.snomedct.expression.tools.SnomedCTParser;
 
@@ -86,62 +87,61 @@ public class SNOMEDCTOWLParser extends AbstractOWLParser {
 		SCTOWLExpressionBuilder expressionBuilder = new SCTOWLExpressionBuilder(
 				ontology, dataFactory);
 
-		try {
-			// give each expression a number starting with 0
-			int expressionNumber = 0;
-			// read first line from source file
-			String line = reader.readLine();
-			while (line != null) {
-				// tab separated lines
-				// tokens[0] Compositional Grammar expression
-				// tokens[1] (optional) RDFS label annotation value
-				String[] tokens = line.split("\t");
-				// translate Compositional Grammar expression to OWl
-				Tree t = SnomedCTParser.parseExpression(tokens[0]);
-				Map<IRI, OWLAnnotation> annotations = new HashMap<IRI, OWLAnnotation>();
-				OWLClassExpression owlExpression = expressionBuilder
+		// give each expression a number starting with 0
+		int expressionNumber = 0;
+		// read first line from source file
+		String line = reader.readLine();
+		while (line != null) {
+			// tab separated lines
+			// tokens[0] Compositional Grammar expression
+			// tokens[1] (optional) RDFS label annotation value
+			String[] tokens = line.split("\t");
+			// translate Compositional Grammar expression to OWl
+			Tree t;
+			Map<IRI, OWLAnnotation> annotations = new HashMap<IRI, OWLAnnotation>();
+			OWLClassExpression owlExpression = null;
+			try {
+				t = SnomedCTParser.parseExpression(tokens[0]);
+				
+				owlExpression = expressionBuilder
 						.translateToOWL(t, annotations);
-
-				// create new class for the expression, generate new IRI
-				OWLClass newExpressionClass = dataFactory.getOWLClass(IRI
-						.create(PC_IRI + expressionNumber++));
-
-				// add equivalence axiom to ontology
-				manager.addAxiom(ontology, dataFactory
-						.getOWLEquivalentClassesAxiom(newExpressionClass,
-								owlExpression));
-				// if there is a label, add that too
-				if (tokens.length > 1) {
-					// create label
-					OWLAnnotation label = dataFactory
-							.getOWLAnnotation(
-									dataFactory
-											.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL
-													.getIRI()), dataFactory
-											.getOWLLiteral(tokens[1]));
-					// add annotation axiom to ontology
-					manager.addAxiom(ontology, dataFactory
-							.getOWLAnnotationAssertionAxiom(
-									newExpressionClass.getIRI(), label));
-				}
-
-				if (!annotations.isEmpty()) {
-					for (Entry<IRI, OWLAnnotation> label : annotations
-							.entrySet()) {
-						if (dataFactory.getOWLClass(label.getKey())
-								.getAnnotations(ontology).isEmpty())
-							manager.addAxiom(ontology, dataFactory
-									.getOWLAnnotationAssertionAxiom(
-											label.getKey(), label.getValue()));
-					}
-				}
-
-				// read next line, readLine() will return null of end of file
-				line = reader.readLine();
+			} catch (Exception e) {
+				throw new OWLParserException(e);
 			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			// create new class for the expression, generate new IRI
+			OWLClass newExpressionClass = dataFactory.getOWLClass(IRI
+					.create(PC_IRI + expressionNumber++));
+
+			// add equivalence axiom to ontology
+			manager.addAxiom(ontology, dataFactory
+					.getOWLEquivalentClassesAxiom(newExpressionClass,
+							owlExpression));
+			// if there is a label, add that too
+			if (tokens.length > 1) {
+				// create label
+				OWLAnnotation label = dataFactory.getOWLAnnotation(dataFactory
+						.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL
+								.getIRI()), dataFactory
+						.getOWLLiteral(tokens[1]));
+				// add annotation axiom to ontology
+				manager.addAxiom(ontology, dataFactory
+						.getOWLAnnotationAssertionAxiom(
+								newExpressionClass.getIRI(), label));
+			}
+
+			if (!annotations.isEmpty()) {
+				for (Entry<IRI, OWLAnnotation> label : annotations.entrySet()) {
+					if (dataFactory.getOWLClass(label.getKey())
+							.getAnnotations(ontology).isEmpty())
+						manager.addAxiom(ontology, dataFactory
+								.getOWLAnnotationAssertionAxiom(label.getKey(),
+										label.getValue()));
+				}
+			}
+
+			// read next line, readLine() will return null of end of file
+			line = reader.readLine();
 		}
 
 		return format;
