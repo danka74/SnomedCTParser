@@ -37,8 +37,6 @@ public class TestSNOMEDCTOWLParser {
 
 	private OWLOntologyManager manager;
 	private OWLOntology ontology;
-	private OWLDataFactory dataFactory;
-	private OWLReasoner reasoner;
 
 	static Logger logger = Logger.getLogger(TestSNOMEDCTOWLParser.class);
 
@@ -52,8 +50,6 @@ public class TestSNOMEDCTOWLParser {
 		// ontology = manager.loadOntologyFromOntologyDocument(new
 		// File("src/test/resources/snomed.owl"));
 		// logger.info("Loaded SNOMED CT ontology");
-
-		dataFactory = manager.getOWLDataFactory();
 
 		OWLParserFactoryRegistry.getInstance().registerParserFactory(
 				new SNOMEDCTParserFactory());

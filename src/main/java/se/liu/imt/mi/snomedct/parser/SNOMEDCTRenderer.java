@@ -28,18 +28,12 @@ import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.profiles.OWL2ELProfile;
+import org.semanticweb.owlapi.profiles.OWLProfileReport;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 /**
  * @author Daniel Karlsson, Linköping University, daniel.karlsson@liu.se
- * 
- */
-/**
- * @author daniel
- *
- */
-/**
- * @author daniel
  * 
  */
 public class SNOMEDCTRenderer extends AbstractOWLRenderer {
@@ -62,7 +56,17 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 	 * owlapi.model.OWLOntology, java.io.Writer)
 	 */
 	@Override
-	public void render(OWLOntology ontology, Writer writer) {
+	public void render(OWLOntology ontology, Writer writer)
+			throws OWLRendererException {
+		// check that the ontology is in the OWL 2 EL profile, OWL 2 EL profile
+		// is still more expressive than SNOMED CT Compositional Grammar
+		// commented out to test specific criteria when rendering
+		// TODO: check performance of profile checker
+		// TODO: remove try block?
+		// OWL2ELProfile profile = new OWL2ELProfile();
+		// OWLProfileReport report = profile.checkOntology(ontology);
+		// if(!report.isInProfile())
+		// throw new OWLRendererException("Ontology nor in OWL 2 EL profile");
 		try {
 			writeExpressions(ontology, writer);
 		} catch (Exception e) {
@@ -74,13 +78,18 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 
 	/**
 	 * Method for writing all SNOMED CT Compositional Grammar compliant
-	 * expressions from an ontology. Not all OWL expression could be translated
-	 * to Compositional Grammar.
+	 * expressions from an ontology. Not all OWL (or OWL 2 EL) expressions can
+	 * be translated to Compositional Grammar. E.g. only fully defined classes
+	 * (EquivalentClass) are written
 	 * 
 	 * @param ontology
 	 * @param writer
+	 * @throws IOException
+	 *             Thrown if writing fails.
 	 */
-	private void writeExpressions(OWLOntology ontology, Writer writer) {
+	private void writeExpressions(OWLOntology ontology, Writer writer)
+			throws IOException {
+		// get list of all equivalent classes axioms from ontology
 		final List<OWLAxiom> axioms = new ArrayList<OWLAxiom>(
 				ontology.getAxioms(AxiomType.EQUIVALENT_CLASSES));
 
@@ -89,9 +98,6 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 				writeExpression((OWLEquivalentClassesAxiom) axiom, ontology,
 						writer);
 			} catch (OWLRendererException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -269,12 +275,16 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 									.add((OWLObjectSomeValuesFrom) operand);
 						else
 							throw new OWLRendererException(
-									"Non-existential restriction in role group");
+									"Role group can only directly contain existential restrictions: "
+											+ operand.getClassExpressionType()
+													.toString());
 					writeDifferentiae(roleGroupDifferentiae, ontology, writer);
 					writer.write('}');
 				} else
 					throw new OWLRendererException(
-							"Role group must contain either a single existential restriction or an intersection");
+							"Role group must contain either a single existential restriction or an intersection: "
+									+ roleGroupContent.getClassExpressionType()
+											.toString());
 			} else {
 				// not a role group...
 				writeSomeValuesFrom((OWLObjectSomeValuesFrom) differentia,
@@ -282,45 +292,6 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 			}
 		}
 
-	}
-
-	/**
-	 * Utility method for extracting genera and differentiae from a set of class
-	 * expressions. Genera appear as OWLClass objects, differentiae appear as
-	 * existential restrictions. Both could be nested inside intersections
-	 * recursively.
-	 * 
-	 * @param operands
-	 * @param genera
-	 *            Set of OWL classes, changed through side effect
-	 * @param differentia
-	 *            Set of OWL existential restrictions, changed through side
-	 *            effects
-	 * @throws OWLRendererException
-	 *             Thrown if the OWL expression cannot be rendered as a
-	 *             Compositional Grammar statement.
-	 */
-	private void collectGeneraAndDifferentia(Set<OWLClassExpression> operands,
-			Set<OWLClass> genera, Set<OWLObjectSomeValuesFrom> differentia)
-			throws OWLRendererException {
-		for (OWLClassExpression operand : operands) {
-			switch (operand.getClassExpressionType()) {
-			case OWL_CLASS:
-				genera.add((OWLClass) operand);
-				break;
-			case OBJECT_INTERSECTION_OF:
-				collectGeneraAndDifferentia(
-						((OWLObjectIntersectionOf) operand).getOperands(),
-						genera, differentia);
-				break;
-			case OBJECT_SOME_VALUES_FROM:
-				differentia.add((OWLObjectSomeValuesFrom) operand);
-				break;
-			default:
-				throw new OWLRendererException("Class expression not allowed: "
-						+ operand.getClassExpressionType().toString());
-			}
-		}
 	}
 
 	/**
@@ -360,6 +331,45 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 					"Type of the filler of an existentional restriction can only be a class or an intersection: "
 							+ filler.getClassExpressionType().toString());
 
+	}
+
+	/**
+	 * Utility method for extracting genera and differentiae from a set of class
+	 * expressions. Genera appear as OWLClass objects, differentiae appear as
+	 * existential restrictions. Both could be nested inside intersections
+	 * recursively.
+	 * 
+	 * @param operands
+	 * @param genera
+	 *            Set of OWL classes, changed through side effects
+	 * @param differentia
+	 *            Set of OWL existential restrictions, changed through side
+	 *            effects
+	 * @throws OWLRendererException
+	 *             Thrown if the OWL expression cannot be rendered as a
+	 *             Compositional Grammar statement.
+	 */
+	private void collectGeneraAndDifferentia(Set<OWLClassExpression> operands,
+			Set<OWLClass> genera, Set<OWLObjectSomeValuesFrom> differentia)
+			throws OWLRendererException {
+		for (OWLClassExpression operand : operands) {
+			switch (operand.getClassExpressionType()) {
+			case OWL_CLASS:
+				genera.add((OWLClass) operand);
+				break;
+			case OBJECT_INTERSECTION_OF:
+				collectGeneraAndDifferentia(
+						((OWLObjectIntersectionOf) operand).getOperands(),
+						genera, differentia);
+				break;
+			case OBJECT_SOME_VALUES_FROM:
+				differentia.add((OWLObjectSomeValuesFrom) operand);
+				break;
+			default:
+				throw new OWLRendererException("Class expression not allowed: "
+						+ operand.getClassExpressionType().toString());
+			}
+		}
 	}
 
 	/**

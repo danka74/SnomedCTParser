@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,9 +52,9 @@ public class TestSNOMEDCTExpressionParser {
 	private OWLOntology ontology;
 	private OWLDataFactory dataFactory;
 	private OWLReasoner reasoner;
-	
+
 	static Logger logger = Logger.getLogger(TestSNOMEDCTExpressionParser.class);
-	
+
 	public static final String PC_IRI = "http://snomed.info/expid/";
 
 	@Before
@@ -63,8 +64,9 @@ public class TestSNOMEDCTExpressionParser {
 
 	@Test
 	public void testExpressionParser() throws Exception {
+		URL testCaseURL = getClass().getResource("/sct_test_cases.txt");
 		BufferedReader testCaseReader = new BufferedReader(new FileReader(
-				"src/test/resources/sct_test_cases.txt"));
+				testCaseURL.getFile()));
 
 		String strLine;
 
@@ -72,34 +74,36 @@ public class TestSNOMEDCTExpressionParser {
 		dataFactory = manager.getOWLDataFactory();
 
 		while ((strLine = testCaseReader.readLine()) != null) {
-			
+
 			if (strLine.startsWith("#"))
 				continue;
-			
+
 			String[] strTokens = strLine.split("\t");
 
 			logger.info(strTokens[0]);
-			
+
 			Tree result = SnomedCTParser.parseQuery(strTokens[0]);
-			
-			String sortedResult = SCTSortedExpressionBuilder.buildSortedExpression(result);
+
+			String sortedResult = SCTSortedExpressionBuilder
+					.buildSortedExpression(result);
 
 			logger.info("Sorted: " + sortedResult);
-			
+
 			printTree(result, 2);
-			
+
 			assertTrue(sortedResult.equals(strTokens[1]));
 		}
 
 		testCaseReader.close();
 	}
 
-	//@Test
+	@Test
 	public void testConvertToOWL() throws Exception {
 		manager = OWLManager.createOWLOntologyManager();
 
 		logger.info("Loading SNOMED CT ontology...");
-		ontology = manager.loadOntologyFromOntologyDocument(new File("src/test/resources/res_StatedOWLF_Core_INT_20140131.owl"));
+		URL snomedFileURL = getClass().getResource("/res_StatedOWLF_Core_INT_20140131.owl");
+		ontology = manager.loadOntologyFromOntologyDocument(new File(snomedFileURL.getFile()));
 		dataFactory = manager.getOWLDataFactory();
 
 		OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
@@ -114,14 +118,15 @@ public class TestSNOMEDCTExpressionParser {
 		long interval = (new Date()).getTime() - t1;
 		logger.info("Classification time: " + interval + " ms");
 
+		URL testCaseURL = getClass().getResource("/sct_test_cases.txt");
 		BufferedReader testCaseReader = new BufferedReader(new FileReader(
-				"src/test/resources/sct_test_cases.txt"));
+				testCaseURL.getFile()));
 
 		String strLine;
 		while ((strLine = testCaseReader.readLine()) != null) {
 			if (strLine.startsWith("#"))
 				continue;
-			
+
 			String[] strTokens = strLine.split("\t");
 
 			logger.info(strTokens[0]);
@@ -134,13 +139,13 @@ public class TestSNOMEDCTExpressionParser {
 
 			t1 = (new Date()).getTime();
 
-			// 
-			OWLClass new_pc_concept = dataFactory.getOWLClass(IRI
-					.create(PC_IRI + UUID.randomUUID()));
+			//
+			OWLClass new_pc_concept = dataFactory.getOWLClass(IRI.create(PC_IRI
+					+ UUID.randomUUID()));
 
 			// translate SCT expression syntax to OWL
-			OWLClassExpression e = owlBuilder.translateToOWL((Tree) result
-					.getTree(), null);
+			OWLClassExpression e = owlBuilder.translateToOWL(
+					(Tree) result.getTree(), null);
 
 			List<OWLOntologyChange> axiomList = new LinkedList<OWLOntologyChange>();
 			axiomList.add(new AddAxiom(ontology, dataFactory

@@ -35,11 +35,11 @@ public class SCTOWLExpressionBuilder {
 	public SCTOWLExpressionBuilder(OWLOntology ontology,
 			OWLDataFactory dataFactory) {
 		super();
-		this.ontology = ontology;
+		//this.ontology = ontology;
 		this.dataFactory = dataFactory;
 	}
 
-	private OWLOntology ontology;
+	//private OWLOntology ontology;
 	private OWLDataFactory dataFactory;
 
 	/**
