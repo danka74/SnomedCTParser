@@ -5,7 +5,7 @@
 	<artifactId>SnomedCTParser</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
-		<antlr.version>3.5</antlr.version>
+		<antlr.version>3.5.2</antlr.version>
 		<owlapi.version>3.5.1-SNAPSHOT</owlapi.version>
 	</properties>
 	<build>
@@ -13,6 +13,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -41,6 +42,11 @@
 						<goals>
 							<goal>gunit</goal>
 						</goals>
+						<configuration>
+							<includes>
+								<include>**/*.gunit</include>
+							</includes>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -83,5 +89,24 @@
 			<version>${antlr.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.7.0</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.0</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.0</version>
+			<scope>runtime</scope>
+		</dependency>
+
 	</dependencies>
 </project>
