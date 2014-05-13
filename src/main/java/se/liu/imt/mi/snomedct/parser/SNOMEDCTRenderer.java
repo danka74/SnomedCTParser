@@ -387,8 +387,7 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 	 */
 	private void writeEntity(OWLLogicalEntity entity, OWLOntology ontology,
 			Writer writer) throws IOException, OWLRendererException {
-		String namespace = entity.getIRI().getNamespace();
-		String sctid = extractID(namespace);
+		String sctid = extractID(entity.getIRI().toString());
 		logger.info(sctid);
 		writer.write(sctid);
 
