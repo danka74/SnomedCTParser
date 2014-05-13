@@ -432,8 +432,21 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 	String extractID(String iri) throws OWLRendererException {
 		if (iri.endsWith("/"))
 			throw new OWLRendererException("IRI ends with '/'");
-		else
-			return iri.substring(iri.lastIndexOf('/') + 1);
+		else {
+			String sctid = iri.substring(iri.lastIndexOf('/') + 1);
+			if (!isPositiveInteger(sctid))
+				throw new OWLRendererException(
+						"SCTID part of IRI is non-numeric");
+			else
+				return sctid;
+		}
+	}
+
+	public static boolean isPositiveInteger(String str) {
+		for (char c : str.toCharArray())
+			if (!Character.isDigit(c))
+				return false;
+		return true;
 	}
 
 }
