@@ -105,7 +105,7 @@ public class TestSNOMEDCTExpressionParser {
 		logger.info("Loading SNOMED CT ontology...");
 		URL snomedFileURL = getClass().getResource("/res_StatedOWLF_Core_INT_20140131.owl");
 		if(snomedFileURL == null)
-			throw new FileNotFoundException();
+			throw new FileNotFoundException("SNOMED CT OWL file not found");
 		ontology = manager.loadOntologyFromOntologyDocument(new File(snomedFileURL.getFile()));
 		dataFactory = manager.getOWLDataFactory();
 
