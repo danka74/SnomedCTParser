@@ -57,6 +57,8 @@ public class TestSNOMEDCTExpressionParser {
 	static Logger logger = Logger.getLogger(TestSNOMEDCTExpressionParser.class);
 
 	public static final String PC_IRI = "http://snomed.info/expid/";
+	
+	public static final String snomedOWLFileName = "/res_StatedOWLF_Core_INT_20140131.owl";
 
 	@Before
 	public void setUp() throws OWLOntologyCreationException {
@@ -103,9 +105,9 @@ public class TestSNOMEDCTExpressionParser {
 		manager = OWLManager.createOWLOntologyManager();
 
 		logger.info("Loading SNOMED CT ontology...");
-		URL snomedFileURL = getClass().getResource("/res_StatedOWLF_Core_INT_20140131.owl");
+		URL snomedFileURL = getClass().getResource(snomedOWLFileName);
 		if(snomedFileURL == null)
-			throw new FileNotFoundException("SNOMED CT OWL file not found");
+			throw new FileNotFoundException("SNOMED CT OWL file '" + snomedOWLFileName + "' not found");
 		ontology = manager.loadOntologyFromOntologyDocument(new File(snomedFileURL.getFile()));
 		dataFactory = manager.getOWLDataFactory();
 
