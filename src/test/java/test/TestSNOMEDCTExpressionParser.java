@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.StringWriter;
 import java.net.URL;
@@ -103,6 +104,8 @@ public class TestSNOMEDCTExpressionParser {
 
 		logger.info("Loading SNOMED CT ontology...");
 		URL snomedFileURL = getClass().getResource("/res_StatedOWLF_Core_INT_20140131.owl");
+		if(snomedFileURL == null)
+			throw new FileNotFoundException();
 		ontology = manager.loadOntologyFromOntologyDocument(new File(snomedFileURL.getFile()));
 		dataFactory = manager.getOWLDataFactory();
 
