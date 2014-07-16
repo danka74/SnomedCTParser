@@ -6,7 +6,9 @@ OWL API compliant classes for loading and storing SNOMED CT Compositional Gramma
 
 (\<expression> \t \<label> \n)*
 
-An OWL file containing SNOMED CT will have to be added to src/test/resources directory for the tests, see test.TestSNOMEDCTExpressionParser.testConvertToOWL().
+An OWL file containing SNOMED CT will have to be added to src/test/resources directory for the tests, see test.TestSNOMEDCTExpressionParser.testConvertToOWL()
+
+Java heap size might need to be increasd. Running "mvn test -DMAVEN_OPTS=-Xmx6500m" has been succesful on an 8G machine.
 
 http://www.ihtsdo.org/snomed-ct/snomed-docs/snomed-ct-query-specification/
 
