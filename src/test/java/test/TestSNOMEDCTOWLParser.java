@@ -5,6 +5,7 @@ package test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 
@@ -39,6 +40,8 @@ public class TestSNOMEDCTOWLParser {
 	private OWLOntology ontology;
 
 	static Logger logger = Logger.getLogger(TestSNOMEDCTOWLParser.class);
+
+	public static final String snomedOWLFileName = "/res_StatedOWLF_Core_INT_20140131.owl";
 
 	/**
 	 * @throws java.lang.Exception
@@ -126,6 +129,24 @@ public class TestSNOMEDCTOWLParser {
 		// file "fail_test_ontology.owl" are supported by SNOMED CT
 		// Compositional Grammar
 		assertTrue(os.size() == 0);
+
+	}
+	
+	@Test
+	public void testParseAndSaveOWLOntologyWholeEnchildad()
+			throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
+		logger.info("Loading SNOMED CT ontology...");
+		URL snomedFileURL = getClass().getResource(snomedOWLFileName);
+		if(snomedFileURL == null)
+			throw new FileNotFoundException("SNOMED CT OWL file '" + snomedOWLFileName + "' not found");
+		ontology = manager.loadOntologyFromOntologyDocument(new File(snomedFileURL.getFile()));
+
+		// create another file for SNOMED CT Compositional Grammar format
+		File output = new File("output_whole_SNOMED_CT_as_CG.owl");
+		// save the ontology in SNOMED CT Compositional Grammar format
+		SNOMEDCTOntologyFormat snomedCTFormat = new SNOMEDCTOntologyFormat();
+		manager.saveOntology(ontology, snomedCTFormat,
+				IRI.create(output.toURI()));
 
 	}
 
