@@ -21,16 +21,23 @@ import static org.junit.Assert.*;
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.OWLParserFactoryRegistry;
+import org.semanticweb.owlapi.model.AddAxiom;
+import org.semanticweb.owlapi.model.AddOntologyAnnotation;
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotation;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLLogicalAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.reasoner.InferenceType;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
@@ -191,6 +198,30 @@ public class TestSNOMEDCTOWLParser {
 
     	logger.info("subclass-of axioms = " + infOnt.getAxiomCount(AxiomType.SUBCLASS_OF));
     	logger.info("equivalent-to axioms = " + infOnt.getAxiomCount(AxiomType.EQUIVALENT_CLASSES));
+    	
+    	List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
+    	
+    	// add annotations from original ontology
+    	for (OWLOntology o : reasoner.getRootOntology().getImportsClosure()) {
+    		for (OWLAnnotation annot : o.getAnnotations()) {
+    			changes.add(new AddOntologyAnnotation(infOnt, annot));
+    		}
+    		for (OWLAnnotationAssertionAxiom axiom : o.getAxioms(AxiomType.ANNOTATION_ASSERTION)) {
+    			changes.add(new AddAxiom(infOnt, axiom));
+    		}
+    	}
+    	
+    	// add asserted from original ontology
+    	for (OWLOntology o : reasoner.getRootOntology().getImportsClosure()) {
+    		for (OWLLogicalAxiom ax : o.getLogicalAxioms()) {
+    			if (ax.isAnnotated() && infOnt.containsAxiom(ax.getAxiomWithoutAnnotations())) {
+    				changes.add(new RemoveAxiom(infOnt, ax.getAxiomWithoutAnnotations()));
+    			}
+    			changes.add(new AddAxiom(infOnt, ax));
+    		}
+    	}
+    	
+    	outputManager.applyChanges(changes);
 
 		// create another file for SNOMED CT Compositional Grammar format
 		File output2 = new File("output_whole_SNOMED_CT_as_CG_post_classification.owl");

@@ -4,3 +4,6 @@
 /output_as_SNOMED_CT_CG.owl
 /output_as_SNOMED_CT_CG_fail.owl
 /output_whole_SNOMED_CT_as_CG.owl
+/output_as_Turtle_again.owl
+/output_whole_SNOMED_CT_as_CG_post_classification.owl
+/output_whole_SNOMED_CT_as_CG_pre_classification.owl
