@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.coode.owlapi.turtle.TurtleOntologyFormat;
@@ -15,16 +17,27 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+
+import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.OWLParserFactoryRegistry;
+import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.reasoner.InferenceType;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+import org.semanticweb.owlapi.util.InferredAxiomGenerator;
+import org.semanticweb.owlapi.util.InferredEquivalentClassAxiomGenerator;
+import org.semanticweb.owlapi.util.InferredOntologyGenerator;
+import org.semanticweb.owlapi.util.InferredSubClassAxiomGenerator;
 
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyFormat;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorer;
@@ -109,11 +122,12 @@ public class TestSNOMEDCTOWLParser {
 	 * 
 	 * @throws OWLOntologyCreationException
 	 * @throws OWLOntologyStorageException
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Test
 	public void testLoadNonSNOMEDCTConformantOntology()
-			throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
+			throws OWLOntologyCreationException, OWLOntologyStorageException,
+			IOException {
 		// load ontology with constructs not supported by SNOMED CT
 		// Compositional Grammar
 		URL failFileURL = getClass().getResource("/fail_test_ontology.owl");
@@ -131,22 +145,60 @@ public class TestSNOMEDCTOWLParser {
 		assertTrue(os.size() == 0);
 
 	}
-	
+
 	@Test
 	public void testParseAndSaveOWLOntologyWholeEnchildad()
-			throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
+			throws OWLOntologyCreationException, OWLOntologyStorageException,
+			FileNotFoundException {
 		logger.info("Loading SNOMED CT ontology...");
 		URL snomedFileURL = getClass().getResource(snomedOWLFileName);
-		if(snomedFileURL == null)
-			throw new FileNotFoundException("SNOMED CT OWL file '" + snomedOWLFileName + "' not found");
-		ontology = manager.loadOntologyFromOntologyDocument(new File(snomedFileURL.getFile()));
+		if (snomedFileURL == null)
+			throw new FileNotFoundException("SNOMED CT OWL file '"
+					+ snomedOWLFileName + "' not found");
+		ontology = manager.loadOntologyFromOntologyDocument(new File(
+				snomedFileURL.getFile()));
 
 		// create another file for SNOMED CT Compositional Grammar format
-		File output = new File("output_whole_SNOMED_CT_as_CG.owl");
+		File output = new File("output_whole_SNOMED_CT_as_CG_pre_classification.owl");
 		// save the ontology in SNOMED CT Compositional Grammar format
 		SNOMEDCTOntologyFormat snomedCTFormat = new SNOMEDCTOntologyFormat();
 		manager.saveOntology(ontology, snomedCTFormat,
 				IRI.create(output.toURI()));
+
+		// Create an ELK reasoner.
+		OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
+		OWLReasoner reasoner = reasonerFactory.createReasoner(ontology);
+
+		// Classify the ontology.
+		reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
+		//reasoner.flush();
+		
+		 // To generate an inferred ontology we use implementations of
+        // inferred axiom generators
+        List<InferredAxiomGenerator<? extends OWLAxiom>> gens = new ArrayList<InferredAxiomGenerator<? extends OWLAxiom>>();
+        gens.add(new InferredSubClassAxiomGenerator());
+        gens.add(new InferredEquivalentClassAxiomGenerator());
+
+        // Put the inferred axioms into a fresh empty ontology.
+        OWLOntologyManager outputManager = OWLManager.createOWLOntologyManager();
+        OWLParserFactoryRegistry.getInstance().registerParserFactory(
+				new SNOMEDCTParserFactory());
+        outputManager.addOntologyStorer(new SNOMEDCTOntologyStorer());
+        OWLOntology infOnt = outputManager.createOntology();
+        InferredOntologyGenerator iog = new InferredOntologyGenerator(reasoner,
+                        gens);
+        iog.fillOntology(outputManager, infOnt);
+
+    	logger.info("subclass-of axioms = " + infOnt.getAxiomCount(AxiomType.SUBCLASS_OF));
+    	logger.info("equivalent-to axioms = " + infOnt.getAxiomCount(AxiomType.EQUIVALENT_CLASSES));
+
+		// create another file for SNOMED CT Compositional Grammar format
+		File output2 = new File("output_whole_SNOMED_CT_as_CG_post_classification.owl");
+		// save the ontology in SNOMED CT Compositional Grammar format
+		outputManager.saveOntology(infOnt, snomedCTFormat,
+				IRI.create(output2.toURI()));
+		
+		reasoner.dispose();
 
 	}
 

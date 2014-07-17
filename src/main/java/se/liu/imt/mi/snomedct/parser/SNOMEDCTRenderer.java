@@ -121,7 +121,7 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 	private void writeExpression(OWLEquivalentClassesAxiom axiom,
 			OWLOntology ontology, Writer writer) throws IOException,
 			OWLRendererException {
-		logger.info(axiom.toString());
+		logger.debug(axiom.toString());
 
 		// create local writer to ensure that content isn't written if the
 		// expression has errors
@@ -317,7 +317,7 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 		writer.write('=');
 
 		OWLClassExpression filler = differentia.getFiller();
-		logger.info("filler = " + filler.toString());
+		logger.debug("filler = " + filler.toString());
 		// if filler is an intersection, then it is a nested expression
 		if (filler.getClassExpressionType() == ClassExpressionType.OBJECT_INTERSECTION_OF) {
 			writer.write('(');
@@ -388,7 +388,7 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 	private void writeEntity(OWLLogicalEntity entity, OWLOntology ontology,
 			Writer writer) throws IOException, OWLRendererException {
 		String sctid = extractID(entity.getIRI().toString());
-		logger.info(sctid);
+		logger.debug(sctid);
 		writer.write(sctid);
 
 		// only rdfs:label annotations will be written
