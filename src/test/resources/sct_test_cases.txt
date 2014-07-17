@@ -7,3 +7,4 @@
 397956004 | prosthetic arthroplasty of the hip |: 363704007 | procedure site | = ( 24136001| hip joint structure |: 272741003| laterality | = 7771000| left |)	397956004:363704007=(24136001:272741003=7771000)
 #125605004 | fracture of bone | : 363698007 | finding site | = 71341001 | bone structure of femur |
 #52734007 | total hip replacement |: 363699004|direct device| = 314580008|Sheehan total hip prosthesis|
+243796009|situation with explicit context (situation)|:246090004|associated finding (attribute)|=(419620001|death (event)|:42752001|due to (attribute)|=22298006|myocardial infarction (disorder)|),408729009|finding context (attribute)|=410515003|known present (qualifier value)|,408731000|temporal context (attribute)|=410513005|in the past (qualifier value)|,408732007|subject relationship context (attribute)|=444295003|father of subject (person)|	243796009:246090004=(419620001:42752001=22298006),408729009=410515003,408731000=410513005,408732007=444295003
