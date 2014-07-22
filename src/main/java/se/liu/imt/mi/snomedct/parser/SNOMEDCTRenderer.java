@@ -434,10 +434,10 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 			throw new OWLRendererException("IRI ends with '/'");
 		else {
 			String sctid = iri.substring(iri.lastIndexOf('/') + 1);
-			if (!isPositiveInteger(sctid))
-				throw new OWLRendererException(
-						"SCTID part of IRI is non-numeric");
-			else
+//			if (!isPositiveInteger(sctid))
+//				throw new OWLRendererException(
+//						"SCTID part of IRI is non-numeric");
+//			else
 				return sctid;
 		}
 	}

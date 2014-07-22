@@ -232,5 +232,22 @@ public class TestSNOMEDCTOWLParser {
 		reasoner.dispose();
 
 	}
+	
+	
+	@Test
+	public void testParseAndSaveObsAlpha()
+			throws OWLOntologyCreationException, OWLOntologyStorageException {
+		URL expressionsURL = getClass().getResource("/obsAlpha.owl");
+		ontology = manager.loadOntologyFromOntologyDocument(new File(
+				expressionsURL.getFile()));
+
+		// create another file for SNOMED CT Compositional Grammar format
+		File output = new File("obsAlpha_as_SNOMED_CT_CG.owl");
+		// save the ontology in SNOMED CT Compositional Grammar format
+		SNOMEDCTOntologyFormat snomedCTFormat = new SNOMEDCTOntologyFormat();
+		manager.saveOntology(ontology, snomedCTFormat,
+				IRI.create(output.toURI()));
+
+	}
 
 }
