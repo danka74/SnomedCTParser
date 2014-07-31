@@ -92,6 +92,12 @@ public class SNOMEDCTOWLParser extends AbstractOWLParser {
 		// read first line from source file
 		String line = reader.readLine();
 		while (line != null) {
+			// # is used for commenting out expression
+			if(line.startsWith("#")) {
+				line = reader.readLine();
+				continue;
+			}
+				
 			// tab separated lines
 			// tokens[0] Compositional Grammar expression
 			// tokens[1] (optional) RDFS label annotation value
