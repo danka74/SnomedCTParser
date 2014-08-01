@@ -4,32 +4,36 @@
 package se.liu.imt.mi.snomedct.expression.tools;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.ClassExpressionType;
-import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.normalform.NormalFormRewriter;
-import org.semanticweb.owlapi.reasoner.Node;
-import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
-import test.TestSNOMEDCTOWLParser;
-
 /**
- * @author daniel
+ * Class for implementing a SNOMED CT Distribution Normal Form converter. Some
+ * assumptions are made: 1. Only EL++ is used (i.e. only existential
+ * restrictions, intersections (conjunctions) etc.) 2. Restrictions are added
+ * from bottom up, i.e. the most specific restrictions are added first
+ * 
+ * References: SNOMED CT Technical Implementation Guide
+ * www.snomed.org/tig?t=nfg_normalForm_definition_eg_fullyDefAttrValue
+ * www.snomed
+ * .org/tig?t=amg2_definition_altModelView_altInferred_attribute_nonRedundant
+ * 
+ * SPACKMAN, Kent A. Normal forms for description logic expressions of clinical
+ * concepts in SNOMED RT. In: Proceedings of the AMIA Symposium. American
+ * Medical Informatics Association, 2001. p. 627.
+ * 
+ * @author Daniel Karlsson, daniel.karlsson@liu.se
  * 
  */
 public class DistributionNormalFormConverter implements NormalFormRewriter {
@@ -43,7 +47,8 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 	Set<OWLOntology> imports;
 
 	/**
-	 * The class keeps differentia and only allows adding of non-redundant
+	 * The class keeps differentia (existential restrictions) and only allows
+	 * adding of non-redundant restrictions
 	 * 
 	 * @author daniel
 	 * 
@@ -59,71 +64,133 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 			differentia = new HashSet<OWLObjectSomeValuesFrom>();
 		}
 
-		void add(OWLObjectSomeValuesFrom some) {
-			for (OWLObjectSomeValuesFrom e : differentia)
-				if (isRedundant(some, e))
+		/**
+		 * Adds an restriction to the set of differentia only if it is
+		 * non-redundant in relation to current members of the set
+		 * 
+		 * @param existRestriction
+		 *            The restriction to add
+		 */
+		void add(OWLObjectSomeValuesFrom existRestriction) {
+			// add a restriction only if it's not redundant in relation to any
+			// member of the current differentia set
+			for (OWLObjectSomeValuesFrom diff : differentia)
+				if (isRedundant(existRestriction, diff))
 					return;
-			differentia.add(some);
+			differentia.add(existRestriction);
 		}
 
-		void addAll(Set<OWLClassExpression> se) throws Exception {
-			for (OWLClassExpression e : se) {
-				if (e.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM)
-					add((OWLObjectSomeValuesFrom) e);
+		/**
+		 * Adds a set of restrictions to the set of differentia
+		 * 
+		 * @param expression
+		 *            Set the set of restrictions to add
+		 * @throws Exception
+		 *             Thrown if the set contains anything but existential
+		 *             restrictions
+		 */
+		void addAll(Set<OWLClassExpression> expressionSet) throws Exception {
+			for (OWLClassExpression expr : expressionSet) {
+				// there should only be existential restrictions in the
+				// differentia set
+				if (expr.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM)
+					add((OWLObjectSomeValuesFrom) expr);
 				else
-					throw new Exception("Non-some expression in set!");
+					throw new Exception(
+							"Only existential restrictions allowed in the set!");
 			}
 		}
 
-		boolean isRedundant(OWLObjectSomeValuesFrom e1,
-				OWLObjectSomeValuesFrom e2) {
-			if (e1.equals(e2))
+		/**
+		 * Checks if restriction 1 is redundant in relation to restriction 2.
+		 * This is a non-symmetrical function!
+		 * 
+		 * @param restrict1
+		 *            Restriction 1
+		 * @param restrict2
+		 *            Restriction 2
+		 * @return Returns true iff restriction 1 is redundant in relation to
+		 *         restriction 2.
+		 */
+		boolean isRedundant(OWLObjectSomeValuesFrom restrict1,
+				OWLObjectSomeValuesFrom restrict2) {
+			// an existential restriction is redundant in relation to another if
+			// the two restrictions are equal
+			if (restrict1.equals(restrict2))
 				return true;
 
-			if (isPropertySubsumedBy(e1.getProperty(), e2.getProperty())) {
-				OWLClassExpression ef1 = e1.getFiller();
-				OWLClassExpression ef2 = e2.getFiller();
+			// if the former object property is subsumed by the latter, the
+			// fillers are compared for redundancy
+			if (isPropertySubsumedBy(restrict1.getProperty(),
+					restrict2.getProperty())) {
+				OWLClassExpression filler1 = restrict1.getFiller();
+				OWLClassExpression filler2 = restrict2.getFiller();
 
-				return isRedundant(ef1, ef2);
+				return isRedundant(filler1, filler2);
 
 			}
 
+			// if the restrictions are not equal and the object property of
+			// restriction 1 does is not subsumed by the object property of
+			// restriction 2, then return false
 			return false;
 		}
 
-		boolean isRedundant(OWLClassExpression e1, OWLClassExpression e2) {
-			if (e1.getClassExpressionType() == ClassExpressionType.OWL_CLASS
-					&& e2.getClassExpressionType() == ClassExpressionType.OWL_CLASS)
-				return isClassSubsumbedBy((OWLClass) e1, (OWLClass) e2);
-			if (e1.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM
-					&& e2.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM)
-				return isRedundant((OWLObjectSomeValuesFrom) e1,
-						(OWLObjectSomeValuesFrom) e2);
-			if (e1.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM
-					&& e2.getClassExpressionType() == ClassExpressionType.OBJECT_INTERSECTION_OF) {
-				Set<OWLClassExpression> operands2 = ((OWLObjectIntersectionOf) e2)
+		/**
+		 * Checks if expression 1 is redundant in relation to expression 2. This
+		 * is a non-symmetrical function!
+		 * 
+		 * @param expr1
+		 *            Expression 1
+		 * @param expr2
+		 *            Expression 2
+		 * @return Returns true iff expression 1 is redundant in relation to
+		 *         expression 2.
+		 */
+		boolean isRedundant(OWLClassExpression expr1, OWLClassExpression expr2) {
+			// there are four cases:
+			// 1. both expressions are classes, then class 1 is redundant if it
+			// is subsumed by class 2
+			if (expr1.getClassExpressionType() == ClassExpressionType.OWL_CLASS
+					&& expr2.getClassExpressionType() == ClassExpressionType.OWL_CLASS)
+				return isClassSubsumedBy((OWLClass) expr1, (OWLClass) expr2);
+			// 2. both expressions are existential restrictions, then call the
+			// above function
+			if (expr1.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM
+					&& expr2.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM)
+				return isRedundant((OWLObjectSomeValuesFrom) expr1,
+						(OWLObjectSomeValuesFrom) expr2);
+			// 3. if experssion 1 is a existential restriction and expression 2
+			// is an intersection, then the restriction is redundant if it is
+			// redundant to at least one of the expressions of the intersection
+			if (expr1.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM
+					&& expr2.getClassExpressionType() == ClassExpressionType.OBJECT_INTERSECTION_OF) {
+				Set<OWLClassExpression> operands2 = ((OWLObjectIntersectionOf) expr2)
 						.getOperands();
-				for (OWLClassExpression ei2 : operands2) {
-					if (isRedundant(e1, ei2)) 
+				for (OWLClassExpression exprIndex2 : operands2) {
+					if (isRedundant(expr1, exprIndex2))
 						return true;
 				}
 				return false;
 			}
-			if (e1.getClassExpressionType() == ClassExpressionType.OBJECT_INTERSECTION_OF
-					&& e2.getClassExpressionType() == ClassExpressionType.OBJECT_INTERSECTION_OF) {
-				Set<OWLClassExpression> operands1 = ((OWLObjectIntersectionOf) e1)
+			// 4. if both expressions are intersections, then intersection 1 is
+			// redundant if each expression of intersection 1 is redundant to
+			// some expression in intersection 2
+			if (expr1.getClassExpressionType() == ClassExpressionType.OBJECT_INTERSECTION_OF
+					&& expr2.getClassExpressionType() == ClassExpressionType.OBJECT_INTERSECTION_OF) {
+				Set<OWLClassExpression> operands1 = ((OWLObjectIntersectionOf) expr1)
 						.getOperands();
-				Set<OWLClassExpression> operands2 = ((OWLObjectIntersectionOf) e2)
+				Set<OWLClassExpression> operands2 = ((OWLObjectIntersectionOf) expr2)
 						.getOperands();
-				for (OWLClassExpression ei1 : operands1) {
-					boolean ei1Redundant = false;
-					for (OWLClassExpression ei2 : operands2) {
-						if (isRedundant(ei1, ei2)) {
-							ei1Redundant = true;
+				for (OWLClassExpression subExpr1 : operands1) {
+					boolean subExpr1Redundant = false;
+					for (OWLClassExpression subExpr2 : operands2) {
+						if (isRedundant(subExpr1, subExpr2)) {
+							subExpr1Redundant = true;
 							break;
 						}
 					}
-					if (ei1Redundant == false)
+					if (subExpr1Redundant == false)
 						return false;
 
 				}
@@ -134,18 +201,42 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 
 		}
 
-		boolean isClassSubsumbedBy(OWLClass c1, OWLClass c2) {
-			if (c1.equals(c2) || reasoner.getEquivalentClasses(c1).contains(c2)
-					|| reasoner.getSuperClasses(c2, false).containsEntity(c1))
+		/**
+		 * Checks if class 1 is subsumed by (or is equivalent to) class 2
+		 * 
+		 * @param class1
+		 *            Class 1
+		 * @param class2
+		 *            Class 2
+		 * @return Returns true iff class 1 is subsumed by (or is equivalent to)
+		 *         class 2
+		 */
+		boolean isClassSubsumedBy(OWLClass class1, OWLClass class2) {
+			if (class1.equals(class2)
+					|| reasoner.getEquivalentClasses(class1).contains(class2)
+					|| reasoner.getSuperClasses(class2, false).containsEntity(
+							class1))
 				return true;
 
 			return false;
 		}
 
-		boolean isPropertySubsumedBy(OWLObjectPropertyExpression p1,
-				OWLObjectPropertyExpression p2) {
-			if (p1.equals(p2) || p1.getEquivalentProperties(imports).contains(p2)
-					|| p1.getSuperProperties(imports).contains(p2))
+		/**
+		 * Checks if object property 1 is subsumed by (or is equivalent to)
+		 * object property 2
+		 * 
+		 * @param prop1
+		 *            object property 1
+		 * @param prop2
+		 *            object property 2
+		 * @return Returns true iff object property 1 is subsumed by (or is
+		 *         equivalent to) object property 2
+		 */
+		boolean isPropertySubsumedBy(OWLObjectPropertyExpression prop1,
+				OWLObjectPropertyExpression prop2) {
+			if (prop1.equals(prop2)
+					|| prop1.getEquivalentProperties(imports).contains(prop2)
+					|| prop1.getSuperProperties(imports).contains(prop2))
 				return true;
 			return false;
 		}
@@ -173,7 +264,7 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 
 		logger.info("input expression = " + inputExpression.toString());
 
-		// is this correct? or should all attributes be collected as well?
+		// TODO is this correct? or should all attributes be collected as well?
 		if (inputExpression.getClassExpressionType() == ClassExpressionType.OWL_CLASS)
 			return inputExpression;
 
@@ -184,7 +275,8 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 		logger.info("direct supers = " + directSupers.toString());
 
 		DifferentiaSet differentia = new DifferentiaSet();
-		// it is (given current SNOMED CT) either a single class or an
+
+		// it is (given EL++) either a single class or an
 		// intersection of class(es) and existential restrictions
 		if (inputExpression.getClassExpressionType() == ClassExpressionType.OBJECT_INTERSECTION_OF) {
 			for (OWLClassExpression e : ((OWLObjectIntersectionOf) inputExpression)
@@ -193,11 +285,14 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 				// (differentia) as genera are already in set of direct supers
 				if (e.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM) {
 					logger.info("diff = " + e.toString());
+					// add each restriction to the initial set of differentia
 					differentia.add((OWLObjectSomeValuesFrom) e);
 				}
 			}
 
 			try {
+				// collect additional restrictions from direct supers
+				// recursively and add to the set of non-redundant differentia
 				differentia.addAll(collectDifferentia(directSupers));
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
@@ -206,25 +301,62 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 
 		}
 
+		// add the restrictions in the differentia set to the set of direct
+		// supers
 		directSupers.addAll(differentia.getDifferentiaAsSet());
+		// create a new OWL intersection of the direct supers and the
+		// differentia restrictions
 		OWLObjectIntersectionOf normalForm = manager.getOWLDataFactory()
 				.getOWLObjectIntersectionOf(directSupers);
 
 		return normalForm;
 	}
 
+	/**
+	 * Collects differentia (here, existential restrictions) from a set of class
+	 * expressions recursively upwards subsumption hierarchy
+	 * 
+	 * @param classes
+	 *            The set of classes
+	 * @return Returns a set of (possibly/probably redundant)
+	 *         differentia/restrictions
+	 */
 	private Set<OWLClassExpression> collectDifferentia(
 			Set<OWLClassExpression> classes) {
 		return collectDifferentia(classes, "");
 	}
 
+	/**
+	 * Collects differentia (here, existential restrictions) from a set of class
+	 * expressions recursively upwards subsumption hierarchy TODO check if the
+	 * search tree can be pruned
+	 * 
+	 * @param exprSet
+	 *            The set of classes
+	 * @param indent
+	 *            a string that is recuresively extended, in order to support
+	 *            indentation of log output TODO could be removed, mainly for
+	 *            debugging
+	 * @return Returns a set of (possibly/probably redundant)
+	 *         differentia/restrictions
+	 */
 	private Set<OWLClassExpression> collectDifferentia(
-			Set<OWLClassExpression> classes, String indent) {
-		logger.info(indent + "classes = " + classes.toString());
+			Set<OWLClassExpression> exprSet, String indent) {
+		logger.info(indent + "classes = " + exprSet.toString());
 		Set<OWLClassExpression> differentia = new HashSet<OWLClassExpression>();
-		for (OWLClassExpression e : classes) {
+		// iterate through all input expressions
+		for (OWLClassExpression e : exprSet) {
 			logger.info(indent + "class = " + e.toString());
+			// different cases for different expression types
 			switch (e.getClassExpressionType()) {
+			// if the expression is a class, then collect differentia of direct
+			// supers (for primitives) and equivalent classes (for fully
+			// defined). The OWLAPI methods OWLClass.getSuperClasses and
+			// OWLClass.getEquivalentClasses return the asserted (on not
+			// inferred) class expressions. The OWLReasoner versions only return
+			// OWLClasses and not any other OWLClassExpressions. TODO confirm
+			// that this gives the intended result, or that there is no better
+			// way of achieving the intended result.
 			case OWL_CLASS:
 				Set<OWLClassExpression> supers = ((OWLClass) e)
 						.getSuperClasses(imports);
@@ -238,6 +370,8 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 				if (eqs.size() > 0)
 					differentia.addAll(collectDifferentia(eqs, indent + "  "));
 				break;
+			// if the expression is an intersection, then collect differentia
+			// for all subexpressions of the intersection
 			case OBJECT_INTERSECTION_OF:
 				Set<OWLClassExpression> operands = ((OWLObjectIntersectionOf) e)
 						.getOperands();
@@ -245,6 +379,8 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 						+ operands.toString());
 				differentia.addAll(collectDifferentia(operands, indent + "  "));
 				break;
+			// if the expression is an existential restriction, then add the
+			// restriction to the set of differentia
 			case OBJECT_SOME_VALUES_FROM:
 				logger.info(indent + "collect, diff = " + e.toString());
 				differentia.add(e);
@@ -265,8 +401,7 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 	 */
 	@Override
 	public boolean isInNormalForm(OWLClassExpression arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException("DistributionNormalFormConverter.isInNormalForm not implemented");
 	}
 
 }

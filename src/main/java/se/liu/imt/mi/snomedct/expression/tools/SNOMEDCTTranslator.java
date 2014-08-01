@@ -111,7 +111,7 @@ public class SNOMEDCTTranslator {
 			outputFileName = argList.get(1);
 
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-
+		// add SNOMED CT parser and storer to manager
 		OWLParserFactoryRegistry.getInstance().registerParserFactory(
 				new SNOMEDCTParserFactory());
 		manager.addOntologyStorer(new SNOMEDCTOntologyStorer());
@@ -153,18 +153,20 @@ public class SNOMEDCTTranslator {
 			reasoner.flush();
 			reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
 
-			// Get inferred axioms
+			// get inferred subclass and equivalent class axioms
 			List<InferredAxiomGenerator<? extends OWLAxiom>> gens = new ArrayList<InferredAxiomGenerator<? extends OWLAxiom>>();
 			gens.add(new InferredSubClassAxiomGenerator());
 			gens.add(new InferredEquivalentClassAxiomGenerator());
 
-			// Put the inferred axioms into a fresh empty ontology.
+			// create a fresh empty ontology for output of inferred expression
 			OWLOntologyManager outputManager = OWLManager
 					.createOWLOntologyManager();
+			// add SNOMED CT storer to ontology manager
 			outputManager.addOntologyStorer(new SNOMEDCTOntologyStorer());
 			OWLOntology inferredOntology = outputManager.createOntology();
 			InferredOntologyGenerator iog = new InferredOntologyGenerator(
 					reasoner, gens);
+			// get the inferred axioms
 			iog.fillOntology(outputManager, inferredOntology);
 
 			logger.info("subclass-of axioms = "
@@ -175,36 +177,48 @@ public class SNOMEDCTTranslator {
 
 			List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
 
+			// create the normal form converter
 			DistributionNormalFormConverter distFormConv = new DistributionNormalFormConverter(
 					ontology, reasoner);
-			for (OWLLogicalAxiom ax : ontology.getLogicalAxioms()) {
-				logger.info("axiom = " + ax.toString());
-				if (ax.isOfType(AxiomType.EQUIVALENT_CLASSES)) {
-					Iterator<OWLClassExpression> expressionSet = ((OWLEquivalentClassesAxiom) ax)
-							.getClassExpressions().iterator();
-					OWLClassExpression lhs = expressionSet.next();
-					OWLClassExpression rhs = expressionSet.next();
-					OWLClassExpression normalFormExpression = distFormConv.convertToNormalForm(rhs);
-					logger.info("expression = " + rhs.toString());
-					logger.info("normal form = "
-							+ normalFormExpression);
-					changes.add(new AddAxiom(inferredOntology, inferredOntology
-							.getOWLOntologyManager().getOWLDataFactory()
-							.getOWLEquivalentClassesAxiom(lhs, normalFormExpression)));
-				}
+			// iterate over equivalent classes axioms in the source ontology
+			for (OWLEquivalentClassesAxiom eqAxiom : ontology
+					.getAxioms(AxiomType.EQUIVALENT_CLASSES)) {
+				logger.info("axiom = " + eqAxiom.toString());
+				// the equivalent classes axiom is assumed to have only two
+				// class expressions, the second (right hand side) being the
+				// class definition. As the source ontology is resulting from a
+				// set of Compositional Grammar expressions, e.g. concept
+				// inclusion is not possible.
+				Iterator<OWLClassExpression> expressionSet = eqAxiom
+						.getClassExpressions().iterator();
+				OWLClassExpression lhs = expressionSet.next(); // left hand side
+				OWLClassExpression rhs = expressionSet.next(); // right hand
+																// side
+				// convert the class definition to normal form
+				OWLClassExpression normalFormExpression = distFormConv
+						.convertToNormalForm(rhs);
+				logger.info("expression = " + rhs.toString());
+				logger.info("normal form = " + normalFormExpression);
+				changes.add(new AddAxiom(inferredOntology,
+						inferredOntology
+								.getOWLOntologyManager()
+								.getOWLDataFactory()
+								.getOWLEquivalentClassesAxiom(lhs,
+										normalFormExpression)));
 
 			}
-			
-			// add annotations from original ontology
-	    	for (OWLOntology o : reasoner.getRootOntology().getImportsClosure()) {
-	    		for (OWLAnnotation annot : o.getAnnotations()) {
-	    			changes.add(new AddOntologyAnnotation(inferredOntology, annot));
-	    		}
-	    		for (OWLAnnotationAssertionAxiom axiom : o.getAxioms(AxiomType.ANNOTATION_ASSERTION)) {
-	    			changes.add(new AddAxiom(inferredOntology, axiom));
-	    		}
-	    	}
 
+			// add annotations from original ontology
+			for (OWLOntology o : reasoner.getRootOntology().getImportsClosure()) {
+				for (OWLAnnotation annot : o.getAnnotations()) {
+					changes.add(new AddOntologyAnnotation(inferredOntology,
+							annot));
+				}
+				for (OWLAnnotationAssertionAxiom axiom : o
+						.getAxioms(AxiomType.ANNOTATION_ASSERTION)) {
+					changes.add(new AddAxiom(inferredOntology, axiom));
+				}
+			}
 
 			outputManager.applyChanges(changes);
 
