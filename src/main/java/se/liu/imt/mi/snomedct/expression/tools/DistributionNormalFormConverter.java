@@ -236,7 +236,7 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 				OWLObjectPropertyExpression prop2) {
 			if (prop1.equals(prop2)
 					|| prop1.getEquivalentProperties(imports).contains(prop2)
-					|| prop1.getSuperProperties(imports).contains(prop2))
+					|| prop2.getSuperProperties(imports).contains(prop1))
 				return true;
 			return false;
 		}
