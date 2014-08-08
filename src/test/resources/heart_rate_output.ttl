@@ -1,0 +1,148 @@
+@prefix tbl:   <http://snomed.info/inputTableFormat#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sct:   <http://snomed.info/id/> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+
+sct:422119006  a             owl:Class ;
+        rdfs:label           "Brachial pulse rate (observable entity)" ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( sct:363787002 [ a                   owl:Restriction ;
+                                                                     owl:onProperty      sct:propertyType ;
+                                                                     owl:someValuesFrom  sct:118520002
+                                                                   ] [ a                   owl:Restriction ;
+                                                                       owl:onProperty      sct:characterizes ;
+                                                                       owl:someValuesFrom  sct:heartBeatingProcess
+                                                                     ] [ a                   owl:Restriction ;
+                                                                         owl:onProperty      sct:processOutput ;
+                                                                         owl:someValuesFrom  sct:cardiacCycle
+                                                                       ] [ a                   owl:Restriction ;
+                                                                             owl:onProperty      sct:scale ;
+                                                                             owl:someValuesFrom  sct:30766002
+                                                                           ] [ a                   owl:Restriction ;
+                                                                               owl:onProperty      sct:directSite ;
+                                                                               owl:someValuesFrom  sct:17137000
+                                                                             ] )
+                             ] .
+
+sct:364075005  a             owl:Class ;
+        rdfs:label           "Heart rate (observable entity)" ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( sct:363787002 [ a                   owl:Restriction ;
+                                                                     owl:onProperty      sct:propertyType ;
+                                                                     owl:someValuesFrom  sct:118520002
+                                                                   ] [ a                   owl:Restriction ;
+                                                                       owl:onProperty      sct:characterizes ;
+                                                                       owl:someValuesFrom  sct:heartBeatingProcess
+                                                                     ] [ a                   owl:Restriction ;
+                                                                         owl:onProperty      sct:processOutput ;
+                                                                         owl:someValuesFrom  sct:cardiacCycle
+                                                                       ] [ a                   owl:Restriction ;
+                                                                             owl:onProperty      sct:scale ;
+                                                                             owl:someValuesFrom  sct:30766002
+                                                                           ] )
+                             ] .
+
+sct:78564009  a              owl:Class ;
+        rdfs:label           "Pulse rate (observable entity)" ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( sct:363787002 [ a                   owl:Restriction ;
+                                                                     owl:onProperty      sct:propertyType ;
+                                                                     owl:someValuesFrom  sct:118520002
+                                                                   ] [ a                   owl:Restriction ;
+                                                                       owl:onProperty      sct:characterizes ;
+                                                                       owl:someValuesFrom  sct:heartBeatingProcess
+                                                                     ] [ a                   owl:Restriction ;
+                                                                         owl:onProperty      sct:processOutput ;
+                                                                         owl:someValuesFrom  sct:cardiacCycle
+                                                                       ] [ a                   owl:Restriction ;
+                                                                             owl:onProperty      sct:scale ;
+                                                                             owl:someValuesFrom  sct:30766002
+                                                                           ] [ a                   owl:Restriction ;
+                                                                               owl:onProperty      sct:directSite ;
+                                                                               owl:someValuesFrom  sct:51114001
+                                                                             ] )
+                             ] .
+
+sct:429525003  a             owl:Class ;
+        rdfs:label           "Dorsalis pedis pulse rate (observable entity)" ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( sct:363787002 [ a                   owl:Restriction ;
+                                                                     owl:onProperty      sct:propertyType ;
+                                                                     owl:someValuesFrom  sct:118520002
+                                                                   ] [ a                   owl:Restriction ;
+                                                                       owl:onProperty      sct:characterizes ;
+                                                                       owl:someValuesFrom  sct:heartBeatingProcess
+                                                                     ] [ a                   owl:Restriction ;
+                                                                         owl:onProperty      sct:processOutput ;
+                                                                         owl:someValuesFrom  sct:cardiacCycle
+                                                                       ] [ a                   owl:Restriction ;
+                                                                             owl:onProperty      sct:scale ;
+                                                                             owl:someValuesFrom  sct:30766002
+                                                                           ] [ a                   owl:Restriction ;
+                                                                               owl:onProperty      sct:directSite ;
+                                                                               owl:someValuesFrom  sct:86547008
+                                                                             ] )
+                             ] .
+
+sct:399017001  a             owl:Class ;
+        rdfs:label           "Heart rate on admission (observable entity)" ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( sct:363787002 [ a                   owl:Restriction ;
+                                                                     owl:onProperty      sct:propertyType ;
+                                                                     owl:someValuesFrom  sct:118520002
+                                                                   ] [ a                   owl:Restriction ;
+                                                                       owl:onProperty      sct:characterizes ;
+                                                                       owl:someValuesFrom  sct:heartBeatingProcess
+                                                                     ] [ a                   owl:Restriction ;
+                                                                         owl:onProperty      sct:processOutput ;
+                                                                         owl:someValuesFrom  sct:cardiacCycle
+                                                                       ] [ a                   owl:Restriction ;
+                                                                           owl:onProperty      sct:precondition ;
+                                                                           owl:someValuesFrom  sct:onAdmission
+                                                                         ] [ a                   owl:Restriction ;
+                                                                             owl:onProperty      sct:scale ;
+                                                                             owl:someValuesFrom  sct:30766002
+                                                                           ] )
+                             ] .
+
+sct:444981005  a             owl:Class ;
+        rdfs:label           "Resting heart rate (observable entity)" ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( sct:363787002 [ a                   owl:Restriction ;
+                                                                     owl:onProperty      sct:propertyType ;
+                                                                     owl:someValuesFrom  sct:118520002
+                                                                   ] [ a                   owl:Restriction ;
+                                                                       owl:onProperty      sct:characterizes ;
+                                                                       owl:someValuesFrom  sct:heartBeatingProcess
+                                                                     ] [ a                   owl:Restriction ;
+                                                                         owl:onProperty      sct:processOutput ;
+                                                                         owl:someValuesFrom  sct:cardiacCycle
+                                                                       ] [ a                   owl:Restriction ;
+                                                                           owl:onProperty      sct:precondition ;
+                                                                           owl:someValuesFrom  sct:128975004
+                                                                         ] [ a                   owl:Restriction ;
+                                                                             owl:onProperty      sct:scale ;
+                                                                             owl:someValuesFrom  sct:30766002
+                                                                           ] )
+                             ] .
+
+sct:429614003  a             owl:Class ;
+        rdfs:label           "Posterior tibial pulse rate (observable entity)" ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( sct:363787002 [ a                   owl:Restriction ;
+                                                                     owl:onProperty      sct:propertyType ;
+                                                                     owl:someValuesFrom  sct:118520002
+                                                                   ] [ a                   owl:Restriction ;
+                                                                       owl:onProperty      sct:characterizes ;
+                                                                       owl:someValuesFrom  sct:heartBeatingProcess
+                                                                     ] [ a                   owl:Restriction ;
+                                                                         owl:onProperty      sct:processOutput ;
+                                                                         owl:someValuesFrom  sct:cardiacCycle
+                                                                       ] [ a                   owl:Restriction ;
+                                                                             owl:onProperty      sct:scale ;
+                                                                             owl:someValuesFrom  sct:30766002
+                                                                           ] [ a                   owl:Restriction ;
+                                                                               owl:onProperty      sct:directSite ;
+                                                                               owl:someValuesFrom  sct:13363002
+                                                                             ] )
+                             ] .

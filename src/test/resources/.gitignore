@@ -3,3 +3,8 @@
 /res_StatedOWLF_Core_INT_20140131.owl
 /obsAlpha.owl
 /heart_rate_sct_module.owl
+/expressions_sct_distribution.owl
+/expressions_sct_stated.owl
+/heart_rate_output_sct_distribution.ttl
+/hernia_repair_module_sct_distribution.owl
+/translate_test_expressions_sct_distribution.owl

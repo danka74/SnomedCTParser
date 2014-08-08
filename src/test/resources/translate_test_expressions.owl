@@ -1,3 +1,39 @@
-#12646000 | repair of incarcerated inguinal hernia (procedure) | + 44558001 | repair of inguinal hernia (procedure) |
-#12646000 | repair of incarcerated inguinal hernia (procedure) | : {425391005 | using access device (attribute) | = 86174004 | laparoscope, device (physical object) |}	Laparoscopic repair of incarcerated inguinal hernia
-12646000 | repair of incarcerated inguinal hernia (procedure) | :{  260686004|Method (attribute)|=257903006|Repair - action (qualifier value)|,  405813007|Procedure site - Direct (attribute)|=90785001|Inguinal canal structure (body structure)|, 363700003|Direct morphology (attribute)|=414402003|Hernial opening (morphologic abnormality)|, 425391005| using access device (attribute) |=86174004| laparoscope, device (physical object)|}
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://snomed.info/"
+     xml:base="http://snomed.info/"
+     xmlns:field="http://snomed.info/field/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <owl:Ontology rdf:about="http://snomed.info/test"/>
+    
+    <owl:Class rdf:about="http://snomed.info/id/120205009">
+        <rdfs:label>Inguinal region repair (procedure)</rdfs:label>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://snomed.info/id/4365001"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://snomed.info/id/609096000"/>
+                        <owl:someValuesFrom>
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://snomed.info/id/260686004"/>
+                                        <owl:someValuesFrom rdf:resource="http://snomed.info/id/257903006"/>
+                                    </owl:Restriction>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://snomed.info/id/405813007"/>
+                                        <owl:someValuesFrom rdf:resource="http://snomed.info/id/26893007"/>
+                                    </owl:Restriction>
+                                </owl:intersectionOf>
+                            </owl:Class>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <field:Description.term.en-us.preferred>Inguinal region repair</field:Description.term.en-us.preferred>
+    </owl:Class>
+</rdf:RDF>

@@ -356,6 +356,7 @@ No part of this file may be reproduced or transmitted in any form or by any mean
 
     <!-- http://snomed.info/id/120205009 -->
 
+
     <owl:Class rdf:about="http://snomed.info/id/120205009">
         <rdfs:label>Inguinal region repair (procedure)</rdfs:label>
         <owl:equivalentClass>
@@ -384,7 +385,6 @@ No part of this file may be reproduced or transmitted in any form or by any mean
         </owl:equivalentClass>
         <field:Description.term.en-us.preferred>Inguinal region repair</field:Description.term.en-us.preferred>
     </owl:Class>
-    
 
 
     <!-- http://snomed.info/id/123037004 -->
