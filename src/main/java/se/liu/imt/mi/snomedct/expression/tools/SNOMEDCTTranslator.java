@@ -60,7 +60,9 @@ import se.liu.imt.mi.snomedct.parser.SNOMEDCTParserFactory;
 import test.TestSNOMEDCTOWLParser;
 
 /**
- * @author daniel
+ * @author Daniel Karlsson, Linköping Univsrsity, daniel.karlsson@liu.se
+ * @author Kent Spackman, IHTSDO, ksp@ihtsdo.org
+
  * 
  */
 public class SNOMEDCTTranslator {
@@ -232,6 +234,7 @@ public class SNOMEDCTTranslator {
 				OWLClassExpression rhs = subClassAxiom.getSuperClass(); // right
 																		// hand
 				// side
+				
 				// convert the class definition to normal form
 				OWLClassExpression normalFormExpression = distFormConv
 						.convertToNormalForm(rhs);
