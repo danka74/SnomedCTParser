@@ -22,7 +22,7 @@ public class TestSNOMEDCTTranslator {
 	 */
 	@Test
 	public void testMain() throws OWLException {
-		SNOMEDCTTranslator.main(new String[] {"-f", "sct", "-n", "distribution", "-s", "src/test/resources/hernia_repair_module.owl", "src/test/resources/translate_test_expressions.owl"});
+		SNOMEDCTTranslator.main(new String[] {"-f", "sct", "-n", "distribution", /*"-s", "src/test/resources/hernia_repair_module.owl",*/ "src/test/resources/hernia_repair_module.owl"});
 	}
 
 }

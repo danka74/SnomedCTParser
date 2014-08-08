@@ -43,6 +43,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.reasoner.InferenceType;
 import org.semanticweb.owlapi.reasoner.Node;
@@ -97,9 +98,14 @@ public class SNOMEDCTTranslator {
 		if (argList.size() < 1) {
 			System.exit(2);
 		}
+
+		// get input file name from argument list
 		String inputFileName = argList.get(0);
+		// get output file name from argument list or create a new output file
+		// name from the input file name
 		String outputFileName;
 		if (argList.size() < 2) {
+			// separate out the extension (after last '.')
 			String[] tokens = inputFileName.split("\\.(?=[^\\.]+$)");
 			if (tokens.length >= 2)
 				outputFileName = tokens[0] + "_" + format + "_" + normalForm
@@ -127,36 +133,43 @@ public class SNOMEDCTTranslator {
 		case "owlf":
 			ontologyFormat = new OWLFunctionalSyntaxOntologyFormat();
 			break;
-		default: // SNOMED CT Compositional Grammar
+		case "sct": // SNOMED CT Compositional Grammar
 			ontologyFormat = new SNOMEDCTOntologyFormat();
 			break;
+		default:
+			System.exit(1);
 		}
 
 		if (normalForm.equals("stated")) {
-
+			// if stated form, just output the ontology in the selected format
 			manager.saveOntology(ontology, ontologyFormat,
 					IRI.create(new File(outputFileName)));
-
 		} else if (normalForm.equals("distribution")) {
-			// Import SNOMED CT ontology
-			IRI snomedCTIRI = IRI.create(new File(snomedCTFile));
-			OWLImportsDeclaration importDeclaration = ontology
-					.getOWLOntologyManager().getOWLDataFactory()
-					.getOWLImportsDeclaration(snomedCTIRI);
-			ontology.getOWLOntologyManager().loadOntology(snomedCTIRI);
-			ontology.getOWLOntologyManager().applyChange(
-					new AddImport(ontology, importDeclaration));
+			// if not stated form, classify the ontology, possibly after first
+			// importing (a module from) SNOMED CT
 
+			if (snomedCTFile != null) {
+				// Import SNOMED CT ontology
+				IRI snomedCTIRI = IRI.create(new File(snomedCTFile));
+				OWLImportsDeclaration importDeclaration = ontology
+						.getOWLOntologyManager().getOWLDataFactory()
+						.getOWLImportsDeclaration(snomedCTIRI);
+				ontology.getOWLOntologyManager().loadOntology(snomedCTIRI);
+				ontology.getOWLOntologyManager().applyChange(
+						new AddImport(ontology, importDeclaration));
+			}
+			
 			// Create reasoner and classify the ontology including SNOMED CT
 			OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
 			OWLReasoner reasoner = reasonerFactory.createReasoner(ontology);
 			reasoner.flush();
 			reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
 
-			// get inferred subclass and equivalent class axioms
-			List<InferredAxiomGenerator<? extends OWLAxiom>> gens = new ArrayList<InferredAxiomGenerator<? extends OWLAxiom>>();
-			gens.add(new InferredSubClassAxiomGenerator());
-			gens.add(new InferredEquivalentClassAxiomGenerator());
+			// // get inferred subclass and equivalent class axioms
+			// List<InferredAxiomGenerator<? extends OWLAxiom>> gens = new
+			// ArrayList<InferredAxiomGenerator<? extends OWLAxiom>>();
+			// gens.add(new InferredSubClassAxiomGenerator());
+			// gens.add(new InferredEquivalentClassAxiomGenerator());
 
 			// create a fresh empty ontology for output of inferred expression
 			OWLOntologyManager outputManager = OWLManager
@@ -164,22 +177,23 @@ public class SNOMEDCTTranslator {
 			// add SNOMED CT storer to ontology manager
 			outputManager.addOntologyStorer(new SNOMEDCTOntologyStorer());
 			OWLOntology inferredOntology = outputManager.createOntology();
-			InferredOntologyGenerator iog = new InferredOntologyGenerator(
-					reasoner, gens);
-			// get the inferred axioms
-			iog.fillOntology(outputManager, inferredOntology);
-
-			logger.info("subclass-of axioms = "
-					+ inferredOntology.getAxiomCount(AxiomType.SUBCLASS_OF));
-			logger.info("equivalent-to axioms = "
-					+ inferredOntology
-							.getAxiomCount(AxiomType.EQUIVALENT_CLASSES));
+			// InferredOntologyGenerator iog = new InferredOntologyGenerator(
+			// reasoner, gens);
+			// // get the inferred axioms
+			// iog.fillOntology(outputManager, inferredOntology);
+			//
+			// logger.info("subclass-of axioms = "
+			// + inferredOntology.getAxiomCount(AxiomType.SUBCLASS_OF));
+			// logger.info("equivalent-to axioms = "
+			// + inferredOntology
+			// .getAxiomCount(AxiomType.EQUIVALENT_CLASSES));
 
 			List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
 
 			// create the normal form converter
 			DistributionNormalFormConverter distFormConv = new DistributionNormalFormConverter(
 					ontology, reasoner);
+
 			// iterate over equivalent classes axioms in the source ontology
 			for (OWLEquivalentClassesAxiom eqAxiom : ontology
 					.getAxioms(AxiomType.EQUIVALENT_CLASSES)) {
@@ -205,7 +219,27 @@ public class SNOMEDCTTranslator {
 								.getOWLDataFactory()
 								.getOWLEquivalentClassesAxiom(lhs,
 										normalFormExpression)));
+			}
 
+			// iterate over subclass axioms in the source ontology
+			for (OWLSubClassOfAxiom subClassAxiom : ontology
+					.getAxioms(AxiomType.SUBCLASS_OF)) {
+				logger.info("axiom = " + subClassAxiom.toString());
+
+				OWLClassExpression lhs = subClassAxiom.getSubClass(); // left
+																		// hand
+																		// side
+				OWLClassExpression rhs = subClassAxiom.getSuperClass(); // right
+																		// hand
+				// side
+				// convert the class definition to normal form
+				OWLClassExpression normalFormExpression = distFormConv
+						.convertToNormalForm(rhs);
+				logger.info("expression = " + rhs.toString());
+				logger.info("normal form = " + normalFormExpression);
+				changes.add(new AddAxiom(inferredOntology, inferredOntology
+						.getOWLOntologyManager().getOWLDataFactory()
+						.getOWLSubClassOfAxiom(lhs, normalFormExpression)));
 			}
 
 			// add annotations from original ontology
@@ -222,7 +256,7 @@ public class SNOMEDCTTranslator {
 
 			outputManager.applyChanges(changes);
 
-			// save the ontology in SNOMED CT Compositional Grammar format
+			// save the ontology in the selected format
 			outputManager.saveOntology(inferredOntology, ontologyFormat,
 					IRI.create(new File(outputFileName)));
 

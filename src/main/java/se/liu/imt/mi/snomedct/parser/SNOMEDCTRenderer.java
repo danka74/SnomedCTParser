@@ -23,17 +23,20 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLLiteral;
+import org.semanticweb.owlapi.model.OWLLogicalAxiom;
 import org.semanticweb.owlapi.model.OWLLogicalEntity;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.profiles.OWL2ELProfile;
 import org.semanticweb.owlapi.profiles.OWLProfileReport;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 /**
  * @author Daniel Karlsson, Linköping University, daniel.karlsson@liu.se
+ * @author Kent Spackman, IHTSDO, ksp@ihtsdo.org
  * 
  */
 public class SNOMEDCTRenderer extends AbstractOWLRenderer {
@@ -45,7 +48,6 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 
 	public SNOMEDCTRenderer() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/*
@@ -66,7 +68,7 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 		// OWL2ELProfile profile = new OWL2ELProfile();
 		// OWLProfileReport report = profile.checkOntology(ontology);
 		// if(!report.isInProfile())
-		// throw new OWLRendererException("Ontology nor in OWL 2 EL profile");
+		// throw new OWLRendererException("Ontology not in OWL 2 EL profile");
 		try {
 			writeExpressions(ontology, writer);
 		} catch (Exception e) {
@@ -79,8 +81,8 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 	/**
 	 * Method for writing all SNOMED CT Compositional Grammar compliant
 	 * expressions from an ontology. Not all OWL (or OWL 2 EL) expressions can
-	 * be translated to Compositional Grammar. E.g. only fully defined classes
-	 * (EquivalentClass) are written
+	 * be translated to Compositional Grammar. The compositional grammar is
+	 * extended to allow rendering of SubclassOf axioms.
 	 * 
 	 * @param ontology
 	 * @param writer
@@ -89,20 +91,30 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 	 */
 	private void writeExpressions(OWLOntology ontology, Writer writer)
 			throws IOException {
-		// get list of all equivalent classes axioms from ontology
-		final List<OWLAxiom> axioms = new ArrayList<OWLAxiom>(
-				ontology.getAxioms(AxiomType.EQUIVALENT_CLASSES));
 
-		for (OWLAxiom axiom : axioms) {
-			try {
-				writeExpression((OWLEquivalentClassesAxiom) axiom, ontology,
-						writer);
-			} catch (OWLRendererException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		// iterate over all logical axioms, so far only equivalent classes and
+		// subclass axioms are rendered
+		for (OWLLogicalAxiom axiom : ontology.getLogicalAxioms()) {
+			if (axiom.getAxiomType() == AxiomType.EQUIVALENT_CLASSES) {
+				try {
+					writeEquivalentExpression(
+							(OWLEquivalentClassesAxiom) axiom, ontology, writer);
+				} catch (OWLRendererException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				continue;
+			}
+			if (axiom.getAxiomType() == AxiomType.SUBCLASS_OF) {
+				try {
+					writeSubclassExpression((OWLSubClassOfAxiom) axiom,
+							ontology, writer);
+				} catch (OWLRendererException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
-
 	}
 
 	/**
@@ -118,7 +130,7 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 	 *             Thrown if the OWL expression cannot be rendered as a
 	 *             Compositional Grammar statement.
 	 */
-	private void writeExpression(OWLEquivalentClassesAxiom axiom,
+	private void writeEquivalentExpression(OWLEquivalentClassesAxiom axiom,
 			OWLOntology ontology, Writer writer) throws IOException,
 			OWLRendererException {
 		logger.debug(axiom.toString());
@@ -161,6 +173,85 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 					"Non-allowed expression type in equivalence axiom: "
 							+ expressionDefinition.getClassExpressionType()
 									.toString());
+
+		// write "F" for fully defined (or equivalent classes axiom)
+		localWriter.write("\tF");
+
+		// write SCTID if the class has such an id, or a blank tab otherwise
+		String classIRI = ((OWLClass) expressionClass).getIRI().toString();
+		if (classIRI.startsWith("http://snomed.info/id/"))
+			localWriter.write("\t" + extractID(classIRI));
+		else
+			localWriter.write("\t");
+
+		// if the expression class has a label, write that label after tab
+		String label = getLabel((OWLClass) expressionClass, ontology);
+		if (label != null)
+			localWriter.write("\t" + label);
+
+		// expression is finally written, new line
+		writer.write(localWriter.toString() + '\n');
+
+	}
+
+	/**
+	 * Method for writing a single expression corresponding to an OWL subclassof
+	 * axiom.
+	 * 
+	 * @param axiom
+	 * @param ontology
+	 * @param writer
+	 * @throws IOException
+	 *             Thrown if writing fails.
+	 * @throws OWLRendererException
+	 *             Thrown if the OWL expression cannot be rendered as a
+	 *             Compositional Grammar statement.
+	 */
+	private void writeSubclassExpression(OWLSubClassOfAxiom axiom,
+			OWLOntology ontology, Writer writer) throws IOException,
+			OWLRendererException {
+		logger.debug(axiom.toString());
+
+		// create local writer to ensure that content isn't written if the
+		// expression has errors
+		StringWriter localWriter = new StringWriter();
+
+		// get the operands of the OWL subclassof axiom
+		OWLClassExpression expressionClass = axiom.getSubClass();
+		OWLClassExpression expressionDefinition = axiom.getSuperClass();
+
+		if (expressionClass.getClassExpressionType() != ClassExpressionType.OWL_CLASS)
+			throw new OWLRendererException(
+					"Left-hand side not an OWL class in subclassof axiom: "
+							+ expressionClass.getClassExpressionType()
+									.toString());
+
+		// typically there will be an intersection of classes at the top of the
+		// OWL expression
+		if (expressionDefinition.getClassExpressionType() == ClassExpressionType.OBJECT_INTERSECTION_OF)
+			writeIntersection((OWLObjectIntersectionOf) expressionDefinition,
+					ontology, localWriter);
+		// when there is exactly one class, i.e. a statement
+		// of subclass relationship between two named classes
+		else if (expressionDefinition.getClassExpressionType() == ClassExpressionType.OWL_CLASS)
+			writeEntity((OWLClass) expressionDefinition, ontology, localWriter);
+		// other expression types are not allowed in Compositional
+		// Grammar
+		else
+			throw new OWLRendererException(
+					"Non-allowed expression type in subclassof axiom: "
+							+ expressionDefinition.getClassExpressionType()
+									.toString());
+
+		// write "P" for primitive (or subclassof axiom)
+		localWriter.write("\tP");
+
+		// write SCTID if the class has such an id, or a blank tab otherwise
+		String classIRI = ((OWLClass) expressionClass).getIRI().toString();
+		if (classIRI.startsWith("http://snomed.info/id/"))
+			localWriter.write("\t" + extractID(classIRI));
+		else
+			localWriter.write("\t");
 
 		// if the expression class has a label, write that label after tab
 		String label = getLabel((OWLClass) expressionClass, ontology);
@@ -434,11 +525,11 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 			throw new OWLRendererException("IRI ends with '/'");
 		else {
 			String sctid = iri.substring(iri.lastIndexOf('/') + 1);
-//			if (!isPositiveInteger(sctid))
-//				throw new OWLRendererException(
-//						"SCTID part of IRI is non-numeric");
-//			else
-				return sctid;
+			// if (!isPositiveInteger(sctid))
+			// throw new OWLRendererException(
+			// "SCTID part of IRI is non-numeric");
+			// else
+			return sctid;
 		}
 	}
 
