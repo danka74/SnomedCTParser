@@ -4,17 +4,14 @@
 package se.liu.imt.mi.snomedct.expression.tools;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.PosixParser;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
@@ -30,34 +27,21 @@ import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLException;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
-import org.semanticweb.owlapi.model.OWLLogicalAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
-import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.reasoner.InferenceType;
-import org.semanticweb.owlapi.reasoner.Node;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
-import org.semanticweb.owlapi.util.InferredAxiomGenerator;
-import org.semanticweb.owlapi.util.InferredEquivalentClassAxiomGenerator;
-import org.semanticweb.owlapi.util.InferredOntologyGenerator;
-import org.semanticweb.owlapi.util.InferredSubClassAxiomGenerator;
-
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyFormat;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorer;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTParserFactory;
-import test.TestSNOMEDCTOWLParser;
 
 /**
  * @author Daniel Karlsson, Linköping Univsrsity, daniel.karlsson@liu.se
@@ -78,9 +62,9 @@ public class SNOMEDCTTranslator {
 		Options options = new Options();
 
 		// add OWL output format option
-		options.addOption("f", "owl-format", true, "OWL output format");
+		options.addOption("f", "owl-format", true, "OWL output format [turtle|owlf|sct]");
 		// add normal form/stated option
-		options.addOption("n", "normal-form", true, "output normal form");
+		options.addOption("n", "normal-form", true, "output normal form [stated|distribution]");
 		// add SNOMED CT ontology file option
 		options.addOption("s", "snomed-file", true, "SNOMED CT ontology file");
 		// add labels option
@@ -102,6 +86,8 @@ public class SNOMEDCTTranslator {
 		
 		List<String> argList = cmd.getArgList();
 		if (argList.size() < 1) {
+			HelpFormatter f = new HelpFormatter();
+			f.printHelp("SNOMEDCTTranslator", options);
 			System.exit(2);
 		}
 
