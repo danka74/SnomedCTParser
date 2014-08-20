@@ -46,8 +46,15 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 	static final IRI roleGroupIRI = IRI
 			.create("http://snomed.info/id/609096000");
 
+	private boolean labels = true;
+
 	public SNOMEDCTRenderer() {
+		this(true);
+	}
+
+	public SNOMEDCTRenderer(boolean labels) {
 		super();
+		this.labels = labels;
 	}
 
 	/*
@@ -482,10 +489,12 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 		logger.debug(sctid);
 		writer.write(sctid);
 
-		// only rdfs:label annotations will be written
-		String label = getLabel(entity, ontology);
-		if (label != null) {
-			writer.write("|" + label + "|");
+		if (labels) {
+			// only rdfs:label annotations will be written
+			String label = getLabel(entity, ontology);
+			if (label != null) {
+				writer.write("|" + label + "|");
+			}
 		}
 
 	}

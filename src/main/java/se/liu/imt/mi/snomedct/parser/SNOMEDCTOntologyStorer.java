@@ -48,7 +48,7 @@ public class SNOMEDCTOntologyStorer extends AbstractOWLOntologyStorer {
 	protected void storeOntology(OWLOntology ontology, Writer writer,
 			OWLOntologyFormat format) throws OWLOntologyStorageException {
 		try {
-            SNOMEDCTRenderer ren = new SNOMEDCTRenderer();
+            SNOMEDCTRenderer ren = new SNOMEDCTRenderer((boolean) format.getParameter("labels", true));
             ren.render(ontology, writer);
         } catch (Exception e) {
             throw new OWLOntologyStorageException(e);

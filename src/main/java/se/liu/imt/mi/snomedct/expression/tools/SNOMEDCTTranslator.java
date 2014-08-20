@@ -83,6 +83,8 @@ public class SNOMEDCTTranslator {
 		options.addOption("n", "normal-form", true, "output normal form");
 		// add SNOMED CT ontology file option
 		options.addOption("s", "snomed-file", true, "SNOMED CT ontology file");
+		// add labels option
+		options.addOption("l", "labels", false, "show labels in output");
 
 		CommandLineParser parser = new PosixParser();
 		CommandLine cmd = null;
@@ -96,6 +98,8 @@ public class SNOMEDCTTranslator {
 		String format = cmd.getOptionValue("owl-format", "sct");
 		String normalForm = cmd.getOptionValue("normal-form", "stated");
 		String snomedCTFile = cmd.getOptionValue("snomed-file");
+		boolean labels = cmd.hasOption("labels");
+		
 		List<String> argList = cmd.getArgList();
 		if (argList.size() < 1) {
 			System.exit(2);
@@ -137,6 +141,7 @@ public class SNOMEDCTTranslator {
 			break;
 		case "sct": // SNOMED CT Compositional Grammar
 			ontologyFormat = new SNOMEDCTOntologyFormat();
+			ontologyFormat.setParameter("labels", labels);
 			break;
 		default:
 			System.exit(1);
