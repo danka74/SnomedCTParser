@@ -3,8 +3,6 @@
  */
 package test;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 import org.semanticweb.owlapi.model.OWLException;
 
@@ -22,6 +20,7 @@ public class TestSNOMEDCTTranslator {
 	 */
 	@Test
 	public void testMain() throws OWLException {
+		//SNOMEDCTTranslator.main(new String[] {});
 		SNOMEDCTTranslator.main(new String[] {"-l", "-f", "sct", "-n", "distribution", /*"-s", "src/test/resources/hernia_repair_module.owl",*/ "src/test/resources/hernia_repair_module.owl"});
 	}
 

@@ -84,7 +84,7 @@ public class SNOMEDCTTranslator {
 		String snomedCTFile = cmd.getOptionValue("snomed-file");
 		boolean labels = cmd.hasOption("labels");
 		
-		List<String> argList = cmd.getArgList();
+		List<?> argList = (List<?>)cmd.getArgList();
 		if (argList.size() < 1) {
 			HelpFormatter f = new HelpFormatter();
 			f.printHelp("SNOMEDCTTranslator", options);
@@ -92,7 +92,7 @@ public class SNOMEDCTTranslator {
 		}
 
 		// get input file name from argument list
-		String inputFileName = argList.get(0);
+		String inputFileName = (String) argList.get(0);
 		// get output file name from argument list or create a new output file
 		// name from the input file name
 		String outputFileName;
@@ -106,7 +106,7 @@ public class SNOMEDCTTranslator {
 				outputFileName = inputFileName + "_" + format + "_"
 						+ normalForm;
 		} else
-			outputFileName = argList.get(1);
+			outputFileName = (String) argList.get(1);
 
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		// add SNOMED CT parser and storer to manager
@@ -158,28 +158,12 @@ public class SNOMEDCTTranslator {
 			reasoner.flush();
 			reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
 
-			// // get inferred subclass and equivalent class axioms
-			// List<InferredAxiomGenerator<? extends OWLAxiom>> gens = new
-			// ArrayList<InferredAxiomGenerator<? extends OWLAxiom>>();
-			// gens.add(new InferredSubClassAxiomGenerator());
-			// gens.add(new InferredEquivalentClassAxiomGenerator());
-
 			// create a fresh empty ontology for output of inferred expression
 			OWLOntologyManager outputManager = OWLManager
 					.createOWLOntologyManager();
 			// add SNOMED CT storer to ontology manager
 			outputManager.addOntologyStorer(new SNOMEDCTOntologyStorer());
 			OWLOntology inferredOntology = outputManager.createOntology();
-			// InferredOntologyGenerator iog = new InferredOntologyGenerator(
-			// reasoner, gens);
-			// // get the inferred axioms
-			// iog.fillOntology(outputManager, inferredOntology);
-			//
-			// logger.info("subclass-of axioms = "
-			// + inferredOntology.getAxiomCount(AxiomType.SUBCLASS_OF));
-			// logger.info("equivalent-to axioms = "
-			// + inferredOntology
-			// .getAxiomCount(AxiomType.EQUIVALENT_CLASSES));
 
 			List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
 

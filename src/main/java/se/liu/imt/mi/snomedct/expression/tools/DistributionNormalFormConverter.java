@@ -314,39 +314,19 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 
 	/**
 	 * Collects differentia (here, existential restrictions) from a set of class
-	 * expressions recursively upwards subsumption hierarchy
-	 * 
-	 * @param classes
-	 *            The set of classes
-	 * @return Returns a set of (possibly/probably redundant)
-	 *         differentia/restrictions
-	 */
-	private Set<OWLClassExpression> collectDifferentia(
-			Set<OWLClassExpression> classes) {
-		return collectDifferentia(classes, "");
-	}
-
-	/**
-	 * Collects differentia (here, existential restrictions) from a set of class
 	 * expressions recursively upwards subsumption hierarchy TODO check if the
 	 * search tree can be pruned
 	 * 
 	 * @param exprSet
 	 *            The set of classes
-	 * @param indent
-	 *            a string that is recuresively extended, in order to support
-	 *            indentation of log output TODO could be removed, mainly for
-	 *            debugging
 	 * @return Returns a set of (possibly/probably redundant)
 	 *         differentia/restrictions
 	 */
 	private Set<OWLClassExpression> collectDifferentia(
-			Set<OWLClassExpression> exprSet, String indent) {
-		logger.info(indent + "classes = " + exprSet.toString());
+			Set<OWLClassExpression> exprSet) {
 		Set<OWLClassExpression> differentia = new HashSet<OWLClassExpression>();
 		// iterate through all input expressions
 		for (OWLClassExpression e : exprSet) {
-			logger.info(indent + "class = " + e.toString());
 			// different cases for different expression types
 			switch (e.getClassExpressionType()) {
 			// if the expression is a class, then collect differentia of direct
@@ -360,29 +340,24 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 			case OWL_CLASS:
 				Set<OWLClassExpression> supers = ((OWLClass) e)
 						.getSuperClasses(imports);
-				logger.info(indent + "collect, supers = " + supers.toString());
 				if (supers.size() > 0)
 					differentia
-							.addAll(collectDifferentia(supers, indent + "  "));
+							.addAll(collectDifferentia(supers));
 				Set<OWLClassExpression> eqs = ((OWLClass) e)
 						.getEquivalentClasses(imports);
-				logger.info(indent + "collect, eqs = " + eqs.toString());
 				if (eqs.size() > 0)
-					differentia.addAll(collectDifferentia(eqs, indent + "  "));
+					differentia.addAll(collectDifferentia(eqs));
 				break;
 			// if the expression is an intersection, then collect differentia
 			// for all subexpressions of the intersection
 			case OBJECT_INTERSECTION_OF:
 				Set<OWLClassExpression> operands = ((OWLObjectIntersectionOf) e)
 						.getOperands();
-				logger.info(indent + "collect, intersect ops = "
-						+ operands.toString());
-				differentia.addAll(collectDifferentia(operands, indent + "  "));
+				differentia.addAll(collectDifferentia(operands));
 				break;
 			// if the expression is an existential restriction, then add the
 			// restriction to the set of differentia
 			case OBJECT_SOME_VALUES_FROM:
-				logger.info(indent + "collect, diff = " + e.toString());
 				differentia.add(e);
 				break;
 			default:
