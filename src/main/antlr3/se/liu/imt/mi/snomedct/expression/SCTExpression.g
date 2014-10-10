@@ -19,6 +19,8 @@ UNION;
 DESC;
 DESC_SELF;
 ALL;
+EQ_TO;
+SC_OF;
 }
 
 @header {
@@ -34,7 +36,7 @@ query
   | 'DescendantsAndSelf' '('  query ')' -> ^(DESC_SELF query)
   | 'Union' '(' querySet ')' -> ^(UNION querySet)
   | 'All' -> ^(ALL)
-  | expression
+  | axiom
   ;
   
 querySet
@@ -45,11 +47,17 @@ expressionOrQuery
   : query 
   ;
 
+axiom
+  : EQ_TO expression -> ^(EQ_TO expression)
+  | SC_OF expression -> ^(SC_OF expression)
+  | expression
+  ;
+  
 expression
   : concept ('+' concept)* -> ^(TOP_AND ^(GENUS concept+)) 
   | concept ('+' concept)* (':' refinements) -> ^(TOP_AND ^(GENUS concept+) ^(DIFF refinements))
   ;
-  
+    
 concept
   : SCTID 
   | SCTID TERM -> ^(SCTID TERM)
@@ -84,6 +92,12 @@ TERM
 SCTID 
   : '-'? NONZERO DIGIT*;
 
+EQ_TO
+  : '===';
+  
+SC_OF
+  : '<<<';
+  
 fragment DIGIT
   : '0'..'9'
   ;
