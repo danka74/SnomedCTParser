@@ -13,3 +13,6 @@ Java heap size might need to be increasd to run tests. Running "mvn test -DMAVEN
 http://www.ihtsdo.org/snomed-ct/snomed-docs/snomed-ct-query-specification/
 
 http://www.ihtsdo.org/fileadmin/user_upload/Docs_01/About_IHTSDO/Publications/CompositionalGrammar_20081223.pdf
+
+There is a branch for the updated compositional grammar here: https://github.com/danka74/SnomedCTParser/tree/CG2014
+
