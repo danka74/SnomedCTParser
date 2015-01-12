@@ -38,6 +38,13 @@ import se.liu.imt.mi.snomedct.expression.tools.SnomedCTParser;
 public class SNOMEDCTOWLParser extends AbstractOWLParser {
 
 	static final String PC_IRI = "http://snomed.info/expid/";
+	private String subject = null;
+	private boolean isPrimitive = true;
+
+	public SNOMEDCTOWLParser(String subject, boolean isPrimitive) {
+		this.subject = subject;
+		this.isPrimitive = isPrimitive;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -115,14 +122,26 @@ public class SNOMEDCTOWLParser extends AbstractOWLParser {
 				throw new OWLParserException(e);
 			}
 
-			// create new class for the expression, generate new IRI
-			OWLClass newExpressionClass = dataFactory.getOWLClass(IRI
-					.create(PC_IRI + expressionNumber++));
+			// create new class for the expression, generate new IRI or use the existing one if it is there
+			String subj;
+			if(this.subject != null) {
+				subj = this.subject;
+				this.subject = null;
+			} else {
+				subj = PC_IRI + expressionNumber++;
+			}
+			OWLClass newExpressionClass = dataFactory.getOWLClass(IRI.create(subj));
 
 			// add equivalence axiom to ontology
-			manager.addAxiom(ontology, dataFactory
-					.getOWLEquivalentClassesAxiom(newExpressionClass,
-							owlExpression));
+			if(this.isPrimitive) {
+				manager.addAxiom(ontology, dataFactory
+						.getOWLSubClassOfAxiom(newExpressionClass,
+								owlExpression));
+			} else {
+				manager.addAxiom(ontology, dataFactory
+						.getOWLEquivalentClassesAxiom(newExpressionClass,
+								owlExpression));
+			}
 			// if there is a label, add that too
 			if (tokens.length > 1) {
 				// create label

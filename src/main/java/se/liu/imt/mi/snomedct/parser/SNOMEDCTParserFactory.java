@@ -13,12 +13,17 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
  */
 public class SNOMEDCTParserFactory implements OWLParserFactory {
 
+	/* BASE IRI - can be overridden */
+	public String subject = null;
+	/* isPrimitive - defaults to false to preserve existing behavior */
+	public boolean isPrimitive = false;
+
 	/* (non-Javadoc)
 	 * @see org.semanticweb.owlapi.io.OWLParserFactory#createParser(org.semanticweb.owlapi.model.OWLOntologyManager)
 	 */
 	@Override
 	public OWLParser createParser(OWLOntologyManager arg0) {
-		return new SNOMEDCTOWLParser();
+		return new SNOMEDCTOWLParser(subject, isPrimitive);
 	}
 
 }
