@@ -156,11 +156,18 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 		OWLClassExpression expressionClass = classExpressions.get(0);
 		OWLClassExpression expressionDefinition = classExpressions.get(1);
 
+		// TODO: Should be allowed?
 		if (expressionClass.getClassExpressionType() != ClassExpressionType.OWL_CLASS)
 			throw new OWLRendererException(
 					"Left-hand side not an OWL class in equivalence axiom: "
 							+ expressionClass.getClassExpressionType()
 									.toString());
+		
+		localWriter.write('(');
+		writeEntity((OWLClass)expressionClass, ontology, localWriter);
+
+		// write "===" for fully defined (or equivalent classes axiom)
+		localWriter.write(")===(");
 
 		// typically there will be an intersection of classes at the top of the
 		// OWL expression
@@ -179,20 +186,19 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 							+ expressionDefinition.getClassExpressionType()
 									.toString());
 
-		// write "F" for fully defined (or equivalent classes axiom)
-		localWriter.write("\tF");
+//		// write SCTID if the class has such an id, or a blank tab otherwise
+//		String classIRI = ((OWLClass) expressionClass).getIRI().toString();
+//		if (classIRI.startsWith("http://snomed.info/id/"))
+//			localWriter.write("\t" + extractID(classIRI));
+//		else
+//			localWriter.write("\t");
+//
+//		// if the expression class has a label, write that label after tab
+//		String label = getLabel((OWLClass) expressionClass, ontology);
+//		if (label != null)
+//			localWriter.write("\t" + label);
 
-		// write SCTID if the class has such an id, or a blank tab otherwise
-		String classIRI = ((OWLClass) expressionClass).getIRI().toString();
-		if (classIRI.startsWith("http://snomed.info/id/"))
-			localWriter.write("\t" + extractID(classIRI));
-		else
-			localWriter.write("\t");
-
-		// if the expression class has a label, write that label after tab
-		String label = getLabel((OWLClass) expressionClass, ontology);
-		if (label != null)
-			localWriter.write("\t" + label);
+		localWriter.write(')');
 
 		// expression is finally written, new line
 		writer.write(localWriter.toString() + '\n');
@@ -231,6 +237,12 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 							+ expressionClass.getClassExpressionType()
 									.toString());
 
+		localWriter.write('(');
+		writeEntity((OWLClass)expressionClass, ontology, localWriter);
+		
+		// write "<<<" for primitive (or subclassof axiom)
+		localWriter.write(")<<<(");
+
 		// typically there will be an intersection of classes at the top of the
 		// OWL expression
 		if (expressionDefinition.getClassExpressionType() == ClassExpressionType.OBJECT_INTERSECTION_OF)
@@ -248,20 +260,19 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 							+ expressionDefinition.getClassExpressionType()
 									.toString());
 
-		// write "P" for primitive (or subclassof axiom)
-		localWriter.write("\tP");
+//		// write SCTID if the class has such an id, or a blank tab otherwise
+//		String classIRI = ((OWLClass) expressionClass).getIRI().toString();
+//		if (classIRI.startsWith("http://snomed.info/id/"))
+//			localWriter.write("\t" + extractID(classIRI));
+//		else
+//			localWriter.write("\t");
+//
+//		// if the expression class has a label, write that label after tab
+//		String label = getLabel((OWLClass) expressionClass, ontology);
+//		if (label != null)
+//			localWriter.write("\t" + label);
 
-		// write SCTID if the class has such an id, or a blank tab otherwise
-		String classIRI = ((OWLClass) expressionClass).getIRI().toString();
-		if (classIRI.startsWith("http://snomed.info/id/"))
-			localWriter.write("\t" + extractID(classIRI));
-		else
-			localWriter.write("\t");
-
-		// if the expression class has a label, write that label after tab
-		String label = getLabel((OWLClass) expressionClass, ontology);
-		if (label != null)
-			localWriter.write("\t" + label);
+		localWriter.write(')');
 
 		// expression is finally written, new line
 		writer.write(localWriter.toString() + '\n');

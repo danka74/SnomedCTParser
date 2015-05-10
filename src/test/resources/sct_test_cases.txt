@@ -1,11 +1,16 @@
-12646000 | repair of incarcerated inguinal hernia (procedure) | + 44558001 | repair of inguinal hernia (procedure) |	12646000+44558001
-125605004|fracture of bone|	125605004
-125605004|fracture of bone|:{363698007|finding site|=71341001|bone structure of femur|}	125605004:{363698007=71341001}
-64572001|Disease|:{363698007|Finding site|=113257007|Structure of cardiovascular system|}	64572001:{363698007=113257007}
-85919009|disorder of intestine|:263502005|clinical course|=255227004|Recurrent (qualifier value)|, {116676008|assoc morph|=23583003|inflammation|}	85919009:263502005=255227004,{116676008=23583003}
-85919009|disorder of intestine|:{363698007|finding site|=66754008|appendix|,116676008|assoc morph|=23583003|inflammation|}	85919009:{116676008=23583003,363698007=66754008}
+397956004 | prosthetic arthroplasty of the hip |: 363704007 | procedure site | = ( 24136001| hip joint structure |: 272741003| laterality | = 7771000| left |)	===397956004:363704007=(24136001:272741003=7771000)
+<<<42|hej|+17|hopp|	<<<17+42
+12646000 | repair of incarcerated inguinal hernia (procedure) | + 44558001 | repair of inguinal hernia (procedure) |	===12646000+44558001
+125605004|fracture of bone|	===125605004
+125605004|fracture of bone|:{363698007|finding site|=71341001|bone structure of femur|}	===125605004:{363698007=71341001}
+64572001|Disease|:{363698007|Finding site|=113257007|Structure of cardiovascular system|}	===64572001:{363698007=113257007}
+85919009|disorder of intestine|:263502005|clinical course|=255227004|Recurrent (qualifier value)|, {116676008|assoc morph|=23583003|inflammation|}	===85919009:263502005=255227004,{116676008=23583003}
+85919009|disorder of intestine|:{363698007|finding site|=66754008|appendix|,116676008|assoc morph|=23583003|inflammation|}	===85919009:{116676008=23583003,363698007=66754008}
 #83152002 | oophorectomy |: 260686004 | method | =264594007 |laser action|
-397956004 | prosthetic arthroplasty of the hip |: 363704007 | procedure site | = ( 24136001| hip joint structure |: 272741003| laterality | = 7771000| left |)	397956004:363704007=(24136001:272741003=7771000)
 #125605004 | fracture of bone | : 363698007 | finding site | = 71341001 | bone structure of femur |
 #52734007 | total hip replacement |: 363699004|direct device| = 314580008|Sheehan total hip prosthesis|
-243796009|situation with explicit context (situation)|:246090004|associated finding (attribute)|=(419620001|death (event)|:42752001|due to (attribute)|=22298006|myocardial infarction (disorder)|),408729009|finding context (attribute)|=410515003|known present (qualifier value)|,408731000|temporal context (attribute)|=410513005|in the past (qualifier value)|,408732007|subject relationship context (attribute)|=444295003|father of subject (person)|	243796009:246090004=(419620001:42752001=22298006),408729009=410515003,408731000=410513005,408732007=444295003
+243796009|situation with explicit context (situation)|:246090004|associated finding (attribute)|=(419620001|death (event)|:42752001|due to (attribute)|=22298006|myocardial infarction (disorder)|),408729009|finding context (attribute)|=410515003|known present (qualifier value)|,408731000|temporal context (attribute)|=410513005|in the past (qualifier value)|,408732007|subject relationship context (attribute)|=444295003|father of subject (person)|	===243796009:246090004=(419620001:42752001=22298006),408729009=410515003,408731000=410513005,408732007=444295003
+#373873005 |pharmaceutical / biologic product|: 411116001 |has dose form| = 385023001 |oral solution|, 100005|active ingredient count| = #1, {127489000 |has active ingredient| = 372897005 |albuterol|, 100005|has reference basis of strength|=372897005|albuterol|,100005|strength magnitude equal to |=#0.083,100005|strength unit|=118582008|%|}
+#322236009 |paracetamol 500 mg tablet|: 100005|trade name| = "PANADOL"
+#322236009 |paracetamol 500 mg tablet|: 100005|trade name| = "PAN\"ADOL"
+#322236009 |paracetamol 500 mg tablet|: 100005|trade name| = "PAN\\ADOL"

@@ -1,9 +1,10 @@
 SnomedCTParser
 ==============
-ANTLR parser for SNOMED CT Compositional Grammar and some parts of the SNOMED CT Query Specification.
+ANTLR 4 parser for the draft 2014 SNOMED CT Compositional Grammar.
 
-OWL API compliant classes for loading and storing SNOMED CT Compositional Grammar expressions in a tab separated file format:
+OWL API 3.x compliant classes for loading and storing SNOMED CT Compositional Grammar statements or expressions.
 
+<<<<<<< HEAD
 (\<expression> \t \<label> \n)*
 
 An OWL file containing SNOMED CT will have to be added to src/test/resources directory for the tests, see test.TestSNOMEDCTExpressionParser.testConvertToOWL()
@@ -16,3 +17,5 @@ http://www.ihtsdo.org/fileadmin/user_upload/Docs_01/About_IHTSDO/Publications/Co
 
 There is a branch for the updated compositional grammar here: https://github.com/danka74/SnomedCTParser/tree/CG2014
 
+=======
+>>>>>>> branch 'CG2014' of https://github.com/danka74/SnomedCTParser.git

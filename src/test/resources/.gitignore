@@ -1,11 +1,11 @@
-/snomed.owl
+/.gitignore~
 /catalog-v001.xml
-/res_StatedOWLF_Core_INT_20140131.owl
-/obsAlpha.owl
-/heart_rate_sct_module.owl
 /expressions_sct_distribution.owl
 /expressions_sct_stated.owl
 /heart_rate_output_sct_distribution.ttl
+/heart_rate_sct_module.owl
 /hernia_repair_module_sct_distribution.owl
+/obsAlpha.owl
+/res_StatedOWLF_Core_INT_20140131.owl~
 /translate_test_expressions_sct_distribution.owl
-/hernia_repair_module_sct_stated.owl
+/res_StatedOWLF_Core_INT_20140131.owl
