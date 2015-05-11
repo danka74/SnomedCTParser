@@ -23,7 +23,7 @@ public class SNOMEDCTParserFactory implements OWLParserFactory {
 	 */
 	@Override
 	public OWLParser createParser(OWLOntologyManager arg0) {
-		return new SNOMEDCTOWLParser(subject, isPrimitive);
+		return new SNOMEDCTOWLParser(); //subject, isPrimitive);
 	}
 
 }

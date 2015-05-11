@@ -1,7 +1,6 @@
 package se.liu.imt.mi.snomedct.parser;
 
 import java.util.Iterator;
-import java.util.Set;
 import java.util.TreeSet;
 
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor;

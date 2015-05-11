@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.swing.text.AbstractDocument.AttributeContext;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -21,7 +19,6 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
-import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
@@ -33,7 +30,6 @@ import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionLexer;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.AttributeGroupContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.AttributeSetContext;
-import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.AttributeValueContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.ConceptReferenceContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.ExpressionContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.FocusConceptContext;
@@ -53,7 +49,6 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 
 	static Logger logger = Logger.getLogger(OWLVisitor.class);
 
-	private OWLOntologyManager manager;
 	private OWLDataFactory dataFactory;
 	private OWLClass definiendum;
 	private Map<IRI, OWLAnnotation> labels;
@@ -64,7 +59,6 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 
 	public OWLVisitor(OWLOntologyManager manager, OWLClass c) {
 		super();
-		this.manager = manager;
 		dataFactory = manager.getOWLDataFactory();
 		this.definiendum = c;
 		this.labels = new HashMap<IRI, OWLAnnotation>();

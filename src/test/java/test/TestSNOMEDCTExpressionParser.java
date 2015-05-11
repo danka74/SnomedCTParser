@@ -6,8 +6,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.net.URL;
 
-import se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTParser;
-import se.liu.imt.mi.snomedct.expression.tools.ExpressionSyntaxError;
+import se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTParserUtil;
 import se.liu.imt.mi.snomedct.parser.OWLVisitor;
 import se.liu.imt.mi.snomedct.parser.SortedExpressionVisitor;
 
@@ -46,7 +45,7 @@ public class TestSNOMEDCTExpressionParser {
 
 			logger.info(strTokens[0]);
 
-			ParseTree tree = SNOMEDCTParser.parseExpression(strTokens[0]);
+			ParseTree tree = SNOMEDCTParserUtil.parseExpression(strTokens[0]);
 
 			OWLVisitor visitor = new OWLVisitor();			
 			OWLObject o = visitor.visit(tree);
