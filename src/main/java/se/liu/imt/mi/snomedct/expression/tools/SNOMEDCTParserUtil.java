@@ -70,24 +70,25 @@ public class SNOMEDCTParserUtil {
 
 	/**
 	 * Parses expression, converts to an OWLAxiom and adds it to ontology,
-	 * including any descriptions as label annotations
+	 * including any descriptions as rdfs:label annotations
 	 * 
 	 * @param expression
 	 *            the expression to parse
 	 * @param ontology
 	 *            the ontology to which the parsed, converted expression is
 	 *            added
+	 *            
 	 * @return the resulting OWLAxiom
 	 * @throws ExpressionSyntaxError
 	 */
 	public static OWLAxiom parseExpressionToOWLAxiom(String expression,
 			OWLOntology ontology) throws ExpressionSyntaxError {
-		return parseExpressionToOWLAxiom(expression, ontology, (OWLClass) null);
+		return parseExpressionToOWLAxiom(expression, ontology, (OWLClass) null, false);
 	}
 
 	/**
 	 * Parses expression, converts to an OWLAxiom and adds it to ontology,
-	 * including any descriptions as label annotations
+	 * including any descriptions as rdfs:label annotations
 	 * 
 	 * @param expression
 	 *            the expression to parse
@@ -97,27 +98,31 @@ public class SNOMEDCTParserUtil {
 	 * @param subj
 	 *            a string, if not null, a new class is created which is the
 	 *            definiendum of the new axiom
+	 * @param defaultToPrimitive
+	 *            make subclassOf axiom if no definitions status in expression
+	 * 
 	 * @return the resulting OWLAxiom
 	 * @throws ExpressionSyntaxError
 	 */
 	public static OWLAxiom parseExpressionToOWLAxiom(String expression,
-			OWLOntology ontology, String subj) throws ExpressionSyntaxError {
+			OWLOntology ontology, String subj, boolean defaultToPrimitive)
+			throws ExpressionSyntaxError {
 		OWLOntologyManager manager = ontology.getOWLOntologyManager();
 
 		if (subj == null)
 			return parseExpressionToOWLAxiom(expression, ontology,
-					(OWLClass) null);
+					(OWLClass) null, defaultToPrimitive);
 
 		OWLClass newExpressionClass = manager.getOWLDataFactory().getOWLClass(
 				IRI.create(PC_IRI + subj));
 
 		return parseExpressionToOWLAxiom(expression, ontology,
-				newExpressionClass);
+				newExpressionClass, defaultToPrimitive);
 	}
-
+	
 	/**
 	 * Parses expression, converts to an OWLAxiom and adds it to ontology,
-	 * including any descriptions as label annotations
+	 * including any descriptions as rdfs:label annotations
 	 * 
 	 * @param expression
 	 *            the expression to parse
@@ -126,19 +131,41 @@ public class SNOMEDCTParserUtil {
 	 *            added
 	 * @param definiendum
 	 *            an OWLClass which will be the definiendum of the new axiom
-	 * @return
+	 * 
+	 * @return the resulting OWLAxiom
 	 * @throws ExpressionSyntaxError
 	 */
 	public static OWLAxiom parseExpressionToOWLAxiom(String expression,
-			OWLOntology ontology, OWLClass definiendum)
-			throws ExpressionSyntaxError {
+			OWLOntology ontology, OWLClass definiendum) throws ExpressionSyntaxError {
+		return parseExpressionToOWLAxiom(expression, ontology, definiendum, false);
+	}
+
+	/**
+	 * Parses expression, converts to an OWLAxiom and adds it to ontology,
+	 * including any descriptions as rdfs:label annotations
+	 * 
+	 * @param expression
+	 *            the expression to parse
+	 * @param ontology
+	 *            the ontology to which the parsed, converted expression is
+	 *            added
+	 * @param definiendum
+	 *            an OWLClass which will be the definiendum of the new axiom
+	 * @param defaultToPrimitive
+	 *            make subclassOf axiom if no definitions status in expression
+	 *            
+	 * @return the resulting OWLAxiom
+	 * @throws ExpressionSyntaxError
+	 */
+	public static OWLAxiom parseExpressionToOWLAxiom(String expression,
+			OWLOntology ontology, OWLClass definiendum,
+			boolean defaultToPrimitive) throws ExpressionSyntaxError {
 		OWLAxiom owlAxiom = null;
 
 		OWLOntologyManager manager = ontology.getOWLOntologyManager();
 		OWLDataFactory dataFactory = manager.getOWLDataFactory();
 
 		ParseTree tree = parseExpression(expression);
-		
 
 		OWLVisitor visitor = new OWLVisitor(manager, definiendum);
 		owlAxiom = (OWLClassAxiom) visitor.visit(tree);

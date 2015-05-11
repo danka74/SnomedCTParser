@@ -52,16 +52,23 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	private OWLDataFactory dataFactory;
 	private OWLClass definiendum;
 	private Map<IRI, OWLAnnotation> labels;
+	private boolean defaultToPrimitive;
 
 	public OWLVisitor() {
 		this(OWLManager.createOWLOntologyManager(), null);
 	}
 
 	public OWLVisitor(OWLOntologyManager manager, OWLClass c) {
+		this(manager, c, false);
+	}
+
+	public OWLVisitor(OWLOntologyManager manager, OWLClass c,
+			boolean defaultToPrimitive) {
 		super();
 		dataFactory = manager.getOWLDataFactory();
 		this.definiendum = c;
 		this.labels = new HashMap<IRI, OWLAnnotation>();
+		this.defaultToPrimitive = defaultToPrimitive;
 	}
 
 	/*
@@ -83,13 +90,14 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 		OWLObject subExpression2 = visit(ctx.subExpression(1));
 		OWLAxiom axiom = null;
 
-		if (ctx.definitionStatus() == null
+		if ((ctx.definitionStatus() == null && defaultToPrimitive == false)
 				|| ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.EQ_TO) {
 			logger.info("equivalentTo");
 			axiom = dataFactory.getOWLEquivalentClassesAxiom(
 					(OWLClassExpression) subExpression1,
 					(OWLClassExpression) subExpression2);
-		} else if (ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.SC_OF) {
+		} else if ((ctx.definitionStatus() == null && defaultToPrimitive == true)
+				|| ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.SC_OF) {
 			logger.info("subClassOf");
 			axiom = dataFactory.getOWLSubClassOfAxiom(
 					(OWLClassExpression) subExpression1,
@@ -117,12 +125,13 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 			definiendum = dataFactory.getOWLClass(IRI.create(PC_IRI
 					+ UUID.randomUUID().toString()));
 
-		if (ctx.definitionStatus() == null
+		if ((ctx.definitionStatus() == null && defaultToPrimitive == false)
 				|| ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.EQ_TO) {
 			logger.info("equivalentTo");
 			axiom = dataFactory.getOWLEquivalentClassesAxiom(definiendum,
 					(OWLClassExpression) subExpression);
-		} else if (ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.SC_OF) {
+		} else if ((ctx.definitionStatus() == null && defaultToPrimitive == true)
+				|| ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.SC_OF) {
 			logger.info("subClassOf");
 			axiom = dataFactory.getOWLSubClassOfAxiom(definiendum,
 					(OWLClassExpression) subExpression);
