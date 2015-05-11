@@ -39,7 +39,7 @@ public class TestSNOMEDCTOWLParser {
 
 	static Logger logger = Logger.getLogger(TestSNOMEDCTOWLParser.class);
 
-	public static final String snomedOWLFileName = "/res_StatedOWLF_Core_INT_20140131.owl";
+//	public static final String snomedOWLFileName = "/res_StatedOWLF_Core_INT_20140131.owl";
 
 	/**
 	 * @throws java.lang.Exception
@@ -212,20 +212,20 @@ public class TestSNOMEDCTOWLParser {
 //	}
 	
 	
-	@Test
-	public void testParseAndSaveObsAlpha()
-			throws OWLOntologyCreationException, OWLOntologyStorageException {
-		URL expressionsURL = getClass().getResource("/obsAlpha.owl");
-		ontology = manager.loadOntologyFromOntologyDocument(new File(
-				expressionsURL.getFile()));
-
-		// create another file for SNOMED CT Compositional Grammar format
-		File output = new File("obsAlpha_as_SNOMED_CT_CG.owl");
-		// save the ontology in SNOMED CT Compositional Grammar format
-		SNOMEDCTOntologyFormat snomedCTFormat = new SNOMEDCTOntologyFormat();
-		manager.saveOntology(ontology, snomedCTFormat,
-				IRI.create(output.toURI()));
-
-	}
+//	@Test
+//	public void testParseAndSaveObsAlpha()
+//			throws OWLOntologyCreationException, OWLOntologyStorageException {
+//		URL expressionsURL = getClass().getResource("/obsAlpha.owl");
+//		ontology = manager.loadOntologyFromOntologyDocument(new File(
+//				expressionsURL.getFile()));
+//
+//		// create another file for SNOMED CT Compositional Grammar format
+//		File output = new File("obsAlpha_as_SNOMED_CT_CG.owl");
+//		// save the ontology in SNOMED CT Compositional Grammar format
+//		SNOMEDCTOntologyFormat snomedCTFormat = new SNOMEDCTOntologyFormat();
+//		manager.saveOntology(ontology, snomedCTFormat,
+//				IRI.create(output.toURI()));
+//
+//	}
 
 }
