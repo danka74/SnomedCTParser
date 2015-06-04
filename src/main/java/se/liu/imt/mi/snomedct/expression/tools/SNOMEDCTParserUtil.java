@@ -24,15 +24,12 @@ import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser;
 import se.liu.imt.mi.snomedct.parser.OWLVisitor;
 
 /**
- * Wrapper class for the SNOMED CT ANTLR parser.
+ * Wrapper class for the SNOMED CT ANTLR parser and OWL converter.
  * 
  * @author Daniel Karlsson, daniel.karlsson@liu.se
  *
  */
-/**
- * @author daniel
- *
- */
+
 public class SNOMEDCTParserUtil {
 	static final String PC_IRI = "http://snomed.info/expid/";
 
@@ -107,17 +104,17 @@ public class SNOMEDCTParserUtil {
 	public static OWLAxiom parseExpressionToOWLAxiom(String expression,
 			OWLOntology ontology, String subj, boolean defaultToPrimitive)
 			throws ExpressionSyntaxError {
-		OWLOntologyManager manager = ontology.getOWLOntologyManager();
+		final OWLOntologyManager manager = ontology.getOWLOntologyManager();
 
 		if (subj == null)
 			return parseExpressionToOWLAxiom(expression, ontology,
 					(OWLClass) null, defaultToPrimitive);
 
-		OWLClass newExpressionClass = manager.getOWLDataFactory().getOWLClass(
+		OWLClass newClass = manager.getOWLDataFactory().getOWLClass(
 				IRI.create(PC_IRI + subj));
 
 		return parseExpressionToOWLAxiom(expression, ontology,
-				newExpressionClass, defaultToPrimitive);
+				newClass, defaultToPrimitive);
 	}
 	
 	/**
@@ -162,12 +159,13 @@ public class SNOMEDCTParserUtil {
 			boolean defaultToPrimitive) throws ExpressionSyntaxError {
 		OWLAxiom owlAxiom = null;
 
-		OWLOntologyManager manager = ontology.getOWLOntologyManager();
-		OWLDataFactory dataFactory = manager.getOWLDataFactory();
+		final OWLOntologyManager manager = ontology.getOWLOntologyManager();
+		final OWLDataFactory dataFactory = manager.getOWLDataFactory();
 
 		ParseTree tree = parseExpression(expression);
 
 		OWLVisitor visitor = new OWLVisitor(manager, definiendum);
+		// convert from parse tree to OWLAxiom
 		owlAxiom = (OWLClassAxiom) visitor.visit(tree);
 
 		// add axiom to ontology

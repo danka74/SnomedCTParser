@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>se.liu.imt.mi.snomedct</groupId>
 	<artifactId>SnomedCTParser</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<properties>
 		<antlr.version>4.3</antlr.version>
 		<owlapi.version>3.5.0</owlapi.version>
@@ -17,6 +17,7 @@
 				<configuration>
 					<visitor>true</visitor>
 					<listener>false</listener>
+					<libDirectory>${basedir}/src/main/antlr4/se/liu/imt/mi/snomedct/expression/</libDirectory>
 				</configuration>
 				<executions>
 					<execution>
@@ -78,7 +79,7 @@
 		<dependency>
 			<groupId>org.semanticweb.elk</groupId>
 			<artifactId>elk-owlapi</artifactId>
-			<version>0.4.1</version>
+			<version>0.4.2</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
