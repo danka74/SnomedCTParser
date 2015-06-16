@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -22,17 +23,21 @@ import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
+import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionLexer;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser;
+import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.AttributeContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.AttributeGroupContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.AttributeSetContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.ConceptReferenceContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.ExpressionContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.FocusConceptContext;
+import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.NonGroupedAttributeSetContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.RefinementContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.StatementContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.SubExpressionContext;
@@ -155,12 +160,10 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 
 		Set<OWLClassExpression> expressionSet = new HashSet<OWLClassExpression>();
 
-		if (ctx.attributeSet() != null) {
-			for (SNOMEDCTExpressionParser.AttributeContext attrCtx : ctx
-					.attributeSet().getRuleContexts(
-							SNOMEDCTExpressionParser.AttributeContext.class)) {
-				expressionSet.add((OWLClassExpression) visitAttribute(attrCtx));
-			}
+		if (ctx.nonGroupedAttributeSet() != null) {
+			expressionSet
+					.add((OWLClassExpression) visitNonGroupedAttributeSet(ctx
+							.nonGroupedAttributeSet()));
 		}
 
 		if (ctx.attributeGroup() != null) {
@@ -392,6 +395,76 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 		} else
 			expression = (OWLClassExpression) visitAttribute(ctx.attribute(0));
 		return expression;
+	}
+
+	@Override
+	public OWLObject visitNonGroupedAttributeSet(
+			NonGroupedAttributeSetContext ctx) {
+		OWLClassExpression expression = null;
+
+		if (ctx.getChildCount() > 1) {
+			Set<OWLClassExpression> groupedExpressionSet = new HashSet<OWLClassExpression>();
+			Set<OWLClassExpression> shouldNotBeGroupedExpressionSet = new HashSet<OWLClassExpression>();
+
+			for (SNOMEDCTExpressionParser.AttributeContext attrCtx : ctx
+					.getRuleContexts(SNOMEDCTExpressionParser.AttributeContext.class)) {
+				OWLClassExpression attr = (OWLClassExpression) visitAttribute(attrCtx);
+				if (attr.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM) {
+					if (isNeverGrouped(((OWLObjectSomeValuesFrom) attr)
+							.getProperty()))
+						shouldNotBeGroupedExpressionSet.add(attr);
+					else
+						groupedExpressionSet.add(attr);
+
+				} else
+					groupedExpressionSet.add(attr);
+			}
+			if (!shouldNotBeGroupedExpressionSet.isEmpty())
+				expression = dataFactory
+						.getOWLObjectIntersectionOf(shouldNotBeGroupedExpressionSet);
+			if (!groupedExpressionSet.isEmpty()) {
+				OWLObjectProperty attrGroup = dataFactory
+						.getOWLObjectProperty(IRI.create(ROLEGROUP_IRI));
+				OWLClassExpression intersect = dataFactory
+						.getOWLObjectIntersectionOf(groupedExpressionSet);
+				OWLClassExpression groupExpression = dataFactory
+						.getOWLObjectSomeValuesFrom(attrGroup, intersect);
+				if (!shouldNotBeGroupedExpressionSet.isEmpty()) {
+					shouldNotBeGroupedExpressionSet.add(groupExpression);
+					expression = dataFactory
+							.getOWLObjectIntersectionOf(shouldNotBeGroupedExpressionSet);
+				} else
+					expression = groupExpression;
+			}
+		} else {
+			OWLClassExpression attr = (OWLClassExpression) visitAttribute((AttributeContext) ctx.getChild(0));
+			if (attr.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM && isNeverGrouped(((OWLObjectSomeValuesFrom) attr).getProperty()))
+					expression = attr;
+				else {
+					OWLObjectProperty attrGroup = dataFactory
+							.getOWLObjectProperty(IRI.create(ROLEGROUP_IRI));
+					expression = dataFactory
+							.getOWLObjectSomeValuesFrom(attrGroup, attr);
+				}
+		}
+		return expression;
+	}
+
+	private boolean isNeverGrouped(OWLObjectPropertyExpression property) {
+		IRI iri = property.getNamedProperty().getIRI();
+		String iriString = iri.toString();
+		if (iriString.equals(SCTID_IRI + "123005000") || // # part-of is never
+															// grouped
+				iriString.equals(SCTID_IRI + "272741003") || // # laterality is
+																// never grouped
+				iriString.equals(SCTID_IRI + "127489000") || // #
+																// has-active-ingredient
+																// is never
+																// grouped
+				iriString.equals(SCTID_IRI + "411116001")) // # has-dose-form is
+															// never grouped
+			return true;
+		return false;
 	}
 
 }

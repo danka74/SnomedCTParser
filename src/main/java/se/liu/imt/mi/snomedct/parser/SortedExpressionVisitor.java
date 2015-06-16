@@ -13,6 +13,7 @@ import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.ConceptReferen
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.ExpressionContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.FocusConceptContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.NestedExpressionContext;
+import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.NonGroupedAttributeSetContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.RefinementContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.StatementContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.SubExpressionContext;
@@ -22,6 +23,25 @@ public class SortedExpressionVisitor extends
 
 	@Override
 	public String visitAttributeSet(AttributeSetContext ctx) {
+		if(ctx.getChildCount() > 1) {
+			TreeSet<String> attributeSet = new TreeSet<String>();
+			for(AttributeContext attr : ctx.attribute()) {
+				attributeSet.add(visitAttribute(attr));
+			}
+			StringBuilder result = new StringBuilder();
+			for (Iterator<String> i = attributeSet.iterator(); i.hasNext();) {
+				result.append(i.next());
+				if (i.hasNext())
+					result.append(',');
+			}
+			return result.toString();
+		}
+		else
+			return visitAttribute(ctx.attribute(0));
+	}
+	
+	@Override
+	public String visitNonGroupedAttributeSet(NonGroupedAttributeSetContext ctx) {
 		if(ctx.getChildCount() > 1) {
 			TreeSet<String> attributeSet = new TreeSet<String>();
 			for(AttributeContext attr : ctx.attribute()) {
@@ -71,8 +91,8 @@ public class SortedExpressionVisitor extends
 	@Override
 	public String visitRefinement(RefinementContext ctx) {
 		StringBuilder result = new StringBuilder();
-		if(ctx.attributeSet() != null) {
-			result.append(visitAttributeSet(ctx.attributeSet()));
+		if(ctx.nonGroupedAttributeSet() != null) {
+			result.append(visitNonGroupedAttributeSet(ctx.nonGroupedAttributeSet()));
 			if(!ctx.attributeGroup().isEmpty())
 				result.append(',');
 		}

@@ -2,6 +2,7 @@
 125605004 | fracture of bone |	fracture of bone
 125605004|fracture of bone|:{363698007|finding site|=71341001|bone structure of femur|}	fracture of femur
 64572001|Disease|:{363698007|Finding site|=113257007|Structure of cardiovascular system|}	cardiovascular disease
+64572001|Disease|:363698007|Finding site|=113257007|Structure of cardiovascular system|	cardiovascular disease
 128997002 |inflammatorisk sjukdom i nedre luftvägar|+19829001 |lungsjukdom|:246075003 |kausativt agens|=113858008 |Mycobacterium tuberculosis-komplex|,370135005 |patologisk process|=441862004 |infektionsförlopp|	some pneumonia
 128997002 |inflammatorisk sjukdom i nedre luftvägar|+19829001 |lungsjukdom|:{246075003 |kausativt agens|=113858008 |Mycobacterium tuberculosis-komplex|,370135005 |patologisk process|=441862004 |infektionsförlopp|}	some other pneumonia
 397956004 | prosthetic arthroplasty of the hip |: 363704007 | procedure site | = ( 24136001| hip joint structure |: 272741003| laterality | = 7771000| left |)	some procedure

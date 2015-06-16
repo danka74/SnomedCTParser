@@ -56,7 +56,7 @@ conceptReference
 
 refinement
 :
-	attributeSet
+	nonGroupedAttributeSet
 	(
 		COMMA attributeGroup
 	)*
@@ -69,6 +69,14 @@ refinement
 attributeGroup
 :
 	LCBRACKET attributeSet RCBRACKET
+;
+
+nonGroupedAttributeSet
+:
+	attribute
+	(
+		COMMA attribute
+	)*
 ;
 
 attributeSet
