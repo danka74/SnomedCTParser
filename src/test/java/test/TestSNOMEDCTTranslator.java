@@ -21,6 +21,8 @@ public class TestSNOMEDCTTranslator {
 	@Test
 	public void testMain() throws OWLException {
 		SNOMEDCTTranslator.main(new String[] {"-l", "-f", "sct", "-n", "distribution", /*"-s", "src/test/resources/hernia_repair_module.owl",*/ "src/test/resources/hernia_repair_module.owl"});
+		SNOMEDCTTranslator.main(new String[] {"-f", "owlf", "src/test/resources/hernia_repair_module_sct_distribution.owl"});
+
 	}
 
 }

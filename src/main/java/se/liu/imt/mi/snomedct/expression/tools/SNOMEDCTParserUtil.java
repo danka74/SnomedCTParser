@@ -64,6 +64,38 @@ public class SNOMEDCTParserUtil {
 
 		return tree;
 	}
+	
+	/**
+	 * Wrapper method for parsing an SNOMED CT statement from a string
+	 * 
+	 * @param statement
+	 *            string representation of a SNOMED CT statement
+	 * @return parse tree resulting from parsing
+	 * @throws ExpressionSyntaxError
+	 *             thrown when syntax error in statement string
+	 */
+	public static ParseTree parseStatement(String statement)
+			throws ExpressionSyntaxError {
+
+		ParseTree tree = null;
+
+		// parse string and throw ExpressionSyntaxError if unparsable
+		ANTLRInputStream input = new ANTLRInputStream(statement);
+		SNOMEDCTExpressionLexer lexer = new SNOMEDCTExpressionLexer(input);
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		SNOMEDCTExpressionParser parser = new SNOMEDCTExpressionParser(tokens);
+		parser.setErrorHandler(new BailErrorStrategy());
+		try {
+			tree = parser.statement();
+		} catch (Exception e) {
+			throw new ExpressionSyntaxError(e);
+		}
+		if (tree == null)
+			throw new ExpressionSyntaxError(
+					"Parse result is null. Should not happen ever!");
+
+		return tree;
+	}
 
 	/**
 	 * Parses expression, converts to an OWLAxiom and adds it to ontology,
@@ -162,7 +194,11 @@ public class SNOMEDCTParserUtil {
 		final OWLOntologyManager manager = ontology.getOWLOntologyManager();
 		final OWLDataFactory dataFactory = manager.getOWLDataFactory();
 
-		ParseTree tree = parseExpression(expression);
+		ParseTree tree = null;
+		if(expression.startsWith("("))
+			tree = parseStatement(expression);
+		else
+			tree = parseExpression(expression);
 
 		OWLVisitor visitor = new OWLVisitor(manager, definiendum);
 		// convert from parse tree to OWLAxiom
