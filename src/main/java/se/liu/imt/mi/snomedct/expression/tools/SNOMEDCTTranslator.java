@@ -14,6 +14,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.PosixParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.coode.owlapi.turtle.TurtleOntologyFormat;
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
@@ -39,6 +40,7 @@ import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.reasoner.InferenceType;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyFormat;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorer;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTParserFactory;
@@ -155,6 +157,7 @@ public class SNOMEDCTTranslator {
 			// Create reasoner and classify the ontology including SNOMED CT
 			OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
 			OWLReasoner reasoner = reasonerFactory.createReasoner(ontology);
+			Logger.getLogger("org.semanticweb.elk").setLevel(Level.ERROR);
 			reasoner.flush();
 			reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
 
@@ -174,7 +177,7 @@ public class SNOMEDCTTranslator {
 			// iterate over equivalent classes axioms in the source ontology
 			for (OWLEquivalentClassesAxiom eqAxiom : ontology
 					.getAxioms(AxiomType.EQUIVALENT_CLASSES)) {
-				logger.info("axiom = " + eqAxiom.toString());
+//				logger.info("axiom = " + eqAxiom.toString());
 				// the equivalent classes axiom is assumed to have only two
 				// class expressions, the second (right hand side) being the
 				// class definition. As the source ontology is resulting from a
@@ -188,8 +191,8 @@ public class SNOMEDCTTranslator {
 				// convert the class definition to normal form
 				OWLClassExpression normalFormExpression = distFormConv
 						.convertToNormalForm(rhs);
-				logger.info("expression = " + rhs.toString());
-				logger.info("normal form = " + normalFormExpression);
+//				logger.info("expression = " + rhs.toString());
+//				logger.info("normal form = " + normalFormExpression);
 				changes.add(new AddAxiom(inferredOntology,
 						inferredOntology
 								.getOWLOntologyManager()
@@ -201,7 +204,7 @@ public class SNOMEDCTTranslator {
 			// iterate over subclass axioms in the source ontology
 			for (OWLSubClassOfAxiom subClassAxiom : ontology
 					.getAxioms(AxiomType.SUBCLASS_OF)) {
-				logger.info("axiom = " + subClassAxiom.toString());
+//				logger.info("axiom = " + subClassAxiom.toString());
 
 				OWLClassExpression lhs = subClassAxiom.getSubClass(); // left
 																		// hand
@@ -213,8 +216,8 @@ public class SNOMEDCTTranslator {
 				// convert the class definition to normal form
 				OWLClassExpression normalFormExpression = distFormConv
 						.convertToNormalForm(rhs);
-				logger.info("expression = " + rhs.toString());
-				logger.info("normal form = " + normalFormExpression);
+//				logger.info("expression = " + rhs.toString());
+//				logger.info("normal form = " + normalFormExpression);
 				changes.add(new AddAxiom(inferredOntology, inferredOntology
 						.getOWLOntologyManager().getOWLDataFactory()
 						.getOWLSubClassOfAxiom(lhs, normalFormExpression)));

@@ -38,8 +38,8 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
  */
 public class DistributionNormalFormConverter implements NormalFormRewriter {
 
-	static Logger logger = Logger
-			.getLogger(DistributionNormalFormConverter.class);
+//	static Logger logger = Logger
+//			.getLogger(DistributionNormalFormConverter.class);
 
 	OWLOntology ontology;
 	OWLOntologyManager manager;
@@ -262,7 +262,7 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 	public OWLClassExpression convertToNormalForm(
 			OWLClassExpression inputExpression) {
 
-		logger.info("input expression = " + inputExpression.toString());
+//		logger.info("input expression = " + inputExpression.toString());
 
 		// TODO is this correct? or should all attributes be collected as well?
 		if (inputExpression.getClassExpressionType() == ClassExpressionType.OWL_CLASS)
@@ -272,7 +272,7 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 		directSupers.addAll(reasoner.getSuperClasses(inputExpression, true)
 				.getFlattened());
 
-		logger.info("direct supers = " + directSupers.toString());
+//		logger.info("direct supers = " + directSupers.toString());
 
 		DifferentiaSet differentia = new DifferentiaSet();
 
@@ -284,7 +284,7 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 				// no need to consider other than existential restrictions
 				// (differentia) as genera are already in set of direct supers
 				if (e.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM) {
-					logger.info("diff = " + e.toString());
+//					logger.info("diff = " + e.toString());
 					// add each restriction to the initial set of differentia
 					differentia.add((OWLObjectSomeValuesFrom) e);
 				}
