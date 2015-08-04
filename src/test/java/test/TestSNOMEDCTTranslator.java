@@ -34,4 +34,8 @@ public class TestSNOMEDCTTranslator {
 		assertTrue("Files differ!", FileUtils.contentEquals(file1, file2));
 	}
 
+//	@Test
+//	public void testMain() throws OWLException, IOException {
+//		SNOMEDCTTranslator.main(new String[] {"-l", "-f", "owlf", "-n", "stated", "src/test/resources/obsTech20150714_sct_distribution.owl"});
+//	}
 }

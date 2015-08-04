@@ -141,7 +141,7 @@ TERM
 
 SCTID
 :
-	'-'? NONZERO DIGIT*
+	'-'? NONZERO (DIGIT|'-')*
 ;
 
 fragment
