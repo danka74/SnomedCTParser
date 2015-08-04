@@ -1,0 +1,3 @@
+(416319003|Neck and/or chest and/or abdomen and/or pelvis (body structure)|)<<<(52530000|Body region structure (body structure)|)
+(128263001|Lower body structure (body structure)|)<<<(38866009|Body part structure (body structure)|)
+(74943008|Operation on trunk (procedure)|)===(118694006|Procedure on trunk (procedure)|:{363704007|Procedure site (attribute)|=22943007|Trunk structure (body structure)|,260686004|Method (attribute)|=129284003|Surgical action (qualifier value)|})
