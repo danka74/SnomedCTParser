@@ -3,8 +3,6 @@
  */
 package se.liu.imt.mi.snomedct.parser;
 
-import java.text.AttributedCharacterIterator.Attribute;
-
 import org.apache.log4j.Logger;
 import org.junit.runners.ParentRunner;
 
@@ -20,7 +18,6 @@ import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.NonGroupedAttr
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.RefinementContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.StatementContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.SubExpressionContext;
-import test.TestSVGVisitor;
 
 /**
  * @author Daniel Karlsson, daniel.karlsson@liu.se
