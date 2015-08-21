@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 
@@ -48,39 +49,39 @@ public class TestSVGVisitor {
 
 	@Test
 	public void test() throws IOException, ExpressionSyntaxError {
-		URL testCaseURL = getClass().getResource("/sct_test_cases_statement.txt");
+		URL testCaseURL = getClass().getResource(
+				"/sct_test_cases_statement.txt");
 		BufferedReader testCaseReader = new BufferedReader(new FileReader(
 				testCaseURL.getFile()));
 
 		String strLine;
 
-		try {
+		Integer i = 0;
+
 		while ((strLine = testCaseReader.readLine()) != null) {
 
 			if (strLine.startsWith("#"))
 				continue;
+
+			i++;
 
 			String[] strTokens = strLine.split("\t");
 
 			logger.info(strTokens[0]);
 
 			ParseTree tree = null;
-			if(strTokens[0].startsWith("("))
+			if (strTokens[0].startsWith("("))
 				tree = SNOMEDCTParserUtil.parseStatement(strTokens[0]);
 			else
 				tree = SNOMEDCTParserUtil.parseExpression(strTokens[0]);
-			
-			SVGVisitor visitor = new SVGVisitor();			
+
+			SVGVisitor visitor = new SVGVisitor();
 			SVGPart result = visitor.visit(tree);
-			
-			logger.info(result.getSVG());
-		}
-		}
-		catch(Exception e) {
-			assertTrue(true);
-		}
-		finally {
-			assertTrue(true);
+
+			FileWriter writer = new FileWriter(System.getProperty("user.dir")+"/svg_diagram_" + i + ".svg");
+			writer.write(result.getSVG());
+			writer.close();
+
 		}
 	}
 }

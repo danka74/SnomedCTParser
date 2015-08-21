@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.liu.imt.mi.snomedct.parser;
 
@@ -13,14 +13,14 @@ public class SVGPart {
 		super();
 		this.indent = 0;
 		this.height = 0;
-		this.part = new StringBuffer();
+		this.part = "";
 	}
 
 	public SVGPart(int indent, int height, String part) {
 		super();
 		this.indent = indent;
 		this.height = height;
-		this.part = new StringBuffer(part);
+		this.part = part;
 	}
 
 	public String getSVG() {
@@ -29,19 +29,37 @@ public class SVGPart {
 
 	public SVGPart append(SVGPart svgPart) {
 		if (svgPart != null) {
-			this.part.append(svgPart.part);
+			this.part += "<g transform=\"translate("+ this.indent +"," + this.height + ")\">" + svgPart.part + "</g>";
 			this.height += svgPart.height;
+			this.indent += svgPart.indent;
 		}
 		return this;
 	}
-	
-	public SVGPart groupWrap(String svg, int x, int y) {
-		this.part.insert(0, "<g transform=\"translate("+ x +"," + y + ")\">");
-		this.part.append("</g>");
+
+	public SVGPart append(SVGPart svgPart, int indent, int height) {
+		if (svgPart != null) {
+			this.part += "<g transform=\"translate("+ (this.indent + indent) +"," + (this.height + height) + ")\">" + svgPart.part + "</g>";
+			this.height += svgPart.height;
+			this.indent += svgPart.indent;
+		}
+		return this;
+	}
+
+	public SVGPart appendNoG(SVGPart svgPart) {
+		if (svgPart != null) {
+			this.part += svgPart.part;
+			this.height += svgPart.height;
+			this.indent += svgPart.indent;
+		}
 		return this;
 	}
 
 	protected int indent;
 	protected int height;
-	protected StringBuffer part;
+	protected String part;
+
+	public int getHeight() {
+		// TODO Auto-generated method stub
+		return height;
+	}
 }
