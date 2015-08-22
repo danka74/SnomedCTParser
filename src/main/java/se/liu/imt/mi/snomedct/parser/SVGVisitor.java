@@ -3,6 +3,10 @@
  */
 package se.liu.imt.mi.snomedct.parser;
 
+import java.awt.Font;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
+
 import org.apache.log4j.Logger;
 import org.junit.runners.ParentRunner;
 
@@ -105,7 +109,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor#
 	 * visitAttributeSet
 	 * (se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser
@@ -139,7 +143,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor#
 	 * visitNonGroupedAttributeSet
 	 * (se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser
@@ -156,7 +160,9 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 				String svgArrow = "";
 				if (ctx.getChild(i).getClass() == AttributeContext.class) {
 					if (i != 0)
-						svgArrow = "<polyline points=\"-36," + (-height - 20) + " -36,20 -14,20\" id=\"poly1\" fill=\"none\"\n"
+						svgArrow = "<polyline points=\"-36,"
+								+ (-height - 20)
+								+ " -36,20 -14,20\" id=\"poly1\" fill=\"none\"\n"
 								+ "stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#BlackTriangle)\" />";
 				} else
 					continue;
@@ -172,7 +178,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor#
 	 * visitAttributeGroup
 	 * (se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser
@@ -188,7 +194,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor#
 	 * visitSubExpression
 	 * (se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser
@@ -229,35 +235,68 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor#
+	 * visitConceptReference
+	 * (se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser
+	 * .ConceptReferenceContext)
+	 * 
+	 * This method would need access to a concept table (at least) to determine
+	 * if a concept is primitive or fully defined
+	 */
 	@Override
 	public SVGPart visitConceptReference(ConceptReferenceContext ctx) {
 		String term = removeCharacter(ctx.TERM().getText(), "|");
-		int len = (int) Math.round(term.length() * 8.0); // a rough
-															// approximation
+		int len = getTextWidth(term) + 12;
+		// (int) Math.round(term.length() * 8.0); // a rough
+		// approximation
 
-		String svg = "<rect x=\"0\" y=\"0\" width=\""
-				+ len
-				+ "\" height=\"40\" fill=\"#ccccff\" stroke=\"#333\"\n"
-				+ "stroke-width=\"1\" id=\"rect14\" />\n"
-				+ "<rect x=\"2\" y=\"2\" width=\""
-				+ (len - 4)
-				+ "\" height=\"36\" id=\"rect16\" fill=\"#ccccff\"\n"
-				+ "stroke=\"#333\" stroke-width=\"1\" />"
-				+ "<text x=\"12\" y=\"17\"\n"
-				+ "font-family=\"&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif\"\n"
-				+ "font-size=\"10\">"
-				+ ctx.SCTID().getText()
-				+ "</text>\n"
-				+ "<text x=\"12\" y=\"31\" id=\"text61\"\n"
-				+ "font-family=\"&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif\"\n"
-				+ "font-size=\"12\">" + term + "</text>";
+		// <rect x="0" y="0" width="309" height="39" id="rect1" fill="#99ccff"
+		// stroke="#333" stroke-width="2"></rect>
+
+		String svg = "";
+		if (true) {
+			// fully defined
+			svg = "<rect x=\"0\" y=\"0\" width=\""
+					+ len
+					+ "\" height=\"40\" fill=\"#ccccff\" stroke=\"#333\"\n"
+					+ "stroke-width=\"1\" />\n"
+					+ "<rect x=\"2\" y=\"2\" width=\""
+					+ (len - 4)
+					+ "\" height=\"36\" id=\"rect16\" fill=\"#ccccff\"\n"
+					+ "stroke=\"#333\" stroke-width=\"1\" />"
+					+ "<text x=\"12\" y=\"17\"\n"
+					+ "font-family=\"&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif\"\n"
+					+ "font-size=\"10\">"
+					+ ctx.SCTID().getText()
+					+ "</text>\n"
+					+ "<text x=\"12\" y=\"31\" id=\"text61\"\n"
+					+ "font-family=\"&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif\"\n"
+					+ "font-size=\"12\">" + term + "</text>";
+		} else {
+			// primitive
+			svg = "<rect x=\"0\" y=\"0\" width=\""
+					+ len
+					+ "\" height=\"40\" fill=\"#99ccff\" stroke=\"#333\"\n"
+					+ "stroke-width=\"1\" />\n"
+					+ "<text x=\"12\" y=\"17\"\n"
+					+ "font-family=\"&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif\"\n"
+					+ "font-size=\"10\">"
+					+ ctx.SCTID().getText()
+					+ "</text>\n"
+					+ "<text x=\"12\" y=\"31\" id=\"text61\"\n"
+					+ "font-family=\"&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif\"\n"
+					+ "font-size=\"12\">" + term + "</text>";
+		}
 		SVGPart result = new SVGPart(0, 50, svg);
 		return result;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor#
 	 * visitAttribute
 	 * (se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.
@@ -265,9 +304,11 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	 */
 	@Override
 	public SVGPart visitAttribute(AttributeContext ctx) {
-		String term = removeCharacter(ctx.conceptReference().TERM().getText(), "|");
-		int len = (int) Math.round(term.length() * 8.0); // a rough
-															// approximation
+		String term = removeCharacter(ctx.conceptReference().TERM().getText(),
+				"|");
+		int len = getTextWidth(term) + 24;
+		// (int) Math.round(term.length() * 8.0); // a rough
+		// approximation
 
 		SVGPart val = visit(ctx.attributeValue());
 
@@ -303,5 +344,15 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 		if (input.endsWith(c))
 			input = input.substring(0, input.length() - 1);
 		return input;
+	}
+
+	private AffineTransform affinetransform = new AffineTransform();
+	private FontRenderContext frc = new FontRenderContext(affinetransform,
+			true, true);
+	private Font font = new Font("SansSerif", Font.PLAIN, 12);
+
+	private int getTextWidth(String input) {
+
+		return (int) (font.getStringBounds(input, frc).getWidth());
 	}
 }
