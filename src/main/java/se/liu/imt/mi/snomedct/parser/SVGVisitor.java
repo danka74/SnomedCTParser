@@ -6,9 +6,9 @@ package se.liu.imt.mi.snomedct.parser;
 import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
-import org.junit.runners.ParentRunner;
 
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionLexer;
@@ -16,7 +16,6 @@ import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.AttributeConte
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.AttributeGroupContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.AttributeSetContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.ConceptReferenceContext;
-import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.ExpressionContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.FocusConceptContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.NonGroupedAttributeSetContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.RefinementContext;
@@ -34,6 +33,23 @@ import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.SubExpressionC
 public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 
 	static Logger logger = Logger.getLogger(SVGVisitor.class);
+
+	private HashMap<Long, Boolean> concepts = null;
+
+	private Boolean fullyDefinedDefault = false;
+
+	public SVGVisitor() {
+		super();
+		concepts = null;
+		fullyDefinedDefault = false;
+	}
+
+	public SVGVisitor(HashMap<Long, Boolean> concepts,
+			Boolean fullyDefinedDefault) {
+		super();
+		this.concepts = concepts;
+		this.fullyDefinedDefault = fullyDefinedDefault;
+	}
 
 	@Override
 	protected SVGPart aggregateResult(SVGPart aggregate, SVGPart nextResult) {
@@ -109,7 +125,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor#
 	 * visitAttributeSet
 	 * (se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser
@@ -143,7 +159,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor#
 	 * visitNonGroupedAttributeSet
 	 * (se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser
@@ -178,7 +194,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor#
 	 * visitAttributeGroup
 	 * (se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser
@@ -194,7 +210,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor#
 	 * visitSubExpression
 	 * (se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser
@@ -237,12 +253,12 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor#
 	 * visitConceptReference
 	 * (se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser
 	 * .ConceptReferenceContext)
-	 * 
+	 *
 	 * This method would need access to a concept table (at least) to determine
 	 * if a concept is primitive or fully defined
 	 */
@@ -250,16 +266,23 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	public SVGPart visitConceptReference(ConceptReferenceContext ctx) {
 		String term = removeCharacter(ctx.TERM().getText(), "|");
 		int len = getTextWidth(term) + 12;
-		// (int) Math.round(term.length() * 8.0); // a rough
-		// approximation
 
-		// <rect x="0" y="0" width="309" height="39" id="rect1" fill="#99ccff"
-		// stroke="#333" stroke-width="2"></rect>
+		Boolean isFullyDefined = fullyDefinedDefault;
+
+		if (concepts != null) {
+			Long sctid = Long.parseLong(ctx.SCTID().getText());
+			isFullyDefined = concepts.get(sctid);
+			if (isFullyDefined == null) // if id is missing
+				isFullyDefined = fullyDefinedDefault;
+		}
 
 		String svg = "";
-		if (true) {
+		if (isFullyDefined) {
 			// fully defined
-			svg = "<rect x=\"0\" y=\"0\" width=\""
+			svg = "<!-- "
+					+ term
+					+ "-->\n"
+					+ "<rect x=\"0\" y=\"0\" width=\""
 					+ len
 					+ "\" height=\"40\" fill=\"#ccccff\" stroke=\"#333\"\n"
 					+ "stroke-width=\"1\" />\n"
@@ -277,7 +300,10 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 					+ "font-size=\"12\">" + term + "</text>";
 		} else {
 			// primitive
-			svg = "<rect x=\"0\" y=\"0\" width=\""
+			svg = "<!-- "
+					+ term
+					+ "-->\n"
+					+ "<rect x=\"0\" y=\"0\" width=\""
 					+ len
 					+ "\" height=\"40\" fill=\"#99ccff\" stroke=\"#333\"\n"
 					+ "stroke-width=\"1\" />\n"
@@ -296,7 +322,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor#
 	 * visitAttribute
 	 * (se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.
@@ -307,12 +333,13 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 		String term = removeCharacter(ctx.conceptReference().TERM().getText(),
 				"|");
 		int len = getTextWidth(term) + 24;
-		// (int) Math.round(term.length() * 8.0); // a rough
-		// approximation
 
 		SVGPart val = visit(ctx.attributeValue());
 
-		String svg = "<rect x=\"0\" y=\"0\" width=\""
+		String svg = "<!-- "
+				+ term
+				+ "-->\n"
+				+ "<rect x=\"0\" y=\"0\" width=\""
 				+ len
 				+ "\" height=\"40\" rx=\"18\" ry=\"18\" id=\"rect56\"\n"
 				+ "style=\"fill:#ffffcc;stroke:#333333;stroke-width:1\" />\n"

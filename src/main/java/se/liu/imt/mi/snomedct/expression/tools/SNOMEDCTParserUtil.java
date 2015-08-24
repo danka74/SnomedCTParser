@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.liu.imt.mi.snomedct.expression.tools;
 
@@ -10,6 +10,10 @@ import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -25,7 +29,7 @@ import se.liu.imt.mi.snomedct.parser.OWLVisitor;
 
 /**
  * Wrapper class for the SNOMED CT ANTLR parser and OWL converter.
- * 
+ *
  * @author Daniel Karlsson, daniel.karlsson@liu.se
  *
  */
@@ -33,9 +37,23 @@ import se.liu.imt.mi.snomedct.parser.OWLVisitor;
 public class SNOMEDCTParserUtil {
 	static final String PC_IRI = "http://snomed.info/expid/";
 
+	static public class ThrowingErrorListener extends BaseErrorListener {
+
+		public static final ThrowingErrorListener INSTANCE = new ThrowingErrorListener();
+
+		@Override
+		public void syntaxError(Recognizer<?, ?> recognizer,
+				Object offendingSymbol, int line, int charPositionInLine,
+				String msg, RecognitionException e)
+				throws ParseCancellationException {
+			throw new ParseCancellationException("line " + line + ":"
+					+ charPositionInLine + " " + msg);
+		}
+	}
+
 	/**
 	 * Wrapper method for parsing an SNOMED CT expression from a string
-	 * 
+	 *
 	 * @param expression
 	 *            string representation of a SNOMED CT expression
 	 * @return parse tree resulting from parsing
@@ -43,16 +61,20 @@ public class SNOMEDCTParserUtil {
 	 *             thrown when syntax error in expression string
 	 */
 	public static ParseTree parseExpression(String expression)
-			throws ExpressionSyntaxError {
+			throws ParseCancellationException, ExpressionSyntaxError {
 
 		ParseTree tree = null;
 
 		// parse string and throw ExpressionSyntaxError if unparsable
 		ANTLRInputStream input = new ANTLRInputStream(expression);
 		SNOMEDCTExpressionLexer lexer = new SNOMEDCTExpressionLexer(input);
+		lexer.removeErrorListeners();
+		lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		SNOMEDCTExpressionParser parser = new SNOMEDCTExpressionParser(tokens);
-		parser.setErrorHandler(new BailErrorStrategy());
+		parser.removeErrorListeners();
+		parser.addErrorListener(ThrowingErrorListener.INSTANCE);
+		//parser.setErrorHandler(new BailErrorStrategy());
 		try {
 			tree = parser.expression();
 		} catch (Exception e) {
@@ -64,10 +86,10 @@ public class SNOMEDCTParserUtil {
 
 		return tree;
 	}
-	
+
 	/**
 	 * Wrapper method for parsing an SNOMED CT statement from a string
-	 * 
+	 *
 	 * @param statement
 	 *            string representation of a SNOMED CT statement
 	 * @return parse tree resulting from parsing
@@ -100,25 +122,26 @@ public class SNOMEDCTParserUtil {
 	/**
 	 * Parses expression, converts to an OWLAxiom and adds it to ontology,
 	 * including any descriptions as rdfs:label annotations
-	 * 
+	 *
 	 * @param expression
 	 *            the expression to parse
 	 * @param ontology
 	 *            the ontology to which the parsed, converted expression is
 	 *            added
-	 *            
+	 *
 	 * @return the resulting OWLAxiom
 	 * @throws ExpressionSyntaxError
 	 */
 	public static OWLAxiom parseExpressionToOWLAxiom(String expression,
 			OWLOntology ontology) throws ExpressionSyntaxError {
-		return parseExpressionToOWLAxiom(expression, ontology, (OWLClass) null, false);
+		return parseExpressionToOWLAxiom(expression, ontology, (OWLClass) null,
+				false);
 	}
 
 	/**
 	 * Parses expression, converts to an OWLAxiom and adds it to ontology,
 	 * including any descriptions as rdfs:label annotations
-	 * 
+	 *
 	 * @param expression
 	 *            the expression to parse
 	 * @param ontology
@@ -129,7 +152,7 @@ public class SNOMEDCTParserUtil {
 	 *            definiendum of the new axiom
 	 * @param defaultToPrimitive
 	 *            make subclassOf axiom if no definitions status in expression
-	 * 
+	 *
 	 * @return the resulting OWLAxiom
 	 * @throws ExpressionSyntaxError
 	 */
@@ -145,14 +168,14 @@ public class SNOMEDCTParserUtil {
 		OWLClass newClass = manager.getOWLDataFactory().getOWLClass(
 				IRI.create(PC_IRI + subj));
 
-		return parseExpressionToOWLAxiom(expression, ontology,
-				newClass, defaultToPrimitive);
+		return parseExpressionToOWLAxiom(expression, ontology, newClass,
+				defaultToPrimitive);
 	}
-	
+
 	/**
 	 * Parses expression, converts to an OWLAxiom and adds it to ontology,
 	 * including any descriptions as rdfs:label annotations
-	 * 
+	 *
 	 * @param expression
 	 *            the expression to parse
 	 * @param ontology
@@ -160,19 +183,21 @@ public class SNOMEDCTParserUtil {
 	 *            added
 	 * @param definiendum
 	 *            an OWLClass which will be the definiendum of the new axiom
-	 * 
+	 *
 	 * @return the resulting OWLAxiom
 	 * @throws ExpressionSyntaxError
 	 */
 	public static OWLAxiom parseExpressionToOWLAxiom(String expression,
-			OWLOntology ontology, OWLClass definiendum) throws ExpressionSyntaxError {
-		return parseExpressionToOWLAxiom(expression, ontology, definiendum, false);
+			OWLOntology ontology, OWLClass definiendum)
+			throws ExpressionSyntaxError {
+		return parseExpressionToOWLAxiom(expression, ontology, definiendum,
+				false);
 	}
 
 	/**
 	 * Parses expression, converts to an OWLAxiom and adds it to ontology,
 	 * including any descriptions as rdfs:label annotations
-	 * 
+	 *
 	 * @param expression
 	 *            the expression to parse
 	 * @param ontology
@@ -182,7 +207,7 @@ public class SNOMEDCTParserUtil {
 	 *            an OWLClass which will be the definiendum of the new axiom
 	 * @param defaultToPrimitive
 	 *            make subclassOf axiom if no definitions status in expression
-	 *            
+	 *
 	 * @return the resulting OWLAxiom
 	 * @throws ExpressionSyntaxError
 	 */
@@ -195,7 +220,7 @@ public class SNOMEDCTParserUtil {
 		final OWLDataFactory dataFactory = manager.getOWLDataFactory();
 
 		ParseTree tree = null;
-		if(expression.startsWith("("))
+		if (expression.startsWith("("))
 			tree = parseStatement(expression);
 		else
 			tree = parseExpression(expression);
