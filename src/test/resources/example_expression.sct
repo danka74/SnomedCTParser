@@ -1,0 +1,23 @@
+(123456789 | Some specific observable entity (observable entity) |)
+===
+(363787002|Observable entity (observable entity)|:
+	704346009|Specified by (attribute)|=(
+		386053000|Evaluation procedure (procedure)|:
+			246501002 | Technique (attribute) |=272394005 | Technique (qualifier value) |,
+			704327008 | Direct site (attribute) |=1234567890| Independent continuant |,
+			370132008 | Scale type (attribute) |=398195001|Measurement scales (qualifier value)|,
+			246514001 | Units (attribute) |=258666001| Unit (qualifier value) |,
+			424226004 | Using device (attribute) |=49062001|Device (physical object)|,
+			123456789 | Informer (attribute) |=125676002|Person (person)|,
+			704347000|Observes (attribute)|=(
+				123456789|Feature of entity  (qualifier value)|:
+					704318007 | Property type |=118598001|Property of measurement (qualifier value)|,
+					704319004 | Inheres in |=(1234567890| Independent continuant |:
+						123456789 | Inherent location |=1234567890| Independent continuant |)
+					704320005 | Towards (attribute) |=1234567890| Independent continuant |,
+					704325000 | Relative to (attribute) |=1234567890| Independent continuant |,
+					123456789 | Relative to part of (attribute) |=1234567890| Independent continuant |,
+					704326004 | Precondition (attribute) |=138875005|SNOMED CT Concept (SNOMED RT+CTV3)|
+			)
+	)
+)
