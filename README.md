@@ -10,6 +10,11 @@ OWL API 3.x compliant classes for loading and storing SNOMED CT Compositional Gr
 File format is a tab-separated text file:
 (\<expression> \t \<label> \n)*
 
+###Installation
+
+```
+mvn install
+```
 Additionally, there are some utility methods in the se.liu.imt.mi.snomedct.expression.tools package.
 
 ###SNOMEDCTGraph
@@ -36,8 +41,8 @@ The input file is a text file with a single compositional grammar statement, e.g
 ```
 Note that you need a full statement, now only a single concept on the left hand side.
 
-The <snomed file> is a concept file from the release, used to be able to determine if concepts are primitive or fully defined (differently colored boxes), can be omitted
+The `<snomed file>` is a snapshot concept file from the release, used to be able to determine if concepts are primitive or fully defined (differently colored boxes), can be omitted
 
-the <output file> is used for providing a name for the resulting SVG file. If omitted the filename is the same as input but with a .svg extension.
+the `<output file>` is used for providing a name for the resulting SVG file. If omitted the filename is the same as input but with a .svg extension.
 
--f makes fully defined default if there is no corresponding concept ID in the SNOMED CT concept file.
+`-f` makes fully defined default, e.g. if there is no corresponding concept ID in the SNOMED CT concept file.
