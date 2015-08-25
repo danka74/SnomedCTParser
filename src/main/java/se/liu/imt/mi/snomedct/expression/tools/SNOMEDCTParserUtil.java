@@ -37,7 +37,7 @@ import se.liu.imt.mi.snomedct.parser.OWLVisitor;
 public class SNOMEDCTParserUtil {
 	static final String PC_IRI = "http://snomed.info/expid/";
 
-	static public class ThrowingErrorListener extends BaseErrorListener {
+	public static class ThrowingErrorListener extends BaseErrorListener {
 
 		public static final ThrowingErrorListener INSTANCE = new ThrowingErrorListener();
 
@@ -46,8 +46,9 @@ public class SNOMEDCTParserUtil {
 				Object offendingSymbol, int line, int charPositionInLine,
 				String msg, RecognitionException e)
 				throws ParseCancellationException {
-			throw new ParseCancellationException("line " + line + ":"
-					+ charPositionInLine + " " + msg);
+			String message = "line " + line + ", pos "
+					+ charPositionInLine + ": " + msg;
+			throw new ParseCancellationException(message);
 		}
 	}
 
@@ -74,7 +75,6 @@ public class SNOMEDCTParserUtil {
 		SNOMEDCTExpressionParser parser = new SNOMEDCTExpressionParser(tokens);
 		parser.removeErrorListeners();
 		parser.addErrorListener(ThrowingErrorListener.INSTANCE);
-		//parser.setErrorHandler(new BailErrorStrategy());
 		try {
 			tree = parser.expression();
 		} catch (Exception e) {
@@ -104,9 +104,12 @@ public class SNOMEDCTParserUtil {
 		// parse string and throw ExpressionSyntaxError if unparsable
 		ANTLRInputStream input = new ANTLRInputStream(statement);
 		SNOMEDCTExpressionLexer lexer = new SNOMEDCTExpressionLexer(input);
+		lexer.removeErrorListeners();
+		lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		SNOMEDCTExpressionParser parser = new SNOMEDCTExpressionParser(tokens);
-		parser.setErrorHandler(new BailErrorStrategy());
+		parser.removeErrorListeners();
+		parser.addErrorListener(ThrowingErrorListener.INSTANCE);
 		try {
 			tree = parser.statement();
 		} catch (Exception e) {

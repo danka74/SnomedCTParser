@@ -47,8 +47,10 @@ public class SNOMEDCTGraph {
 		// add output file option
 		options.addOption("o", "output-file", true, "output file");
 
-		// add option for setting fully defined as default, otherwise primitive will be default
-		options.addOption("f", "fully-defined-default", false, "will generate fully defined concepts references as default");
+		// add option for setting fully defined as default, otherwise primitive
+		// will be default
+		options.addOption("f", "fully-defined-default", false,
+				"will generate fully defined concepts references as default");
 
 		CommandLineParser parser = new PosixParser();
 		CommandLine cmd = null;
@@ -107,6 +109,9 @@ public class SNOMEDCTGraph {
 			String inputExpression = new String(Files.readAllBytes(Paths
 					.get(inputFileName)));
 			ParseTree tree = null;
+
+			logger.info("Parsing input file: " + inputFileName);
+
 			if (inputExpression.startsWith("("))
 				tree = SNOMEDCTParserUtil.parseStatement(inputExpression);
 			else
@@ -116,18 +121,21 @@ public class SNOMEDCTGraph {
 
 			SVGPart result = visitor.visit(tree);
 
+			logger.info("Writing resluting graph to: " + outputFileName);
+
 			FileWriter writer = new FileWriter(outputFileName);
 			writer.write(result.getSVG());
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch ( ParseCancellationException e) {
+		} catch (ParseCancellationException e) {
 			logger.info(e.getMessage());
 			e.printStackTrace();
 		} catch (ExpressionSyntaxError e) {
-			ParseCancellationException pce = (ParseCancellationException) e.getCause();
+			ParseCancellationException pce = (ParseCancellationException) e
+					.getCause();
 			logger.info(pce.getMessage());
-			e.printStackTrace();
+			System.err.println(pce.getMessage());
 		}
 
 	}
