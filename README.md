@@ -14,8 +14,10 @@ Additionally, there are some utility methods in the se.liu.imt.mi.snomedct.expre
 
 ###SNOMEDCTGraph
 
-Usage: java -cp SnomedCTParser-0.0.3-jar-with-dependencies.jar se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTGraph <input file> [-s <snomed file> -o <output file> -f]
-
+Usage:
+```
+java -cp SnomedCTParser-0.0.3-jar-with-dependencies.jar se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTGraph <input file> [-s <snomed file> -o <output file> -f]
+```
 The input file is a text file with a single compositional grammar statement, e.g.
 ```
 (276885007 | Core body temperature (observable entity) |)
