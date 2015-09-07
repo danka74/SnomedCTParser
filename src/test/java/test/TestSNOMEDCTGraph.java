@@ -21,7 +21,7 @@ public class TestSNOMEDCTGraph {
 
 	@Test
 	public void test() {
-		SNOMEDCTGraph.main(new String[] {"src/test/resources/example_expression.sct", "-f", "-s", "/home/daniel/Documents/SCT/SnomedCT_RF2Release_INT_20150131/Snapshot/Terminology/sct2_Concept_Snapshot_INT_20150131.txt", "-o", "test.svg"});
+		SNOMEDCTGraph.main(new String[] {"src/test/resources/example_expression.sct", "-s", "/home/daniel/Documents/SCT/SnomedCT_RF2Release_INT_20150131/Snapshot/Terminology/sct2_Concept_Snapshot_INT_20150131.txt", "-o", "test.svg"});
 	}
 
 }

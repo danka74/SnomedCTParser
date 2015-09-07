@@ -3,12 +3,15 @@
  */
 package se.liu.imt.mi.snomedct.expression.tools;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
@@ -46,6 +49,8 @@ public class SNOMEDCTParserUtil {
 				Object offendingSymbol, int line, int charPositionInLine,
 				String msg, RecognitionException e)
 				throws ParseCancellationException {
+			List<String> stack = ((Parser)recognizer).getRuleInvocationStack();
+			Collections.reverse(stack);
 			String message = "line " + line + ", pos "
 					+ charPositionInLine + ": " + msg;
 			throw new ParseCancellationException(message);

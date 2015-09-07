@@ -60,7 +60,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	}
 
 	private String svgPre = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-			+ "<svg><defs id=\"SctDiagramsDefs\">\n"
+			+ "<svg xmlns=\"http://www.w3.org/2000/svg\" id=\"SctDiagram\"><defs id=\"SctDiagramsDefs\">\n"
 			+ "<marker id=\"BlackTriangle\" refX=\"0\" refY=\"10\" markerWidth=\"8\"\n"
 			+ "markerHeight=\"6\" orient=\"auto\" viewBox=\"0 0 22 20\" markerUnits=\"strokeWidth\"\n"
 			+ "fill=\"black\" stroke=\"black\" stroke-width=\"2\">\n"
@@ -108,8 +108,12 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	public SVGPart visitStatement(StatementContext ctx) {
 		SVGPart result = new SVGPart(0, 0, svgPre);
 
-		SVGPart x = visitSubExpression(ctx.subExpression(0));
-		result.append(x);
+		if (ctx.subExpression(0).getChildCount() == 1
+				&& ctx.subExpression(0).getChild(0).getChildCount() == 1) {
+			SVGPart x = visitSubExpression(ctx.subExpression(0));
+			result.append(x);
+		}
+		// else throw not implemented
 
 		if (ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.EQ_TO)
 			result.append(new SVGPart(124, 10, svgEquivalentTo), 40, 0);
@@ -265,7 +269,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	@Override
 	public SVGPart visitConceptReference(ConceptReferenceContext ctx) {
 		String term = removeCharacter(ctx.TERM().getText(), "|");
-		int len = getTextWidth(term) + 12;
+		int len = Math.max(getTextWidth(term), 60) + 24;
 
 		Boolean isFullyDefined = fullyDefinedDefault;
 
@@ -332,7 +336,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	public SVGPart visitAttribute(AttributeContext ctx) {
 		String term = removeCharacter(ctx.conceptReference().TERM().getText(),
 				"|");
-		int len = getTextWidth(term) + 24;
+		int len = Math.max(getTextWidth(term), 60) + 24;
 
 		SVGPart val = visit(ctx.attributeValue());
 
@@ -370,7 +374,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 			input = input.substring(1);
 		if (input.endsWith(c))
 			input = input.substring(0, input.length() - 1);
-		return input;
+		return input.trim();
 	}
 
 	private AffineTransform affinetransform = new AffineTransform();

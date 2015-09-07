@@ -15,6 +15,14 @@ EQ: '=';
 LCBRACKET: '{';
 RCBRACKET: '}';
 
+statements
+:
+	statement
+	(
+		WS statement
+	)*
+;
+
 statement
 :
 	LPARAN subExpression RPARAN definitionStatus LPARAN subExpression RPARAN
@@ -173,4 +181,4 @@ WS
 	) -> skip
 ;
 
-  
+

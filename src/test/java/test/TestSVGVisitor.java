@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package test;
 
@@ -83,5 +83,7 @@ public class TestSVGVisitor {
 			writer.close();
 
 		}
+
+		testCaseReader.close();
 	}
 }
