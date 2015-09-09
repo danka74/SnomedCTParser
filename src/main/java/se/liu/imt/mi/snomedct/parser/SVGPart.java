@@ -62,4 +62,8 @@ public class SVGPart {
 		// TODO Auto-generated method stub
 		return height;
 	}
+
+	public void setPre(String svgPre) {
+		this.part = svgPre + this.part;
+	}
 }

@@ -38,6 +38,8 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 
 	private Boolean fullyDefinedDefault = false;
 
+	private Boolean definiens = true;
+
 	public SVGVisitor() {
 		super();
 		concepts = null;
@@ -108,12 +110,16 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	public SVGPart visitStatement(StatementContext ctx) {
 		SVGPart result = new SVGPart(0, 0, svgPre);
 
+		definiens = true;
+
 		if (ctx.subExpression(0).getChildCount() == 1
 				&& ctx.subExpression(0).getChild(0).getChildCount() == 1) {
 			SVGPart x = visitSubExpression(ctx.subExpression(0));
 			result.append(x);
 		}
 		// else throw not implemented
+
+		definiens = false;
 
 		if (ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.EQ_TO)
 			result.append(new SVGPart(124, 10, svgEquivalentTo), 40, 0);
@@ -131,6 +137,45 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	 * (non-Javadoc)
 	 *
 	 * @see se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor#
+	 * visitFocusConcept
+	 * (se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser
+	 * .FocusConceptContext)
+	 */
+	@Override
+	public SVGPart visitFocusConcept(FocusConceptContext ctx) {
+		if (ctx.getChildCount() == 1) {
+			if (definiens)
+				return visit(ctx.getChild(0));
+			// add single arrow
+			String svgArrow = "<polyline points=\"0,20 12,20\" fill=\"none\" stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#ClearTriangle)\"/>\n";
+			SVGPart result = new SVGPart(0, 0, svgArrow);
+			result.append(visit(ctx.getChild(0)), 28, 0);
+			return result;
+		} else {
+			String svg = "<circle cx=\"10\" cy=\"20\" r=\"10\" fill=\"black\" stroke=\"black\" stroke-width=\"2\" />\n";
+			SVGPart result = new SVGPart(20, 0, svg);
+			for (int i = 0; i < ctx.getChildCount(); i++) {
+				String svgArrow = "";
+				if (ctx.getChild(i).getClass() == ConceptReferenceContext.class) {
+					if (i == 0)
+						svgArrow = "<polyline points=\"0,20 14,20\" fill=\"none\" stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#ClearTriangle)\"/>\n";
+					else
+						svgArrow = "<polyline points=\"-10,-20 -10,20 14,20\" id=\"poly1\" fill=\"none\"\n"
+								+ "stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#ClearTriangle)\" />";
+				} else
+					continue;
+
+				result.append(new SVGPart(0, 0, svgArrow), 0, 0);
+				result.append(visit(ctx.getChild(i)), 28, 0);
+			}
+			return result;
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor#
 	 * visitAttributeSet
 	 * (se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser
 	 * .AttributeSetContext)
@@ -138,7 +183,11 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	@Override
 	public SVGPart visitAttributeSet(AttributeSetContext ctx) {
 		if (ctx.getChildCount() == 1) {
-			return visit(ctx.getChild(0));
+			// add single arrow
+			String svgArrow = "<polyline points=\"0,20 14,20\" fill=\"none\" stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#BlackTriangle)\"/>\n";
+			SVGPart result = new SVGPart(28, 0, svgArrow);
+			result.append(visit(ctx.getChild(0)), 0, 0);
+			return result;
 		} else {
 			String svg = "<polyline points=\"0,20 12,20\" fill=\"none\" stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#BlackTriangle)\"/>\n"
 					+ "<circle cx=\"36\" cy=\"20\" r=\"10\" fill=\"black\" stroke=\"black\" stroke-width=\"2\" />\n";
@@ -149,7 +198,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 					if (i == 0)
 						svgArrow = "<polyline points=\"0,20 14,20\" fill=\"none\" stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#BlackTriangle)\"/>\n";
 					else
-						svgArrow = "<polyline points=\"-8,-20 -8,20 14,20\" id=\"poly1\" fill=\"none\"\n"
+						svgArrow = "<polyline points=\"-10,-20 -10,20 14,20\" id=\"poly1\" fill=\"none\"\n"
 								+ "stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#BlackTriangle)\" />";
 				} else
 					continue;
@@ -180,10 +229,10 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 				String svgArrow = "";
 				if (ctx.getChild(i).getClass() == AttributeContext.class) {
 					if (i != 0)
-						svgArrow = "<polyline points=\"-36,"
+						svgArrow = "<polyline points=\"-38,"
 								+ (-height - 20)
-								+ " -36,20 -14,20\" id=\"poly1\" fill=\"none\"\n"
-								+ "stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#BlackTriangle)\" />";
+								+ " -38,20 -14,20\" id=\"poly1\" fill=\"none\"\n"
+								+ "stroke=\"red\" stroke-width=\"2\" marker-end=\"url(#BlackTriangle)\" />";
 				} else
 					continue;
 
@@ -206,7 +255,8 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	 */
 	@Override
 	public SVGPart visitAttributeGroup(AttributeGroupContext ctx) {
-		String svg = "<circle cx=\"20\" cy=\"20\" r=\"20\" fill=\"white\" stroke=\"black\" stroke-width=\"2\" />\n";
+		String svg = "<circle cx=\"20\" cy=\"20\" r=\"20\" fill=\"white\" stroke=\"black\" stroke-width=\"2\" />\n";// +
+		// "<polyline points=\"40,20 60,20\" fill=\"none\" stroke=\"black\" stroke-width=\"2\"/>\n";
 		SVGPart result = new SVGPart(40, 0, svg);
 		result.append(visit(ctx.attributeSet()));
 		return result;
@@ -227,29 +277,34 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 		} else {
 			String svg = // "<polyline points=\"0,20 12,20\" fill=\"none\" stroke=\"black\" stroke-width=\"2\"/>\n"
 			"<circle cx=\"10\" cy=\"20\" r=\"10\" fill=\"black\" stroke=\"black\" stroke-width=\"2\" />\n";
-			SVGPart result = new SVGPart(0, 0, svg);
+			SVGPart result = new SVGPart(20, 0, svg);
 
 			for (int i = 0; i < ctx.getChildCount(); i++) {
 				String svgArrow = "";
 				if (ctx.getChild(i).getClass() == FocusConceptContext.class) {
-					if (i == 0)
-						svgArrow = "<polyline points=\"0,20 12,20\" fill=\"none\" stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#ClearTriangle)\"/>\n";
-					else
-						svgArrow = "<polyline points=\"-8,-20 -8,20 12,20\" id=\"poly1\" fill=\"none\"\n"
-								+ "stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#ClearTriangle)\" />";
-
+					// if (i == 0)
+					// svgArrow =
+					// "<polyline points=\"0,20 12,20\" fill=\"none\" stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#ClearTriangle)\"/>\n";
+					// else
+					// svgArrow =
+					// "<polyline points=\"-8,-20 -8,20 12,20\" id=\"poly1\" fill=\"none\"\n"
+					// +
+					// "stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#ClearTriangle)\" />";
+					SVGPart childPart = visit(ctx.getChild(i));
+					result.append(childPart, 0, 0);
 				} else if (ctx.getChild(i).getClass() == RefinementContext.class) {
 					if (i == 0)
-						svgArrow = "<polyline points=\"0,20 14,20\" fill=\"none\" stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#BlackTriangle)\"/>\n";
+						svgArrow = "<polyline points=\"0,20 14,20\" fill=\"none\" stroke=\"blue\" stroke-width=\"2\" marker-end=\"url(#BlackTriangle)\"/>\n";
 					else
-						svgArrow = "<polyline points=\"-8,-20 -8,20 14,20\" id=\"poly1\" fill=\"none\"\n"
-								+ "stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#BlackTriangle)\" />";
+						svgArrow = "<polyline points=\"-10,-20 -10,20 14,20\" id=\"poly1\" fill=\"none\"\n"
+								+ "stroke=\"blue\" stroke-width=\"2\" marker-end=\"url(#BlackTriangle)\" />";
+					result.append(new SVGPart(20, 0, svgArrow), 0, 0);
+					SVGPart childPart = visit(ctx.getChild(i));
+					result.append(childPart, 8, 0);
+
 				} else
 					continue;
 
-				result.append(new SVGPart(0, 0, svgArrow), 18, 0);
-				SVGPart childPart = visit(ctx.getChild(i));
-				result.append(childPart, 46, 0);
 			}
 			return result;
 		}
