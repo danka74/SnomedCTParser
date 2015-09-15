@@ -57,13 +57,34 @@ public class SVGPart {
 	protected int indent;
 	protected int height;
 	protected String part;
+	
+	public void adjust(int indent, int height) {
+		this.indent += indent;
+		this.height += height;
+	}
 
 	public int getHeight() {
 		// TODO Auto-generated method stub
 		return height;
 	}
+	
+	public void setHeight(int height) {
+		this.height = height;
+	}
+	
+	public int getIndent() {
+		return this.indent;
+	}
+	
+	public void setIndent(int indent) {
+		this.indent = indent;
+	}
 
-	public void setPre(String svgPre) {
-		this.part = svgPre + this.part;
+//	public void setPre(String svgPre) {
+//		this.part = svgPre + this.part;
+//	}
+	
+	public String toString() {
+		return "h: " + this.height + ", i: " + this.indent;
 	}
 }

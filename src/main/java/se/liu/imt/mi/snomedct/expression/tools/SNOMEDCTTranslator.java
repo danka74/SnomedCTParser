@@ -37,6 +37,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.normalform.NormalFormRewriter;
 import org.semanticweb.owlapi.reasoner.InferenceType;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
@@ -48,7 +49,7 @@ import se.liu.imt.mi.snomedct.parser.SNOMEDCTParserFactory;
 /**
  * @author Daniel Karlsson, Linköping Univsrsity, daniel.karlsson@liu.se
  * @author Kent Spackman, IHTSDO, ksp@ihtsdo.org
-
+ * 
  * 
  */
 public class SNOMEDCTTranslator {
@@ -64,9 +65,11 @@ public class SNOMEDCTTranslator {
 		Options options = new Options();
 
 		// add OWL output format option
-		options.addOption("f", "owl-format", true, "OWL output format [turtle|owlf|sct]");
+		options.addOption("f", "owl-format", true,
+				"OWL output format [turtle|owlf|sct]");
 		// add normal form/stated option
-		options.addOption("n", "normal-form", true, "output normal form [stated|distribution]");
+		options.addOption("n", "normal-form", true,
+				"output normal form [stated|distribution|flat]");
 		// add SNOMED CT ontology file option
 		options.addOption("s", "snomed-file", true, "SNOMED CT ontology file");
 		// add labels option
@@ -85,8 +88,8 @@ public class SNOMEDCTTranslator {
 		String normalForm = cmd.getOptionValue("normal-form", "stated");
 		String snomedCTFile = cmd.getOptionValue("snomed-file");
 		boolean labels = cmd.hasOption("labels");
-		
-		List<?> argList = (List<?>)cmd.getArgList();
+
+		List<?> argList = (List<?>) cmd.getArgList();
 		if (argList.size() < 1) {
 			HelpFormatter f = new HelpFormatter();
 			f.printHelp("SNOMEDCTTranslator", options);
@@ -139,7 +142,8 @@ public class SNOMEDCTTranslator {
 			// if stated form, just output the ontology in the selected format
 			manager.saveOntology(ontology, ontologyFormat,
 					IRI.create(new File(outputFileName)));
-		} else if (normalForm.equals("distribution")) {
+		} else if (normalForm.equals("distribution")
+				|| normalForm.equals("flat")) {
 			// if not stated form, classify the ontology, possibly after first
 			// importing (a module from) SNOMED CT
 
@@ -153,14 +157,8 @@ public class SNOMEDCTTranslator {
 				ontology.getOWLOntologyManager().applyChange(
 						new AddImport(ontology, importDeclaration));
 			}
-			
-			// Create reasoner and classify the ontology including SNOMED CT
-			OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
-			OWLReasoner reasoner = reasonerFactory.createReasoner(ontology);
-			Logger.getLogger("org.semanticweb.elk").setLevel(Level.ERROR);
-			reasoner.flush();
-			reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
 
+			NormalFormRewriter normalFormConverter = null;
 			// create a fresh empty ontology for output of inferred expression
 			OWLOntologyManager outputManager = OWLManager
 					.createOWLOntologyManager();
@@ -170,14 +168,37 @@ public class SNOMEDCTTranslator {
 
 			List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
 
-			// create the normal form converter
-			DistributionNormalFormConverter distFormConv = new DistributionNormalFormConverter(
-					ontology, reasoner);
+			if (normalForm.equals("distribution")) {
+				// Create reasoner and classify the ontology including SNOMED CT
+				OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
+				OWLReasoner reasoner = reasonerFactory.createReasoner(ontology);
+				Logger.getLogger("org.semanticweb.elk").setLevel(Level.ERROR);
+				reasoner.flush();
+				reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
+
+				// create the normal form converter
+				normalFormConverter = new DistributionNormalFormConverter(
+						ontology, reasoner);
+
+				// add annotations from original ontology
+				for (OWLOntology o : reasoner.getRootOntology()
+						.getImportsClosure()) {
+					for (OWLAnnotation annot : o.getAnnotations()) {
+						changes.add(new AddOntologyAnnotation(inferredOntology,
+								annot));
+					}
+					for (OWLAnnotationAssertionAxiom axiom : o
+							.getAxioms(AxiomType.ANNOTATION_ASSERTION)) {
+						changes.add(new AddAxiom(inferredOntology, axiom));
+					}
+				}
+			} else
+				normalFormConverter = new Flattener(manager);
 
 			// iterate over equivalent classes axioms in the source ontology
 			for (OWLEquivalentClassesAxiom eqAxiom : ontology
 					.getAxioms(AxiomType.EQUIVALENT_CLASSES)) {
-//				logger.info("axiom = " + eqAxiom.toString());
+				// logger.info("axiom = " + eqAxiom.toString());
 				// the equivalent classes axiom is assumed to have only two
 				// class expressions, the second (right hand side) being the
 				// class definition. As the source ontology is resulting from a
@@ -189,10 +210,10 @@ public class SNOMEDCTTranslator {
 				OWLClassExpression rhs = expressionSet.next(); // right hand
 																// side
 				// convert the class definition to normal form
-				OWLClassExpression normalFormExpression = distFormConv
+				OWLClassExpression normalFormExpression = normalFormConverter
 						.convertToNormalForm(rhs);
-//				logger.info("expression = " + rhs.toString());
-//				logger.info("normal form = " + normalFormExpression);
+				// logger.info("expression = " + rhs.toString());
+				// logger.info("normal form = " + normalFormExpression);
 				changes.add(new AddAxiom(inferredOntology,
 						inferredOntology
 								.getOWLOntologyManager()
@@ -204,7 +225,7 @@ public class SNOMEDCTTranslator {
 			// iterate over subclass axioms in the source ontology
 			for (OWLSubClassOfAxiom subClassAxiom : ontology
 					.getAxioms(AxiomType.SUBCLASS_OF)) {
-//				logger.info("axiom = " + subClassAxiom.toString());
+				// logger.info("axiom = " + subClassAxiom.toString());
 
 				OWLClassExpression lhs = subClassAxiom.getSubClass(); // left
 																		// hand
@@ -212,27 +233,15 @@ public class SNOMEDCTTranslator {
 				OWLClassExpression rhs = subClassAxiom.getSuperClass(); // right
 																		// hand
 				// side
-				
+
 				// convert the class definition to normal form
-				OWLClassExpression normalFormExpression = distFormConv
+				OWLClassExpression normalFormExpression = normalFormConverter
 						.convertToNormalForm(rhs);
-//				logger.info("expression = " + rhs.toString());
-//				logger.info("normal form = " + normalFormExpression);
+				// logger.info("expression = " + rhs.toString());
+				// logger.info("normal form = " + normalFormExpression);
 				changes.add(new AddAxiom(inferredOntology, inferredOntology
 						.getOWLOntologyManager().getOWLDataFactory()
 						.getOWLSubClassOfAxiom(lhs, normalFormExpression)));
-			}
-
-			// add annotations from original ontology
-			for (OWLOntology o : reasoner.getRootOntology().getImportsClosure()) {
-				for (OWLAnnotation annot : o.getAnnotations()) {
-					changes.add(new AddOntologyAnnotation(inferredOntology,
-							annot));
-				}
-				for (OWLAnnotationAssertionAxiom axiom : o
-						.getAxioms(AxiomType.ANNOTATION_ASSERTION)) {
-					changes.add(new AddAxiom(inferredOntology, axiom));
-				}
 			}
 
 			outputManager.applyChanges(changes);
@@ -240,8 +249,6 @@ public class SNOMEDCTTranslator {
 			// save the ontology in the selected format
 			outputManager.saveOntology(inferredOntology, ontologyFormat,
 					IRI.create(new File(outputFileName)));
-
-			reasoner.dispose();
 
 		}
 

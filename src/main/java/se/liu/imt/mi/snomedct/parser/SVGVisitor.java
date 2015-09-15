@@ -108,6 +108,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 
 	@Override
 	public SVGPart visitStatement(StatementContext ctx) {
+		logger.debug("visitStatement");
 		SVGPart result = new SVGPart(0, 0, svgPre);
 
 		definiens = true;
@@ -119,6 +120,8 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 		}
 		// else throw not implemented
 
+		logger.debug(result.toString());
+		
 		definiens = false;
 
 		if (ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.EQ_TO)
@@ -127,7 +130,9 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 			result.append(new SVGPart(124, 10, svgSubclassOf), 40, 0);
 
 		result.append(visitSubExpression(ctx.subExpression(1)));
-
+		
+		logger.debug(result.toString());
+		
 		result.appendNoG(new SVGPart(0, 0, svgPost));
 
 		return result;
@@ -143,6 +148,8 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	 */
 	@Override
 	public SVGPart visitFocusConcept(FocusConceptContext ctx) {
+		logger.debug("visitFocusConcept");
+		
 		if (ctx.getChildCount() == 1) {
 			if (definiens)
 				return visit(ctx.getChild(0));
@@ -150,6 +157,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 			String svgArrow = "<polyline points=\"0,20 12,20\" fill=\"none\" stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#ClearTriangle)\"/>\n";
 			SVGPart result = new SVGPart(0, 0, svgArrow);
 			result.append(visit(ctx.getChild(0)), 28, 0);
+			logger.debug(result.toString());
 			return result;
 		} else {
 			String svg = "<circle cx=\"10\" cy=\"20\" r=\"10\" fill=\"black\" stroke=\"black\" stroke-width=\"2\" />\n";
@@ -168,6 +176,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 				result.append(new SVGPart(0, 0, svgArrow), 0, 0);
 				result.append(visit(ctx.getChild(i)), 28, 0);
 			}
+			logger.debug(result.toString());
 			return result;
 		}
 	}
@@ -182,11 +191,13 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	 */
 	@Override
 	public SVGPart visitAttributeSet(AttributeSetContext ctx) {
+		logger.debug("visitAttributeSet");
 		if (ctx.getChildCount() == 1) {
 			// add single arrow
 			String svgArrow = "<polyline points=\"0,20 14,20\" fill=\"none\" stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#BlackTriangle)\"/>\n";
 			SVGPart result = new SVGPart(28, 0, svgArrow);
 			result.append(visit(ctx.getChild(0)), 0, 0);
+			logger.debug(result.toString());
 			return result;
 		} else {
 			String svg = "<polyline points=\"0,20 12,20\" fill=\"none\" stroke=\"black\" stroke-width=\"2\" marker-end=\"url(#BlackTriangle)\"/>\n"
@@ -206,6 +217,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 				result.append(new SVGPart(0, 0, svgArrow), 28, 0);
 				result.append(visit(ctx.getChild(i)), 56, 0);
 			}
+			logger.debug(result.toString());
 			return result;
 		}
 	}
@@ -220,6 +232,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	 */
 	@Override
 	public SVGPart visitNonGroupedAttributeSet(NonGroupedAttributeSetContext ctx) {
+		logger.debug("visitNonGroupedAttributeSet");
 		if (ctx.getChildCount() == 1) {
 			return visit(ctx.getChild(0));
 		} else {
@@ -239,8 +252,11 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 				result.append(new SVGPart(0, 0, svgArrow));
 				SVGPart childPart = visit(ctx.getChild(i));
 				height += childPart.getHeight();
-				result.append(childPart);
+				logger.debug("child: " + childPart.toString());
+				result.append(childPart, 0, 0);
+				//result.adjust(-40, 0);
 			}
+			logger.debug(result.toString());
 			return result;
 		}
 	}
@@ -255,10 +271,12 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	 */
 	@Override
 	public SVGPart visitAttributeGroup(AttributeGroupContext ctx) {
+		logger.debug("visitAttributeGroup");
 		String svg = "<circle cx=\"20\" cy=\"20\" r=\"20\" fill=\"white\" stroke=\"black\" stroke-width=\"2\" />\n";// +
 		// "<polyline points=\"40,20 60,20\" fill=\"none\" stroke=\"black\" stroke-width=\"2\"/>\n";
 		SVGPart result = new SVGPart(40, 0, svg);
 		result.append(visit(ctx.attributeSet()));
+		logger.debug(result.toString());
 		return result;
 	}
 
@@ -272,6 +290,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	 */
 	@Override
 	public SVGPart visitSubExpression(SubExpressionContext ctx) {
+		logger.debug("visitSubExpression");
 		if (ctx.getChildCount() == 1) {
 			return visit(ctx.getChild(0));
 		} else {
@@ -306,6 +325,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 					continue;
 
 			}
+			logger.debug(result.toString());
 			return result;
 		}
 	}
@@ -324,6 +344,8 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	@Override
 	public SVGPart visitConceptReference(ConceptReferenceContext ctx) {
 		String term = removeCharacter(ctx.TERM().getText(), "|");
+		logger.debug("visitConceptReference - " + term);
+
 		int len = Math.max(getTextWidth(term), 60) + 24;
 
 		Boolean isFullyDefined = fullyDefinedDefault;
@@ -376,6 +398,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 					+ "font-size=\"12\">" + term + "</text>";
 		}
 		SVGPart result = new SVGPart(0, 50, svg);
+		logger.debug(result.toString());
 		return result;
 	}
 
@@ -391,6 +414,8 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 	public SVGPart visitAttribute(AttributeContext ctx) {
 		String term = removeCharacter(ctx.conceptReference().TERM().getText(),
 				"|");
+		logger.debug("visitAttribute - " + term);
+
 		int len = Math.max(getTextWidth(term), 60) + 24;
 
 		SVGPart val = visit(ctx.attributeValue());
@@ -420,6 +445,7 @@ public class SVGVisitor extends SNOMEDCTExpressionBaseVisitor<SVGPart> {
 
 		SVGPart result = new SVGPart(0, 0, svg);
 		result.append(val, len + 40, 0);
+		logger.debug(result.toString());
 		return result;
 	}
 

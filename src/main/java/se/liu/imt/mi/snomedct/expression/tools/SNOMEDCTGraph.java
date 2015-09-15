@@ -83,27 +83,7 @@ public class SNOMEDCTGraph {
 		}
 
 		// read SNOMED CT concept file if present
-		HashMap<Long, Boolean> concepts = new HashMap<Long, Boolean>();
-		if (snomedCTFileName != null) {
-			logger.info("Reading SNOMED CT concept file...");
-			BufferedReader snomedCTFile;
-			try {
-				snomedCTFile = new BufferedReader(new FileReader(
-						snomedCTFileName));
-				// skip first line
-				snomedCTFile.readLine();
-				String strLine;
-				while ((strLine = snomedCTFile.readLine()) != null) {
-					String tokens[] = strLine.split("\t");
-					concepts.put(new Long(tokens[0]),
-							tokens[4].equals("900000000000073002"));
-				}
-			} catch (Exception e) {
-				concepts = null;
-				// e.printStackTrace();
-			}
-			logger.info("Finished reading SNOMED CT concept file.");
-		}
+		HashMap<Long, Boolean> concepts = loadSnomedCTConcepts(snomedCTFileName);		
 
 		try {
 			String inputExpression = new String(Files.readAllBytes(Paths
@@ -138,6 +118,33 @@ public class SNOMEDCTGraph {
 			System.err.println(pce.getMessage());
 		}
 
+	}
+	
+	public static HashMap<Long, Boolean> loadSnomedCTConcepts(String snomedCTFileName) {
+		HashMap<Long, Boolean> concepts = new HashMap<Long, Boolean>();
+		if (snomedCTFileName != null) {
+			logger.info("Reading SNOMED CT concept file...");
+			BufferedReader snomedCTFile;
+			try {
+				snomedCTFile = new BufferedReader(new FileReader(
+						snomedCTFileName));
+				// skip first line
+				snomedCTFile.readLine();
+				String strLine;
+				while ((strLine = snomedCTFile.readLine()) != null) {
+					String tokens[] = strLine.split("\t");
+					concepts.put(new Long(tokens[0]),
+							tokens[4].equals("900000000000073002"));
+				}
+			} catch (Exception e) {
+				concepts = null;
+				// e.printStackTrace();
+			}
+			logger.info("Finished reading SNOMED CT concept file.");
+		}
+		
+		return concepts;
+		
 	}
 
 }
