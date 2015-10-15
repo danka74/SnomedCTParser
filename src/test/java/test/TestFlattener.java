@@ -39,7 +39,7 @@ public class TestFlattener {
 	@Test
 	public void test() throws OWLOntologyCreationException, OWLOntologyStorageException {
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-		URL expressionsURL = getClass().getResource("/obsTech20150714.owl");
+		URL expressionsURL = getClass().getResource("/obsTechPreviewExtract.owl");
 		OWLOntology ontology = manager
 				.loadOntologyFromOntologyDocument(new File(expressionsURL
 						.getFile()));
@@ -94,9 +94,9 @@ public class TestFlattener {
 					.getOWLOntologyManager().getOWLDataFactory()
 					.getOWLSubClassOfAxiom(lhs, flatExpression)));
 		}
-		
+
 		outputManager.applyChanges(changes);
-		
+
 		outputManager.saveOntology(inferredOntology, new SNOMEDCTOntologyFormat(),
 				IRI.create(new File("flatTest.owl")));
 

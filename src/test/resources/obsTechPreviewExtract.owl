@@ -1,0 +1,310 @@
+Prefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)
+Prefix(owl2xml:=<http://www.w3.org/2006/12/owl2-xml#>)
+Prefix(owl:=<http://www.w3.org/2002/07/owl#>)
+Prefix(obo:=<http://purl.obolibrary.org/obo#>)
+Prefix(:=<http://snomed.info/id/>)
+Prefix(obs:=<http://snomed.info/obs/>)
+Prefix(sct:=<http://snomed.info/id/>)
+Prefix(KPobs:=<http://snomed.info/kpobs/obs/>)
+Prefix(lnc:=<http://umls.nlm.nih.gov/sab/LNC/scui/>)
+Prefix(xml:=<http://www.w3.org/XML/1998/namespace>)
+Prefix(rdf:=<http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+Prefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)
+Ontology(<http://snomed.info/obs/>
+Annotation(rdfs:comment "Copyright 2015 The International Health Terminology Standards Development Organisation (IHTSDO).
+All Rights Reserved. SNOMED CT was originally created by The College of American Pathologists. \"SNOMED\" and \"SNOMED CT\"
+are registered trademarks of the IHTSDO.  SNOMED CT has been created by combining SNOMED RT and a computer based nomenclature
+and classification known as Clinical Terms Version 3, formerly known as Read Codes Version 3, which was created on behalf of
+the UK Department of Health.
+This document forms part of the International Release of SNOMED CT distributed by the International Health Terminology
+Standards Development Organisation (IHTSDO), and is subject to the IHTSDO's SNOMED CT Affiliate Licence.
+Details of the SNOMED CT Affiliate Licence may be found at www.ihtsdo.org/our-standards/licensing/.
+No part of this file may be reproduced or transmitted in any form or by any means, or stored in any kind of retrieval system,
+except by an Affiliate of the IHTSDO in accordance with the SNOMED CT Affiliate Licence. Any modification of this document
+(including without limitation the removal or modification of this notice) is prohibited without the express written permission
+of the IHTSDO.  Any copy of this file that is not obtained directly from the IHTSDO (or a Member of the IHTSDO) is not
+controlled by the IHTSDO, and may have been modified and may be out of date. Any recipient of this file who has received
+it by other means is encouraged to obtain a copy directly from the IHTSDO, or a Member of the IHTSDO.
+(Details of the Members of the IHTSDO may be found at www.ihtsdo.org/members/).
+
+DRAFT CONTENT FOR INPUT INTO TECHNOLOGY PREVIEW
+
+The definitions and relationships in this file represent an early alpha draft of the \"observables\" hierarchy of
+SNOMED CT, and is provided for testing and development purposes only. It is explicitly NOT suitable to replace the
+official release version of SNOMED CT observables in applications and health care records.
+        ")
+Declaration(ObjectProperty(:704346009))
+AnnotationAssertion(rdfs:label :704346009 "Specified By")
+AnnotationAssertion(rdfs:comment :704346009 "The observation procedure that defines an observable entity, i.e. it specifies the object of observation and the technique by which the observation takes place and the designated form (units, scale, etc.) of the result.")
+Declaration(ObjectProperty(:704347000))
+AnnotationAssertion(rdfs:label :704347000 "Observes")
+AnnotationAssertion(rdfs:comment :704347000 "The direct object of an observation procedure.")
+Declaration(ObjectProperty(:704321009))
+AnnotationAssertion(rdfs:label :704321009 "Characterizes")
+AnnotationAssertion(rdfs:comment :704321009 "The process which the property describes, and on which the property (of this observable) depends. The process can be very general (e.g. \"excretion\").")
+Declaration(ObjectProperty(:704327008))
+AnnotationAssertion(rdfs:label :704327008 "Direct Site")
+AnnotationAssertion(rdfs:comment :704327008 "The specific entity on which the observation is directly made, and is used when the observation is indirect, such as when a direct observation is not possible to be done on the entity in which the observable inheres.")
+Declaration(ObjectProperty(:has_value))
+AnnotationAssertion(rdfs:label :has_value "Has Value")
+Declaration(ObjectProperty(:inherent_ingredient))
+AnnotationAssertion(rdfs:label :inherent_ingredient "Inherent Ingredient")
+AnnotationAssertion(rdfs:comment :inherent_ingredient "The ingredient substance type of the independent continuant in which the property inheres.")
+Declaration(ObjectProperty(:inherent_location))
+AnnotationAssertion(rdfs:label :inherent_location "Inherent Location")
+AnnotationAssertion(rdfs:comment :inherent_location "A body site or other material entity which is the location of the independent continuant in which the property inheres.")
+Declaration(ObjectProperty(:704319004))
+AnnotationAssertion(rdfs:label :704319004 "Inheres In")
+AnnotationAssertion(rdfs:comment :704319004 "The independent continuant in which the quality inheres, and on which the dependent quality (of this observable) depends.")
+Declaration(ObjectProperty(:is_about))
+AnnotationAssertion(rdfs:label :is_about "Is about")
+AnnotationAssertion(rdfs:comment :is_about "The quality or process about which the observation is made.")
+Declaration(ObjectProperty(:method))
+AnnotationAssertion(rdfs:label :method "Method")
+AnnotationAssertion(rdfs:comment :method "The action of a procedure. In the case of measurements, the action value is \"measurement - action\".")
+Declaration(ObjectProperty(:704326004))
+AnnotationAssertion(rdfs:label :704326004 "Precondition")
+AnnotationAssertion(rdfs:comment :704326004 "Body state, timing, challenges, and other situations that must be true of the entity to be observed, e.g. standing, fasting, post-challenge, etc.")
+Declaration(ObjectProperty(:704322002))
+AnnotationAssertion(rdfs:label :704322002 "Process Agent")
+AnnotationAssertion(rdfs:comment :704322002 "The continuant (such as a body structure or organism) that is causally active in the process on which the property depends. It appears to have the same meaning as 'has_agent' in the OBO Relations Ontology. It may specialize the meaning of the process named as the value of CHARACTERIZES, or it may simply recapitulate the meaning that is already there. The PROCESS AGENT can be left unspecified.")
+Declaration(ObjectProperty(:704323007))
+AnnotationAssertion(rdfs:label :704323007 "Process Duration")
+AnnotationAssertion(rdfs:comment :704323007 "The duration of the process characterized by the observable property type.")
+Declaration(ObjectProperty(:704324001))
+AnnotationAssertion(rdfs:label :704324001 "Process Output")
+AnnotationAssertion(rdfs:comment :704324001 "The substance produced by the process characterized by the observable property type.")
+Declaration(ObjectProperty(:704318007))
+AnnotationAssertion(rdfs:label :704318007 "Property Type")
+AnnotationAssertion(rdfs:comment :704318007 "The type of inherent quality or process that is to be observed. Its values are abstract types of quality (length, odor, concentration) or abstract types of process features (rate, speed), and do not include qualities that are located (length of arm, odor of urine), or given a value (elevated concentration).")
+Declaration(ObjectProperty(:rel_to_part_of))
+AnnotationAssertion(rdfs:label :rel_to_part_of "Relative to - Part of")
+AnnotationAssertion(rdfs:comment :rel_to_part_of "The independent continuant which the value of \"Relative to\" is part of, if different from the independent continuant in which the property type inheres. Its main use is for relative substance
+concentrations, where the same substance has a concentration in two different fluids. In this case, TOWARDS and RELATIVE TO will have the same substance value, and the two fluids will be represented as values of INHERES IN and REL-TO PART OF.")
+Declaration(ObjectProperty(:704325000))
+AnnotationAssertion(rdfs:label :704325000 "Relative To")
+AnnotationAssertion(rdfs:comment :704325000 "The denominator of a relational property type, such as a ratio or proportion.")
+Declaration(ObjectProperty(:370132008))
+AnnotationAssertion(rdfs:label :370132008 "Scale")
+AnnotationAssertion(rdfs:comment :370132008 "The scale of the result of an observation or a diagnostic test (i.e., quantitative, qualitative, semi-quantitative).")
+Declaration(ObjectProperty(:246501002))
+AnnotationAssertion(rdfs:label :246501002 "Technique")
+AnnotationAssertion(rdfs:comment :246501002 "The technique by which an observation is carried out.")
+Declaration(ObjectProperty(:704320005))
+AnnotationAssertion(rdfs:label :704320005 "Towards")
+AnnotationAssertion(rdfs:comment :704320005 "The third element of a relational quality, the first two elements being the type of property and the entity in which the quality inheres, e.g. sodium, in the quality of concentration of sodium in serum.")
+Declaration(ObjectProperty(:246514001))
+AnnotationAssertion(rdfs:label :246514001 "Units")
+AnnotationAssertion(rdfs:comment :246514001 "The units used in assigning a value to an observation.")
+Declaration(AnnotationProperty(:SCTID))
+Declaration(AnnotationProperty(:FSN))
+Declaration(AnnotationProperty(:LOINCID))
+Declaration(AnnotationProperty(:LOINCLONCOMMONNAME))
+Declaration(AnnotationProperty(:COMMENT))
+Declaration(Class(lnc:10327-5))
+AnnotationAssertion(rdfs:label lnc:10327-5 "Eosinophils/100 leukocytes:NFr:Pt:Sputum:Qn:Manual count")
+AnnotationAssertion(:LOINCID lnc:10327-5 "10327-5")
+AnnotationAssertion(:LOINCLONGCOMMONNAME lnc:10327-5 "Eosinophils/100 leukocytes in Sputum by Manual count")
+EquivalentClasses(lnc:10327-5 ObjectIntersectionOf(
+sct:363787002 ObjectSomeValuesFrom(:704346009
+               ObjectIntersectionOf(sct:386053000
+                   ObjectSomeValuesFrom(:370132008 	sct:30766002)
+                   ObjectSomeValuesFrom(:704327008 	sct:119334006)
+                   ObjectSomeValuesFrom(:246501002 	sct:702663001)
+                   ObjectSomeValuesFrom(:246514001 	sct:415067009)
+                   ObjectSomeValuesFrom(:704347000
+                      ObjectIntersectionOf(sct:414237002
+                          ObjectSomeValuesFrom(:704318007 sct:118552002)
+                       ObjectSomeValuesFrom(:704319004 sct:45710003)
+                          ObjectSomeValuesFrom(:704320005 sct:702964005)
+                          ObjectSomeValuesFrom(:704325000 sct:702962009)
+ )))
+)))
+Declaration(Class(lnc:10328-3))
+AnnotationAssertion(rdfs:label lnc:10328-3 "Lymphocytes/100 leukocytes:NFr:Pt:CSF:Qn:Manual count")
+AnnotationAssertion(:LOINCID lnc:10328-3 "10328-3")
+AnnotationAssertion(:LOINCLONGCOMMONNAME lnc:10328-3 "Lymphocytes/100 leukocytes in Cerebral spinal fluid by Manual count")
+EquivalentClasses(lnc:10328-3 ObjectIntersectionOf(
+sct:363787002 ObjectSomeValuesFrom(:704346009
+               ObjectIntersectionOf(sct:386053000
+                   ObjectSomeValuesFrom(:370132008 	sct:30766002)
+                   ObjectSomeValuesFrom(:704327008 	sct:258450006)
+                   ObjectSomeValuesFrom(:246501002 	sct:702663001)
+                   ObjectSomeValuesFrom(:246514001 	sct:415067009)
+                   ObjectSomeValuesFrom(:704347000
+                      ObjectIntersectionOf(sct:414237002
+                          ObjectSomeValuesFrom(:704318007 sct:118552002)
+                       ObjectSomeValuesFrom(:704319004 sct:65216001)
+                          ObjectSomeValuesFrom(:704320005 sct:702968008)
+                          ObjectSomeValuesFrom(:704325000 sct:702962009)
+ )))
+)))
+Declaration(Class(lnc:9825-1))
+AnnotationAssertion(rdfs:label lnc:9825-1 "Mycobacterium sp identified:Prid:Pt:Isolate:Nom")
+AnnotationAssertion(:LOINCID lnc:9825-1 "9825-1")
+AnnotationAssertion(:LOINCLONGCOMMONNAME lnc:9825-1 "Mycobacterium sp identified in Isolate")
+EquivalentClasses(lnc:9825-1 ObjectIntersectionOf(
+sct:363787002 ObjectSomeValuesFrom(:704346009
+               ObjectIntersectionOf(sct:386053000
+                   ObjectSomeValuesFrom(:370132008 	sct:117362005)
+                   ObjectSomeValuesFrom(:704327008 	sct:119303007)
+                   ObjectSomeValuesFrom(:704347000
+                      ObjectIntersectionOf(sct:414237002
+                          ObjectSomeValuesFrom(:704318007 sct:118584009)
+                       ObjectSomeValuesFrom(:704319004 sct:386126001)
+                          ObjectSomeValuesFrom(:704320005 sct:243368001)
+ )))
+)))
+Declaration(Class(lnc:9826-9))
+AnnotationAssertion(rdfs:label lnc:9826-9 "Treponema pallidum Ab:ACnc:Pt:CSF:Ord:IF")
+AnnotationAssertion(:LOINCID lnc:9826-9 "9826-9")
+AnnotationAssertion(:LOINCLONGCOMMONNAME lnc:9826-9 "Treponema pallidum Ab [Presence] in Cerebral spinal fluid by Immunofluorescence")
+EquivalentClasses(lnc:9826-9 ObjectIntersectionOf(
+sct:363787002 ObjectSomeValuesFrom(:704346009
+               ObjectIntersectionOf(sct:386053000
+                   ObjectSomeValuesFrom(:370132008 	sct:117363000)
+                   ObjectSomeValuesFrom(:704327008 	sct:258450006)
+                   ObjectSomeValuesFrom(:246501002 	sct:703444002)
+                   ObjectSomeValuesFrom(:704347000
+                      ObjectIntersectionOf(sct:414237002
+                          ObjectSomeValuesFrom(:704318007 sct:118569000)
+                       ObjectSomeValuesFrom(:704319004 sct:65216001)
+                          ObjectSomeValuesFrom(:704320005 sct:120723002)
+ )))
+)))
+Declaration(Class(lnc:9829-3))
+AnnotationAssertion(rdfs:label lnc:9829-3 "Beta globulin:MRat:24H:Urine:Qn")
+AnnotationAssertion(:LOINCID lnc:9829-3 "9829-3")
+AnnotationAssertion(:LOINCLONGCOMMONNAME lnc:9829-3 "Beta globulin [Mass/time] in 24 hour Urine")
+EquivalentClasses(lnc:9829-3 ObjectIntersectionOf(
+sct:363787002 ObjectSomeValuesFrom(:704346009
+               ObjectIntersectionOf(sct:386053000
+                   ObjectSomeValuesFrom(:370132008 	sct:30766002)
+                   ObjectSomeValuesFrom(:704327008 	sct:122575003)
+                   ObjectSomeValuesFrom(:704347000
+                      ObjectIntersectionOf(sct:414237002
+                          ObjectSomeValuesFrom(:704318007 sct:118544000)
+                          ObjectSomeValuesFrom(:704321009 sct:63911002)
+                   ObjectSomeValuesFrom(:704323007 	sct:123027009)
+                                     ObjectSomeValuesFrom(:704324001 sct:65699000)
+ ))
+))))
+Declaration(Class(lnc:9830-1))
+AnnotationAssertion(rdfs:label lnc:9830-1 "Cholesterol.total/Cholesterol.in HDL:MRto:Pt:Ser/Plas:Qn")
+AnnotationAssertion(:LOINCID lnc:9830-1 "9830-1")
+AnnotationAssertion(:LOINCLONGCOMMONNAME lnc:9830-1 "Cholesterol.total/Cholesterol in HDL [Mass Ratio] in Serum or Plasma")
+EquivalentClasses(lnc:9830-1 ObjectIntersectionOf(
+sct:363787002 ObjectSomeValuesFrom(:704346009
+               ObjectIntersectionOf(sct:386053000
+                   ObjectSomeValuesFrom(:370132008 	sct:30766002)
+                   ObjectSomeValuesFrom(:704327008 	sct:122592007)
+                   ObjectSomeValuesFrom(:704347000
+                      ObjectIntersectionOf(sct:414237002
+                          ObjectSomeValuesFrom(:704318007 sct:118545004)
+                       ObjectSomeValuesFrom(:704319004 sct:50863008)
+                          ObjectSomeValuesFrom(:704320005 sct:84698008)
+                          ObjectSomeValuesFrom(:704325000 sct:102737005)
+ )))
+)))
+Declaration(Class(lnc:9831-9))
+AnnotationAssertion(rdfs:label lnc:9831-9 "Gamma globulin:MRat:24H:Urine:Qn")
+AnnotationAssertion(:LOINCID lnc:9831-9 "9831-9")
+AnnotationAssertion(:LOINCLONGCOMMONNAME lnc:9831-9 "Gamma globulin [Mass/time] in 24 hour Urine")
+EquivalentClasses(lnc:9831-9 ObjectIntersectionOf(
+sct:363787002 ObjectSomeValuesFrom(:704346009
+               ObjectIntersectionOf(sct:386053000
+                   ObjectSomeValuesFrom(:370132008 	sct:30766002)
+                   ObjectSomeValuesFrom(:704327008 	sct:122575003)
+                   ObjectSomeValuesFrom(:704347000
+                      ObjectIntersectionOf(sct:414237002
+                          ObjectSomeValuesFrom(:704318007 sct:118544000)
+                          ObjectSomeValuesFrom(:704321009 sct:63911002)
+                   ObjectSomeValuesFrom(:704323007 	sct:123027009)
+                                     ObjectSomeValuesFrom(:704324001 sct:116648000)
+ ))
+))))
+Declaration(Class(lnc:9832-7))
+AnnotationAssertion(rdfs:label lnc:9832-7 "Cholesterol.in HDL 2:MCnc:Pt:Ser/Plas:Qn")
+AnnotationAssertion(:LOINCID lnc:9832-7 "9832-7")
+AnnotationAssertion(:LOINCLONGCOMMONNAME lnc:9832-7 "Cholesterol in HDL 2 [Mass/volume] in Serum or Plasma")
+EquivalentClasses(lnc:9832-7 ObjectIntersectionOf(
+sct:363787002 ObjectSomeValuesFrom(:704346009
+               ObjectIntersectionOf(sct:386053000
+                   ObjectSomeValuesFrom(:370132008 	sct:30766002)
+                   ObjectSomeValuesFrom(:704327008 	sct:122592007)
+                   ObjectSomeValuesFrom(:704347000
+                      ObjectIntersectionOf(sct:414237002
+                          ObjectSomeValuesFrom(:704318007 sct:118539007)
+                       ObjectSomeValuesFrom(:704319004 sct:50863008)
+                          ObjectSomeValuesFrom(:704320005 sct:707084003)
+ )))
+)))
+Declaration(Class(lnc:9833-5))
+AnnotationAssertion(rdfs:label lnc:9833-5 "Cholesterol.in HDL 3:MCnc:Pt:Ser/Plas:Qn")
+AnnotationAssertion(:LOINCID lnc:9833-5 "9833-5")
+AnnotationAssertion(:LOINCLONGCOMMONNAME lnc:9833-5 "Cholesterol in HDL 3 [Mass/volume] in Serum or Plasma")
+EquivalentClasses(lnc:9833-5 ObjectIntersectionOf(
+sct:363787002 ObjectSomeValuesFrom(:704346009
+               ObjectIntersectionOf(sct:386053000
+                   ObjectSomeValuesFrom(:370132008 	sct:30766002)
+                   ObjectSomeValuesFrom(:704327008 	sct:122592007)
+                   ObjectSomeValuesFrom(:704347000
+                      ObjectIntersectionOf(sct:414237002
+                          ObjectSomeValuesFrom(:704318007 sct:118539007)
+                       ObjectSomeValuesFrom(:704319004 sct:50863008)
+                          ObjectSomeValuesFrom(:704320005 sct:707125002)
+ )))
+)))
+Declaration(Class(lnc:9834-3))
+AnnotationAssertion(rdfs:label lnc:9834-3 "Hydromorphone:Threshold:Pt:Urine:Ord")
+AnnotationAssertion(:LOINCID lnc:9834-3 "9834-3")
+AnnotationAssertion(:LOINCLONGCOMMONNAME lnc:9834-3 "Hydromorphone [Presence] in Urine")
+EquivalentClasses(lnc:9834-3 ObjectIntersectionOf(
+sct:363787002 ObjectSomeValuesFrom(:704346009
+               ObjectIntersectionOf(sct:386053000
+                   ObjectSomeValuesFrom(:370132008 	sct:117363000)
+                   ObjectSomeValuesFrom(:704327008 	sct:122575003)
+                   ObjectSomeValuesFrom(:704347000
+                      ObjectIntersectionOf(sct:414237002
+                          ObjectSomeValuesFrom(:704318007 sct:118589004)
+                       ObjectSomeValuesFrom(:704319004 sct:78014005)
+                          ObjectSomeValuesFrom(:704320005 sct:44508008)
+ )))
+)))
+Declaration(Class(lnc:9835-0))
+AnnotationAssertion(rdfs:label lnc:9835-0 "Hydromorphone:MCnc:Pt:Urine:Qn")
+AnnotationAssertion(:LOINCID lnc:9835-0 "9835-0")
+AnnotationAssertion(:LOINCLONGCOMMONNAME lnc:9835-0 "Hydromorphone [Mass/volume] in Urine")
+EquivalentClasses(lnc:9835-0 ObjectIntersectionOf(
+sct:363787002 ObjectSomeValuesFrom(:704346009
+               ObjectIntersectionOf(sct:386053000
+                   ObjectSomeValuesFrom(:370132008 	sct:30766002)
+                   ObjectSomeValuesFrom(:704327008 	sct:122575003)
+                   ObjectSomeValuesFrom(:704347000
+                      ObjectIntersectionOf(sct:414237002
+                          ObjectSomeValuesFrom(:704318007 sct:118539007)
+                       ObjectSomeValuesFrom(:704319004 sct:78014005)
+                          ObjectSomeValuesFrom(:704320005 sct:44508008)
+ )))
+)))
+Declaration(Class(lnc:9842-6))
+AnnotationAssertion(rdfs:label lnc:9842-6 "Casts:Naric:Pt:Urine sed:Qn:Microscopy.light.LPF")
+AnnotationAssertion(:LOINCID lnc:9842-6 "9842-6")
+AnnotationAssertion(:LOINCLONGCOMMONNAME lnc:9842-6 "Casts [#/area] in Urine sediment by Microscopy low power field")
+EquivalentClasses(lnc:9842-6 ObjectIntersectionOf(
+sct:363787002 ObjectSomeValuesFrom(:704346009
+               ObjectIntersectionOf(sct:386053000
+                   ObjectSomeValuesFrom(:370132008 	sct:30766002)
+                   ObjectSomeValuesFrom(:704327008 	sct:122567009)
+                   ObjectSomeValuesFrom(:246501002 	sct:703451006)
+                   ObjectSomeValuesFrom(:704347000
+                      ObjectIntersectionOf(sct:414237002
+                          ObjectSomeValuesFrom(:704318007 sct:118549005)
+                       ObjectSomeValuesFrom(:704319004 sct:386100006)
+                          ObjectSomeValuesFrom(:704320005 sct:21718009)
+ )))
+)))
+Declaration(Class(obs:0000))
+AnnotationAssertion(rdfs:label obs:0000 "not applicable")
+
+)
