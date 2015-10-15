@@ -1,13 +1,10 @@
 package test;
 
-import static org.junit.Assert.*;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTGraph;
-import se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTTranslator;
 
 public class TestSNOMEDCTGraph {
 

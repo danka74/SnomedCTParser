@@ -3,10 +3,7 @@
  */
 package test;
 
-import static org.junit.Assert.*;
-
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,11 +14,9 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.semanticweb.owlapi.model.OWLObject;
 
 import se.liu.imt.mi.snomedct.expression.tools.ExpressionSyntaxError;
 import se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTParserUtil;
-import se.liu.imt.mi.snomedct.parser.OWLVisitor;
 import se.liu.imt.mi.snomedct.parser.SVGPart;
 import se.liu.imt.mi.snomedct.parser.SVGVisitor;
 
