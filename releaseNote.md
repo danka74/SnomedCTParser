@@ -5,10 +5,12 @@ If you do not want to release to that repo, don't enable the publicRelease profi
 
 For a public release - published to Maven Central - use a command like this:
 ```
-mvn jgitflow:release-start jgitflow:release-finish -DreleaseVersion=1.4.1 -DdevelopmentVersion=1.5-SNAPSHOT -PpublicRelease
+mvn jgitflow:release-start jgitflow:release-finish -DreleaseVersion=1.4.1 
+-DdevelopmentVersion=1.5-SNAPSHOT -PpublicRelease
 ```
 
 For a release that will not be published to Maven Central - (but will still be tagged and pushed to git) use a command like this:
 ```
-mvn jgitflow:release-start jgitflow:release-finish -DreleaseVersion=0.0.5 -DdevelopmentVersion=0.0.6-SNAPSHOT -DnoDeploy
+mvn jgitflow:release-start jgitflow:release-finish -DreleaseVersion=0.0.5 
+-DdevelopmentVersion=0.0.6-SNAPSHOT -DnoDeploy
 ```
