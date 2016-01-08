@@ -20,7 +20,7 @@ Additionally, there are some utility methods in the se.liu.imt.mi.snomedct.expre
 
 Usage:
 ```
-java -cp SnomedCTParser-0.0.3-jar-with-dependencies.jar se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTGraph <input file> [-f [turtle|owlf|sct] -s <SNOMED CT OWL file> -n [stated|distribution|flat] -l]
+java -cp SnomedCTParser-0.0.4-jar-with-dependencies.jar se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTTranslator <input file> [-f [turtle|owlf|sct] -s <SNOMED CT OWL file> -n [stated|distribution|flat] -l]
 ```
 
 The input file is any OWL file or a SNOMED CT Compositional grammar file (using the file format described above).
@@ -37,7 +37,7 @@ The -l flag, when present, labels are added to OWL classes.
 
 Usage:
 ```
-java -cp SnomedCTParser-0.0.3-jar-with-dependencies.jar se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTGraph <input file> [-s <SNOMED CT concepts release file> -o <output file> -f]
+java -cp SnomedCTParser-0.0.4-jar-with-dependencies.jar se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTGraph <input file> [-s <SNOMED CT concepts release file> -o <output file> -f]
 ```
 The input file is a text file with a single compositional grammar statement, e.g.
 ```
