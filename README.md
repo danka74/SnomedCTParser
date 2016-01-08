@@ -16,12 +16,28 @@ File format is a tab-separated text file:
 mvn install
 ```
 Additionally, there are some utility methods in the se.liu.imt.mi.snomedct.expression.tools package.
+###SNOMEDCTTranslator
+
+Usage:
+```
+java -cp SnomedCTParser-0.0.3-jar-with-dependencies.jar se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTGraph <input file> [-f [turtle|owlf|sct] -s <SNOMED CT OWL file> -n [stated|distribution|flat] -l]
+```
+
+The input file is any OWL file or a SNOMED CT Compositional grammar file (using the file format described above).
+
+The flag -f selects the format for the output file.
+
+The flag -n selects any processing of the ontology in the input file. "stated" means no processing. "distribution" means that the ontology is classified and that a Distribution Normal Form transformation is applied. [Only applicable to the SNOMED CT Observables model: "flat" means that any classes based on the nested version of the Obseravbles model is tranlated to the flat version of the Obseravbles model.]
+
+The -s flag is used to supply a SNOMED CT OWL file (or possibly a module) which is imported into the ontology from the input file before classification (if applicable).
+
+The -l flag, when present, labels are added to OWL classes.
 
 ###SNOMEDCTGraph
 
 Usage:
 ```
-java -cp SnomedCTParser-0.0.3-jar-with-dependencies.jar se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTGraph <input file> [-s <snomed file> -o <output file> -f]
+java -cp SnomedCTParser-0.0.3-jar-with-dependencies.jar se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTGraph <input file> [-s <SNOMED CT concepts release file> -o <output file> -f]
 ```
 The input file is a text file with a single compositional grammar statement, e.g.
 ```
@@ -41,7 +57,7 @@ The input file is a text file with a single compositional grammar statement, e.g
 ```
 Note that you need a full statement, now only a single concept on the left hand side.
 
-The `<snomed file>` is a snapshot concept file from the release, used to be able to determine if concepts are primitive or fully defined (differently colored boxes), can be omitted
+The `<SNOMED CT concepts release file>` is a snapshot concept file from the release, used to be able to determine if concepts are primitive or fully defined (differently colored boxes), can be omitted
 
 the `<output file>` is used for providing a name for the resulting SVG file. If omitted the filename is the same as input but with a .svg extension.
 
