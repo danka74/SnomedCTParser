@@ -180,18 +180,18 @@ public class SNOMEDCTTranslator {
 				normalFormConverter = new DistributionNormalFormConverter(
 						ontology, reasoner);
 
-				// add annotations from original ontology
-				for (OWLOntology o : reasoner.getRootOntology()
-						.getImportsClosure()) {
-					for (OWLAnnotation annot : o.getAnnotations()) {
-						changes.add(new AddOntologyAnnotation(inferredOntology,
-								annot));
-					}
-					for (OWLAnnotationAssertionAxiom axiom : o
-							.getAxioms(AxiomType.ANNOTATION_ASSERTION)) {
-						changes.add(new AddAxiom(inferredOntology, axiom));
-					}
-				}
+//				// add annotations from original ontology
+//				for (OWLOntology o : reasoner.getRootOntology()
+//						.getImportsClosure()) {
+//					for (OWLAnnotation annot : o.getAnnotations()) {
+//						changes.add(new AddOntologyAnnotation(inferredOntology,
+//								annot));
+//					}
+//					for (OWLAnnotationAssertionAxiom axiom : o
+//							.getAxioms(AxiomType.ANNOTATION_ASSERTION)) {
+//						changes.add(new AddAxiom(inferredOntology, axiom));
+//					}
+//				}
 			} else
 				normalFormConverter = new Flattener(manager);
 

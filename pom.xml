@@ -1,35 +1,36 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>se.liu.imt.mi.snomedct</groupId>
 	<artifactId>SnomedCTParser</artifactId>
-	<version>0.0.5-SNAPSHOT</version>
-	
+	<version>0.1</version>
 	<properties>
 		<antlr.version>4.5</antlr.version>
 		<owlapi.version>3.5.0</owlapi.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 	<name>SnomedCTParser</name>
-	
+
 	<description>
 		ANTLR 4 parser for the draft 2014 SNOMED CT Compositional Grammar.
 		OWL API 3.x compliant classes for loading and storing SNOMED CT Compositional Grammar statements or expressions.
 	</description>
-	
+
 	<url>https://github.com/danka74/SnomedCTParser</url>
-	
+
 	<scm>
 		<url>https://github.com/danka74/SnomedCTParser.git</url>
 	</scm>
-	
+
 	<developers>
 		<developer>
 			<id>danka74</id>
 			<name>Daniel Karlsson</name>
+			<email>daniel.karlsson@liu.se</email>
 		</developer>
 	</developers>
-	
+
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -37,7 +38,7 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	
+
 	<!-- For release to maven central via sonatype -->
 	<!-- Requires credentials in settings.xml - see http://central.sonatype.org/pages/apache-maven.html#deploying-to-ossrh-with-apache-maven-introduction -->
 	<distributionManagement>
@@ -50,7 +51,7 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
-	
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -116,13 +117,25 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.4</version>
+				<version>2.2.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
-						<phase>verify</phase>
 						<goals>
 							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -221,7 +234,7 @@
 			<version>2.4</version>
 		</dependency>
 	</dependencies>
-	
+
 	<profiles>
 		<profile>
 			<id>publicRelease</id>

@@ -92,7 +92,7 @@ public class SNOMEDCTOWLParser extends AbstractOWLParser {
 		String line = reader.readLine();
 		while (line != null) {
 			// # is used for commenting out expression
-			if (line.startsWith("#")) {
+			if (line.startsWith("#") || line.isEmpty()) {
 				line = reader.readLine();
 				continue;
 			}
