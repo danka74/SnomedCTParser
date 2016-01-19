@@ -34,6 +34,10 @@ public class Flattener implements NormalFormRewriter {
 	private OWLClassExpression featureOfEntity;
 	private OWLObjectProperty observes;
 
+	// private OWLObjectProperty inherentLocation; // not used yet!
+	// private OWLObjectProperty characterizes; // characterizes is flattened
+												// already in the input provided by the LOINC mapping OWL files
+
 	/**
 	 * 
 	 */
@@ -50,6 +54,8 @@ public class Flattener implements NormalFormRewriter {
 				IRI.create("http://snomed.info/id/414237002"));
 		observes = manager.getOWLDataFactory().getOWLObjectProperty(
 				IRI.create("http://snomed.info/id/704347000"));
+		// characterizes = manager.getOWLDataFactory().getOWLObjectProperty(
+		// IRI.create("http://snomed.info/id/704321009"));
 
 	}
 
