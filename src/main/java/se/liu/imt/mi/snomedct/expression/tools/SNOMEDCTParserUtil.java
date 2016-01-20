@@ -75,12 +75,12 @@ public class SNOMEDCTParserUtil {
 
 		ANTLRInputStream input = new ANTLRInputStream(is);
 		SNOMEDCTExpressionLexer lexer = new SNOMEDCTExpressionLexer(input);
-//		lexer.removeErrorListeners();
-//		lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
+		lexer.removeErrorListeners();
+		lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		SNOMEDCTExpressionParser parser = new SNOMEDCTExpressionParser(tokens);
-//		parser.removeErrorListeners();
-//		parser.addErrorListener(ThrowingErrorListener.INSTANCE);
+		parser.removeErrorListeners();
+		parser.addErrorListener(ThrowingErrorListener.INSTANCE);
 		try {
 			tree = parser.statements();
 		} catch (Exception e) {
