@@ -117,7 +117,7 @@ public class SNOMEDCTParserUtil {
 		parser.removeErrorListeners();
 		parser.addErrorListener(ThrowingErrorListener.INSTANCE);
 		try {
-			tree = parser.statements();
+			tree = parser.expression();
 		} catch (Exception e) {
 			throw new ExpressionSyntaxError(e);
 		}

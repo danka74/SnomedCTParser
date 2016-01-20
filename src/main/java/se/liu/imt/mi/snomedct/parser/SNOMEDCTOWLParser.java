@@ -90,11 +90,11 @@ public class SNOMEDCTOWLParser extends AbstractOWLParser {
 			OWLVisitor visitor = new OWLVisitor(ontology);
 			visitor.visit(tree);
 		} catch (ParseCancellationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new OWLParserException(e);
 		} catch (ExpressionSyntaxError e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new OWLParserException(e);
 		}
 
 //		// give each expression a number starting with 0
