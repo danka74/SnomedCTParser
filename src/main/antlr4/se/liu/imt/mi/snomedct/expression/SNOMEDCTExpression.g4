@@ -17,10 +17,7 @@ RCBRACKET: '}';
 
 statements
 :
-	statement
-	(
-		WS statement
-	)*
+	statement+
 ;
 
 statement

@@ -47,7 +47,7 @@ public class TestSNOMEDCTExpressionParser {
 
 			ParseTree tree = SNOMEDCTParserUtil.parseExpression(strTokens[0]);
 
-			OWLVisitor visitor = new OWLVisitor();			
+			OWLVisitor visitor = new OWLVisitor(null, null);			
 			OWLObject o = visitor.visit(tree);
 			logger.info(o.toString());
 			logger.info(visitor.getLabels().toString());

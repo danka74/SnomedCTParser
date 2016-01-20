@@ -3,6 +3,8 @@
  */
 package se.liu.imt.mi.snomedct.expression.tools;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -48,12 +50,47 @@ public class SNOMEDCTParserUtil {
 				Object offendingSymbol, int line, int charPositionInLine,
 				String msg, RecognitionException e)
 				throws ParseCancellationException {
-			List<String> stack = ((Parser)recognizer).getRuleInvocationStack();
+			List<String> stack = ((Parser) recognizer).getRuleInvocationStack();
 			Collections.reverse(stack);
-			String message = "line " + line + ", pos "
-					+ charPositionInLine + ": " + msg;
+			String message = "line " + line + ", pos " + charPositionInLine
+					+ ": " + msg;
 			throw new ParseCancellationException(message);
 		}
+	}
+
+	/**
+	 * Wrapper method for parsing an SNOMED CT expression from an InputStream
+	 *
+	 * @param is
+	 *            an InputStream
+	 * @return parse tree resulting from parsing
+	 * @throws ExpressionSyntaxError
+	 *             thrown when syntax error in expression string
+	 */
+	public static ParseTree parseFile(InputStream is)
+			throws ParseCancellationException, ExpressionSyntaxError,
+			IOException {
+
+		ParseTree tree = null;
+
+		ANTLRInputStream input = new ANTLRInputStream(is);
+		SNOMEDCTExpressionLexer lexer = new SNOMEDCTExpressionLexer(input);
+//		lexer.removeErrorListeners();
+//		lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		SNOMEDCTExpressionParser parser = new SNOMEDCTExpressionParser(tokens);
+//		parser.removeErrorListeners();
+//		parser.addErrorListener(ThrowingErrorListener.INSTANCE);
+		try {
+			tree = parser.statements();
+		} catch (Exception e) {
+			throw new ExpressionSyntaxError(e);
+		}
+		if (tree == null)
+			throw new ExpressionSyntaxError(
+					"Parse result is null. Should not happen ever!");
+
+		return tree;
 	}
 
 	/**
@@ -80,7 +117,7 @@ public class SNOMEDCTParserUtil {
 		parser.removeErrorListeners();
 		parser.addErrorListener(ThrowingErrorListener.INSTANCE);
 		try {
-			tree = parser.expression();
+			tree = parser.statements();
 		} catch (Exception e) {
 			throw new ExpressionSyntaxError(e);
 		}
@@ -232,7 +269,7 @@ public class SNOMEDCTParserUtil {
 		else
 			tree = parseExpression(expression);
 
-		OWLVisitor visitor = new OWLVisitor(manager, definiendum);
+		OWLVisitor visitor = new OWLVisitor(ontology, definiendum);
 		// convert from parse tree to OWLAxiom
 		owlAxiom = (OWLClassAxiom) visitor.visit(tree);
 

@@ -8,15 +8,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
+import org.semanticweb.elk.util.collections.ArraySet;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
@@ -25,6 +28,7 @@ import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
@@ -40,6 +44,7 @@ import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.FocusConceptCo
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.NonGroupedAttributeSetContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.RefinementContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.StatementContext;
+import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.StatementsContext;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.SubExpressionContext;
 
 /**
@@ -52,25 +57,37 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	private static final String SCTID_IRI = "http://snomed.info/id/";
 	private static final String ROLEGROUP_IRI = "http://snomed.info/id/609096000";
 
+	private static final String[] neverGrouped = { SCTID_IRI + "123005000",
+			SCTID_IRI + "272741003", SCTID_IRI + "127489000",
+			SCTID_IRI + "704347000", SCTID_IRI + "704318007",
+			SCTID_IRI + "704319004", SCTID_IRI + "123454321",
+			SCTID_IRI + "704327008", SCTID_IRI + "370132008",
+			SCTID_IRI + "246501002", SCTID_IRI + "411116001",
+			SCTID_IRI + "704346009" };
+
 	static Logger logger = Logger.getLogger(OWLVisitor.class);
 
+	private OWLOntology ontology;
+	private OWLOntologyManager manager;
 	private OWLDataFactory dataFactory;
 	private OWLClass definiendum;
 	private Map<IRI, OWLAnnotation> labels;
 	private boolean defaultToPrimitive;
 
-	public OWLVisitor() {
-		this(OWLManager.createOWLOntologyManager(), null);
+	public OWLVisitor(OWLOntology ontology) {
+		this(ontology, null);
 	}
 
-	public OWLVisitor(OWLOntologyManager manager, OWLClass c) {
-		this(manager, c, false);
+	public OWLVisitor(OWLOntology ontology, OWLClass c) {
+		this(ontology, c, false);
 	}
 
-	public OWLVisitor(OWLOntologyManager manager, OWLClass c,
+	public OWLVisitor(OWLOntology ontology, OWLClass c,
 			boolean defaultToPrimitive) {
 		super();
-		dataFactory = manager.getOWLDataFactory();
+		this.ontology = ontology;
+		this.manager = ontology.getOWLOntologyManager();
+		this.dataFactory = manager.getOWLDataFactory();
 		this.definiendum = c;
 		this.labels = new HashMap<IRI, OWLAnnotation>();
 		this.defaultToPrimitive = defaultToPrimitive;
@@ -437,15 +454,18 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 					expression = groupExpression;
 			}
 		} else {
-			OWLClassExpression attr = (OWLClassExpression) visitAttribute((AttributeContext) ctx.getChild(0));
-			if (attr.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM && isNeverGrouped(((OWLObjectSomeValuesFrom) attr).getProperty()))
-					expression = attr;
-				else {
-					OWLObjectProperty attrGroup = dataFactory
-							.getOWLObjectProperty(IRI.create(ROLEGROUP_IRI));
-					expression = dataFactory
-							.getOWLObjectSomeValuesFrom(attrGroup, attr);
-				}
+			OWLClassExpression attr = (OWLClassExpression) visitAttribute((AttributeContext) ctx
+					.getChild(0));
+			if (attr.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM
+					&& isNeverGrouped(((OWLObjectSomeValuesFrom) attr)
+							.getProperty()))
+				expression = attr;
+			else {
+				OWLObjectProperty attrGroup = dataFactory
+						.getOWLObjectProperty(IRI.create(ROLEGROUP_IRI));
+				expression = dataFactory.getOWLObjectSomeValuesFrom(attrGroup,
+						attr);
+			}
 		}
 		return expression;
 	}
@@ -453,18 +473,39 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	private boolean isNeverGrouped(OWLObjectPropertyExpression property) {
 		IRI iri = property.getNamedProperty().getIRI();
 		String iriString = iri.toString();
-		if (iriString.equals(SCTID_IRI + "123005000") || // # part-of is never
-															// grouped
-				iriString.equals(SCTID_IRI + "272741003") || // # laterality is
-																// never grouped
-				iriString.equals(SCTID_IRI + "127489000") || // #
-																// has-active-ingredient
-																// is never
-																// grouped
-				iriString.equals(SCTID_IRI + "411116001")) // # has-dose-form is
-															// never grouped
-			return true;
+		for (String nonGroupedIri : neverGrouped) {
+			if (iriString.equals(nonGroupedIri))
+				return true;
+		}
 		return false;
+	}
+
+	@Override
+	public OWLObject visitStatements(StatementsContext ctx) {
+
+		ArraySet<OWLAxiom> axioms = new ArraySet<OWLAxiom>();
+		OWLAxiom owlAxiom = null;
+		for (StatementContext statement : ctx
+				.getRuleContexts(SNOMEDCTExpressionParser.StatementContext.class)) {
+			owlAxiom = (OWLClassAxiom) visitStatement(statement);
+			axioms.add(owlAxiom);
+
+		}
+		manager.addAxioms(ontology, axioms);
+
+		// labels for expression parts are kept in a map
+		Map<IRI, OWLAnnotation> annotations = this.getLabels();
+		// add labels, if any
+		for (Entry<IRI, OWLAnnotation> label : annotations.entrySet()) {
+			if (dataFactory.getOWLClass(label.getKey())
+					.getAnnotations(ontology).isEmpty())
+				manager.addAxiom(
+						ontology,
+						dataFactory.getOWLAnnotationAssertionAxiom(
+								label.getKey(), label.getValue()));
+		}
+
+		return owlAxiom;
 	}
 
 }
