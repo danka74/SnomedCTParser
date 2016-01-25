@@ -186,18 +186,6 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 							+ expressionDefinition.getClassExpressionType()
 									.toString());
 
-//		// write SCTID if the class has such an id, or a blank tab otherwise
-//		String classIRI = ((OWLClass) expressionClass).getIRI().toString();
-//		if (classIRI.startsWith("http://snomed.info/id/"))
-//			localWriter.write("\t" + extractID(classIRI));
-//		else
-//			localWriter.write("\t");
-//
-//		// if the expression class has a label, write that label after tab
-//		String label = getLabel((OWLClass) expressionClass, ontology);
-//		if (label != null)
-//			localWriter.write("\t" + label);
-
 		localWriter.write(')');
 
 		// expression is finally written, new line
@@ -259,18 +247,6 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 					"Non-allowed expression type in subclassof axiom: "
 							+ expressionDefinition.getClassExpressionType()
 									.toString());
-
-//		// write SCTID if the class has such an id, or a blank tab otherwise
-//		String classIRI = ((OWLClass) expressionClass).getIRI().toString();
-//		if (classIRI.startsWith("http://snomed.info/id/"))
-//			localWriter.write("\t" + extractID(classIRI));
-//		else
-//			localWriter.write("\t");
-//
-//		// if the expression class has a label, write that label after tab
-//		String label = getLabel((OWLClass) expressionClass, ontology);
-//		if (label != null)
-//			localWriter.write("\t" + label);
 
 		localWriter.write(')');
 

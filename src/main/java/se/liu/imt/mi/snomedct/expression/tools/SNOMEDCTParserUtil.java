@@ -50,8 +50,8 @@ public class SNOMEDCTParserUtil {
 				Object offendingSymbol, int line, int charPositionInLine,
 				String msg, RecognitionException e)
 				throws ParseCancellationException {
-			List<String> stack = ((Parser) recognizer).getRuleInvocationStack();
-			Collections.reverse(stack);
+//			List<String> stack = ((Parser) recognizer).getRuleInvocationStack();
+//			Collections.reverse(stack);
 			String message = "line " + line + ", pos " + charPositionInLine
 					+ ": " + msg;
 			throw new ParseCancellationException(message);
