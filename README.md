@@ -22,7 +22,7 @@ mvn install
 <dependency>
     <groupId>se.liu.imt.mi.snomedct</groupId>
     <artifactId>SnomedCTParser</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
 </dependency>
 ```
 Additionally, there are some utility methods in the se.liu.imt.mi.snomedct.expression.tools package.
