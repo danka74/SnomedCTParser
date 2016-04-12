@@ -1,13 +1,46 @@
-(123456789 | Mass of tumor of skin (observable entity) |)
+(12656789 | Mass of tumor of skin (observable entity) |) // a comment
 ===
 (363787002|Observable entity (observable entity)|:
-	704346009|Specified by (attribute)|=(
-		386053000|Evaluation procedure (procedure)|:
-			704347000|Observes (attribute)|=(
-				123456789|Feature of entity  (qualifier value)|:
-					704318007|Property type (attribute)|=118538004 | Mass, a measure of quantity of matter (property) (qualifier value) |,
-					704319004|Inheres in (attribute)|=(108369006 | Neoplasm (morphologic abnormality) |:
-						123456789|Inherent location (attribute)| = 39937001 | Skin structure (body structure) | )
-			)
-	)
+	704346009|Specified by (attribute)|=
+		386053000|Evaluation procedure (procedure)| /* another comment 
+		*/
 )
+
+(123456789 | Presence of V600E mutation in BRAF Gene in skin |)
+<<<
+(363787002|Observable entity (observable entity)|:
+  {
+    704346009|Specified by (attribute)|=(
+      386053000|Evaluation procedure (procedure)|:
+        704327008|Direct site (attribute)|=309066003 | Skin biopsy sample (specimen) |,
+        370132008 | Scale type (attribute) |=117363000 | Ordinal value (qualifier value) |,
+        246501002 | Technique (attribute) | = 123456789 | Pyrosequencing (technique) |,
+        704347000|Observes (attribute)|=(
+          123456789|Feature of entity  (qualifier value)|:
+            704318007|Property type (attribute)|= 410681005 | Count of entities (property) (qualifier value) |,
+            704319004|Inheres in (attribute)|=(
+              123456789|V600E mutation (morphologic abnormality)|:
+                123456789|(Inherent) location (attribute)|=108369006 | Neoplasm (morphologic abnormality) |
+              )
+            )
+          )
+        }
+      )
+ 
+(1001|Site of excised tumor (observable entity)|)
+===
+(363787002|Observable entity (observable entity)|:
+  704346009|Specified by (attribute)|=(
+    386053000|Evaluation procedure (procedure)|:
+      704327008|Direct site (attribute)|=445405002 | Surgical specimen (specimen) |,
+      370132008 | Scale type (attribute) |=117362005 | Nominal value (qualifier value) |,
+      246501002 | Technique (attribute) | = 32750006 | Gross Inspection |,
+      704347000|Observes (attribute)|=(
+        123456789|Feature of entity  (qualifier value)|:
+          704318007|Property type (attribute)|= 123456789 | Location (property) |,
+          704319004|Inheres in (attribute)|=(
+            108369006 | Neoplasm (morphologic abnormality) |
+          )
+        )
+      )
+    )

@@ -8,13 +8,17 @@ import java.net.URL;
 
 import se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTParserUtil;
 import se.liu.imt.mi.snomedct.parser.OWLVisitor;
+import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorer;
 import se.liu.imt.mi.snomedct.parser.SortedExpressionVisitor;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class TestSNOMEDCTExpressionParser {
 
@@ -36,6 +40,10 @@ public class TestSNOMEDCTExpressionParser {
 
 		String strLine;
 
+		OWLOntologyManager manager = OWLManager
+				.createOWLOntologyManager();
+		OWLOntology ontology = manager.createOntology();
+		
 		while ((strLine = testCaseReader.readLine()) != null) {
 
 			if (strLine.startsWith("#"))
@@ -47,7 +55,7 @@ public class TestSNOMEDCTExpressionParser {
 
 			ParseTree tree = SNOMEDCTParserUtil.parseExpression(strTokens[0]);
 
-			OWLVisitor visitor = new OWLVisitor();			
+			OWLVisitor visitor = new OWLVisitor(ontology, null);			
 			OWLObject o = visitor.visit(tree);
 			logger.info(o.toString());
 			logger.info(visitor.getLabels().toString());

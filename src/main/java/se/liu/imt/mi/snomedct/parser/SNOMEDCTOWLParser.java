@@ -5,8 +5,11 @@ package se.liu.imt.mi.snomedct.parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.antlr.v4.runtime.misc.ParseCancellationException;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.semanticweb.owlapi.io.AbstractOWLParser;
 import org.semanticweb.owlapi.io.OWLOntologyDocumentSource;
 import org.semanticweb.owlapi.io.OWLParserException;
@@ -33,13 +36,14 @@ import se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTParserUtil;
 public class SNOMEDCTOWLParser extends AbstractOWLParser {
 
 	static final String PC_IRI = "http://snomed.info/expid/";
-//	private String subject = null;
-//	private boolean isPrimitive = true;
-//	
-//	public SNOMEDCTOWLParser(String subject, boolean isPrimitive) {
-//		this.subject = subject;
-//		this.isPrimitive = isPrimitive;
-//	}
+
+	// private String subject = null;
+	// private boolean isPrimitive = true;
+	//
+	// public SNOMEDCTOWLParser(String subject, boolean isPrimitive) {
+	// this.subject = subject;
+	// this.isPrimitive = isPrimitive;
+	// }
 
 	/*
 	 * (non-Javadoc)
@@ -71,94 +75,103 @@ public class SNOMEDCTOWLParser extends AbstractOWLParser {
 		SNOMEDCTOntologyFormat format = new SNOMEDCTOntologyFormat();
 
 		// get BufferedReader from document source
-		BufferedReader reader = null;
+		InputStream is = null;
 		if (documentSource.isInputStreamAvailable()) {
-			reader = new BufferedReader(new InputStreamReader(
-					documentSource.getInputStream()));
-		} else if (documentSource.isReaderAvailable()) {
-			reader = new BufferedReader(documentSource.getReader());
+			is = documentSource.getInputStream();
 		} else {
-			reader = new BufferedReader(new InputStreamReader(getInputStream(
-					documentSource.getDocumentIRI(), configuration)));
+			is = getInputStream(documentSource.getDocumentIRI(), configuration);
 		}
 
 		OWLOntologyManager manager = ontology.getOWLOntologyManager();
 		OWLDataFactory dataFactory = manager.getOWLDataFactory();
 
-		// give each expression a number starting with 0
-		int expressionNumber = 0;
-		
-		// read first line from source file
-		String line = reader.readLine();
-		while (line != null) {
-			// # is used for commenting out expression
-			if (line.startsWith("#") || line.isEmpty()) {
-				line = reader.readLine();
-				continue;
-			}
+		try {
+			ParseTree tree = SNOMEDCTParserUtil.parseFile(is);
+			OWLVisitor visitor = new OWLVisitor(ontology);
+			visitor.visit(tree);
+		} catch (ParseCancellationException e) {
+			e.printStackTrace();
+			throw new OWLParserException(e);
+		} catch (ExpressionSyntaxError e) {
+			e.printStackTrace();
+			throw new OWLParserException(e);
+		}
 
-			// tab separated lines
-			// tokens[0] Compositional Grammar expression
-			// tokens[1] (optional) RDFS label annotation value
-			String[] tokens = line.split("\t");
-
-
-			
-			// create new class for the expression, generate new IRI
-			OWLClass newExpressionClass = dataFactory.getOWLClass(IRI
-					.create(PC_IRI + expressionNumber++));
-			
-			try {
-				SNOMEDCTParserUtil.parseExpressionToOWLAxiom(tokens[0], ontology, newExpressionClass);
-			} catch (ExpressionSyntaxError e) {
-				throw new OWLParserException(e);
-			}
-
-//			OWLVisitor visitor = new OWLVisitor(manager, newExpressionClass);
-//			OWLClassAxiom owlAxiom = null;
+//		// give each expression a number starting with 0
+//		int expressionNumber = 0;
+//
+//		// read first line from source file
+//		String line = reader.readLine();
+//		while (line != null) {
+//			// # is used for commenting out expression
+//			if (line.startsWith("#") || line.isEmpty()) {
+//				line = reader.readLine();
+//				continue;
+//			}
+//
+//			// tab separated lines
+//			// tokens[0] Compositional Grammar expression
+//			// tokens[1] (optional) RDFS label annotation value
+//			String[] tokens = line.split("\t");
+//
+//			// create new class for the expression, generate new IRI
+//			OWLClass newExpressionClass = dataFactory.getOWLClass(IRI
+//					.create(PC_IRI + expressionNumber++));
+//
 //			try {
-//				ANTLRInputStream input = new ANTLRInputStream(tokens[0]);
-//				SNOMEDCTExpressionLexer lexer = new SNOMEDCTExpressionLexer(input);
-//			    CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-//				SNOMEDCTExpressionParser parser = new SNOMEDCTExpressionParser(tokenStream);
-//				ParseTree tree = parser.expression();
-//				owlAxiom = (OWLClassAxiom) visitor.visit(tree);
-//			} catch (Exception e) {
+//				SNOMEDCTParserUtil.parseExpressionToOWLAxiom(tokens[0],
+//						ontology, newExpressionClass);
+//			} catch (ExpressionSyntaxError e) {
 //				throw new OWLParserException(e);
 //			}
 //
-//			// labels for expression parts are kept in a map 
-//			Map<IRI, OWLAnnotation> annotations = visitor.getLabels();
-//			
-//			// add axiom to ontology
-//			manager.addAxiom(ontology, owlAxiom);
-
-			// if there is a label, add that too
-			if (tokens.length > 1) {
-				// create label
-				OWLAnnotation label = dataFactory.getOWLAnnotation(dataFactory
-						.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL
-								.getIRI()), dataFactory
-						.getOWLLiteral(tokens[1]));
-				// add annotation axiom to ontology
-				manager.addAxiom(ontology, dataFactory
-						.getOWLAnnotationAssertionAxiom(
-								newExpressionClass.getIRI(), label));
-			}
-
-//			if (!annotations.isEmpty()) {
-//				for (Entry<IRI, OWLAnnotation> label : annotations.entrySet()) {
-//					if (dataFactory.getOWLClass(label.getKey())
-//							.getAnnotations(ontology).isEmpty())
-//						manager.addAxiom(ontology, dataFactory
-//								.getOWLAnnotationAssertionAxiom(label.getKey(),
-//										label.getValue()));
-//				}
+//			// OWLVisitor visitor = new OWLVisitor(manager, newExpressionClass);
+//			// OWLClassAxiom owlAxiom = null;
+//			// try {
+//			// ANTLRInputStream input = new ANTLRInputStream(tokens[0]);
+//			// SNOMEDCTExpressionLexer lexer = new
+//			// SNOMEDCTExpressionLexer(input);
+//			// CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+//			// SNOMEDCTExpressionParser parser = new
+//			// SNOMEDCTExpressionParser(tokenStream);
+//			// ParseTree tree = parser.expression();
+//			// owlAxiom = (OWLClassAxiom) visitor.visit(tree);
+//			// } catch (Exception e) {
+//			// throw new OWLParserException(e);
+//			// }
+//			//
+//			// // labels for expression parts are kept in a map
+//			// Map<IRI, OWLAnnotation> annotations = visitor.getLabels();
+//			//
+//			// // add axiom to ontology
+//			// manager.addAxiom(ontology, owlAxiom);
+//
+//			// if there is a label, add that too
+//			if (tokens.length > 1) {
+//				// create label
+//				OWLAnnotation label = dataFactory.getOWLAnnotation(dataFactory
+//						.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL
+//								.getIRI()), dataFactory
+//						.getOWLLiteral(tokens[1]));
+//				// add annotation axiom to ontology
+//				manager.addAxiom(ontology, dataFactory
+//						.getOWLAnnotationAssertionAxiom(
+//								newExpressionClass.getIRI(), label));
 //			}
-
-			// read next line, readLine() will return null of end of file
-			line = reader.readLine();
-		}
+//
+//			// if (!annotations.isEmpty()) {
+//			// for (Entry<IRI, OWLAnnotation> label : annotations.entrySet()) {
+//			// if (dataFactory.getOWLClass(label.getKey())
+//			// .getAnnotations(ontology).isEmpty())
+//			// manager.addAxiom(ontology, dataFactory
+//			// .getOWLAnnotationAssertionAxiom(label.getKey(),
+//			// label.getValue()));
+//			// }
+//			// }
+//
+//			// read next line, readLine() will return null of end of file
+//			line = reader.readLine();
+//		}
 
 		return format;
 	}

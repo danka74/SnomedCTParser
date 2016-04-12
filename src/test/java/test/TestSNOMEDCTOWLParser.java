@@ -77,7 +77,7 @@ public class TestSNOMEDCTOWLParser {
 	@Test
 	public void testParseAndSaveOWLOntology()
 			throws OWLOntologyCreationException, OWLOntologyStorageException {
-		URL expressionsURL = getClass().getResource("/expressions.owl");
+		URL expressionsURL = getClass().getResource("/example_expression.sct");
 		ontology = manager.loadOntologyFromOntologyDocument(new File(
 				expressionsURL.getFile()));
 

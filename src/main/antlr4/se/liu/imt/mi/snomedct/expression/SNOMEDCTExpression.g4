@@ -15,11 +15,21 @@ EQ: '=';
 LCBRACKET: '{';
 RCBRACKET: '}';
 
+BLOCK_COMMENT
+: 
+	'/*' .*? '*/' -> skip
+;
+
+EOL_COMMENT 
+:
+	'//' ~[\r\n]* -> skip
+;
+
 statements
 :
 	statement
 	(
-		WS statement
+		statement
 	)*
 ;
 
