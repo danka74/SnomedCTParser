@@ -25,7 +25,7 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 import se.liu.imt.mi.snomedct.expression.tools.Flattener;
-import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyFormat;
+import se.liu.imt.mi.snomedct.parser.SNOMEDCTDocumentFormat;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorer;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTParserFactory;
 
@@ -97,7 +97,7 @@ public class TestFlattener {
 
 		outputManager.applyChanges(changes);
 
-		outputManager.saveOntology(inferredOntology, new SNOMEDCTOntologyFormat(),
+		outputManager.saveOntology(inferredOntology, new SNOMEDCTDocumentFormat(),
 				IRI.create(new File("flatTest.owl")));
 
 	}
