@@ -27,7 +27,7 @@ public class SNOMEDCTOntologyStorer extends AbstractOWLOntologyStorer {
 	 */
 	@Override
 	public boolean canStoreOntology(OWLOntologyFormat ontologyFormat) {
-		return ontologyFormat.equals(new SNOMEDCTOntologyFormat());
+		return ontologyFormat.equals(new SNOMEDCTDocumentFormat());
 	}
 
 	/* (non-Javadoc)

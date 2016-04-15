@@ -24,7 +24,7 @@ import org.semanticweb.owlapi.model.OWLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
-import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyFormat;
+import se.liu.imt.mi.snomedct.parser.SNOMEDCTDocumentFormat;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorer;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTParserFactory;
 
@@ -94,7 +94,7 @@ public class TestSNOMEDCTOWLParser {
 		// create another file for SNOMED CT Compositional Grammar format
 		File output2 = new File("output_as_SNOMED_CT_CG.owl");
 		// save the ontology in SNOMED CT Compositional Grammar format
-		SNOMEDCTOntologyFormat snomedCTFormat = new SNOMEDCTOntologyFormat();
+		SNOMEDCTDocumentFormat snomedCTFormat = new SNOMEDCTDocumentFormat();
 		manager.saveOntology(ontology, snomedCTFormat,
 				IRI.create(output2.toURI()));
 
@@ -121,7 +121,7 @@ public class TestSNOMEDCTOWLParser {
 
 		// save the ontology in SNOMED CT Compositional Grammar format
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		SNOMEDCTOntologyFormat snomedCTFormat = new SNOMEDCTOntologyFormat();
+		SNOMEDCTDocumentFormat snomedCTFormat = new SNOMEDCTDocumentFormat();
 		manager.saveOntology(ontology, snomedCTFormat, os);
 
 		// no output should be generated as no classes in the ontology in the

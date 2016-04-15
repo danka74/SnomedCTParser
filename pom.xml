@@ -5,7 +5,7 @@
 	<version>0.3-SNAPSHOT</version>
 	<properties>
 		<antlr.version>4.5.3</antlr.version>
-		<owlapi.version>3.5.0</owlapi.version>
+		<owlapi.version>5.0.1</owlapi.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -87,8 +87,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>

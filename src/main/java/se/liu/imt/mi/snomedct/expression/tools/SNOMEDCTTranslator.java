@@ -42,7 +42,7 @@ import org.semanticweb.owlapi.reasoner.InferenceType;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
-import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyFormat;
+import se.liu.imt.mi.snomedct.parser.SNOMEDCTDocumentFormat;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorer;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTParserFactory;
 
@@ -131,7 +131,7 @@ public class SNOMEDCTTranslator {
 			ontologyFormat = new OWLFunctionalSyntaxOntologyFormat();
 			break;
 		case "sct": // SNOMED CT Compositional Grammar
-			ontologyFormat = new SNOMEDCTOntologyFormat();
+			ontologyFormat = new SNOMEDCTDocumentFormat();
 			ontologyFormat.setParameter("labels", labels);
 			break;
 		default:
