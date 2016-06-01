@@ -39,7 +39,7 @@ import se.liu.imt.mi.snomedct.parser.OWLVisitor;
  */
 
 public class SNOMEDCTParserUtil {
-	static final String PC_IRI = "http://snomed.info/expid/";
+	public static final String PC_IRI = "http://snomed.info/expid/";
 
 	public static class ThrowingErrorListener extends BaseErrorListener {
 
@@ -50,8 +50,9 @@ public class SNOMEDCTParserUtil {
 				Object offendingSymbol, int line, int charPositionInLine,
 				String msg, RecognitionException e)
 				throws ParseCancellationException {
-//			List<String> stack = ((Parser) recognizer).getRuleInvocationStack();
-//			Collections.reverse(stack);
+			// List<String> stack = ((Parser)
+			// recognizer).getRuleInvocationStack();
+			// Collections.reverse(stack);
 			String message = "line " + line + ", pos " + charPositionInLine
 					+ ": " + msg;
 			throw new ParseCancellationException(message);
@@ -237,37 +238,31 @@ public class SNOMEDCTParserUtil {
 		return parseExpressionToOWLAxiom(expression, ontology, definiendum,
 				false);
 	}
+	
+	public static OWLAxiom parseExpressionToOWLAxiom(ParseTree tree,
+			OWLOntology ontology, String subj,
+			boolean defaultToPrimitive) {
+		if (subj == null)
+			return parseExpressionToOWLAxiom(tree, ontology,
+					(OWLClass) null, defaultToPrimitive);
+		
+		final OWLOntologyManager manager = ontology.getOWLOntologyManager();
 
-	/**
-	 * Parses expression, converts to an OWLAxiom and adds it to ontology,
-	 * including any descriptions as rdfs:label annotations
-	 *
-	 * @param expression
-	 *            the expression to parse
-	 * @param ontology
-	 *            the ontology to which the parsed, converted expression is
-	 *            added
-	 * @param definiendum
-	 *            an OWLClass which will be the definiendum of the new axiom
-	 * @param defaultToPrimitive
-	 *            make subclassOf axiom if no definitions status in expression
-	 *
-	 * @return the resulting OWLAxiom
-	 * @throws ExpressionSyntaxError
-	 */
-	public static OWLAxiom parseExpressionToOWLAxiom(String expression,
+		OWLClass newClass = manager.getOWLDataFactory().getOWLClass(
+				IRI.create(PC_IRI + subj));
+
+		return parseExpressionToOWLAxiom(tree, ontology, newClass,
+				defaultToPrimitive);
+	}
+
+	public static OWLAxiom parseExpressionToOWLAxiom(ParseTree tree,
 			OWLOntology ontology, OWLClass definiendum,
-			boolean defaultToPrimitive) throws ExpressionSyntaxError {
+			boolean defaultToPrimitive) {
+
 		OWLAxiom owlAxiom = null;
 
 		final OWLOntologyManager manager = ontology.getOWLOntologyManager();
 		final OWLDataFactory dataFactory = manager.getOWLDataFactory();
-
-		ParseTree tree = null;
-		if (expression.startsWith("("))
-			tree = parseStatement(expression);
-		else
-			tree = parseExpression(expression);
 
 		OWLVisitor visitor = new OWLVisitor(ontology, definiendum);
 		// convert from parse tree to OWLAxiom
@@ -289,6 +284,36 @@ public class SNOMEDCTParserUtil {
 		}
 
 		return owlAxiom;
+	}
+
+	/**
+	 * Parses expression, converts to an OWLAxiom and adds it to ontology,
+	 * including any descriptions as rdfs:label annotations
+	 *
+	 * @param expression
+	 *            the expression to parse
+	 * @param ontology
+	 *            the ontology to which the parsed, converted expression is
+	 *            added
+	 * @param definiendum
+	 *            an OWLClass which will be the definiendum of the new axiom
+	 * @param defaultToPrimitive
+	 *            make subclassOf axiom if no definitions status in expression
+	 *
+	 * @return the resulting OWLAxiom
+	 * @throws ExpressionSyntaxError
+	 */
+	public static OWLAxiom parseExpressionToOWLAxiom(String expression,
+			OWLOntology ontology, OWLClass definiendum,
+			boolean defaultToPrimitive) throws ExpressionSyntaxError {
+		ParseTree tree = null;
+		if (expression.startsWith("("))
+			tree = parseStatement(expression);
+		else
+			tree = parseExpression(expression);
+
+		return parseExpressionToOWLAxiom(tree, ontology, definiendum,
+				defaultToPrimitive);
 	}
 
 }

@@ -9,7 +9,7 @@
 (123456789 | Presence of V600E mutation in BRAF Gene in skin |)
 <<<
 (363787002|Observable entity (observable entity)|:
-  {
+  
     704346009|Specified by (attribute)|=(
       386053000|Evaluation procedure (procedure)|:
         704327008|Direct site (attribute)|=309066003 | Skin biopsy sample (specimen) |,
@@ -24,7 +24,7 @@
               )
             )
           )
-        }
+        
       )
  
 (1001|Site of excised tumor (observable entity)|)
