@@ -19,6 +19,8 @@ import org.apache.log4j.Logger;
 import org.coode.owlapi.turtle.TurtleOntologyFormat;
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.formats.FunctionalSyntaxDocumentFormat;
+import org.semanticweb.owlapi.formats.TurtleDocumentFormat;
 import org.semanticweb.owlapi.io.OWLFunctionalSyntaxOntologyFormat;
 import org.semanticweb.owlapi.io.OWLParserFactoryRegistry;
 import org.semanticweb.owlapi.model.AddAxiom;
@@ -29,6 +31,7 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLException;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
@@ -122,13 +125,13 @@ public class SNOMEDCTTranslator {
 		OWLOntology ontology = manager
 				.loadOntologyFromOntologyDocument(new File(inputFileName));
 
-		OWLOntologyFormat ontologyFormat = null;
+		OWLDocumentFormat ontologyFormat = null;
 		switch (format) {
 		case "turtle":
-			ontologyFormat = new TurtleOntologyFormat();
+			ontologyFormat = new TurtleDocumentFormat();
 			break;
 		case "owlf":
-			ontologyFormat = new OWLFunctionalSyntaxOntologyFormat();
+			ontologyFormat = new FunctionalSyntaxDocumentFormat();
 			break;
 		case "sct": // SNOMED CT Compositional Grammar
 			ontologyFormat = new SNOMEDCTDocumentFormat();
