@@ -1,46 +1,23 @@
 package test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.StringWriter;
 import java.net.URL;
-import java.util.Date;
-import java.util.UUID;
 
-import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser;
-import se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTParserUtil;
-import se.liu.imt.mi.snomedct.parser.OWLVisitor;
-import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorer;
-import se.liu.imt.mi.snomedct.parser.SortedExpressionVisitor;
-import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxObjectRenderer;
-import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
-import uk.ac.manchester.cs.owlapi.dlsyntax.DLSyntaxOntologyFormat;
-
-import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.Tree;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
-import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLObject;
-import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.reasoner.InferenceType;
-import org.semanticweb.owlapi.reasoner.Node;
-import org.semanticweb.owlapi.reasoner.NodeSet;
-import org.semanticweb.owlapi.reasoner.OWLReasoner;
-import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+
+import se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTParserUtil;
+import se.liu.imt.mi.snomedct.parser.OWLVisitor;
+import se.liu.imt.mi.snomedct.parser.SortedExpressionVisitor;
 
 public class TestSNOMEDCTExpressionParser {
 
