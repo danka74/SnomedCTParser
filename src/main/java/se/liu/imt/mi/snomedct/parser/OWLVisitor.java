@@ -30,6 +30,7 @@ import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionBaseVisitor;
@@ -497,8 +498,8 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 		Map<IRI, OWLAnnotation> annotations = this.getLabels();
 		// add labels, if any
 		for (Entry<IRI, OWLAnnotation> label : annotations.entrySet()) {
-			if (dataFactory.getOWLClass(label.getKey())
-					.getAnnotations(ontology).isEmpty())
+			if (EntitySearcher.getAnnotations(label.getKey(), ontology)
+					.isEmpty())
 				manager.addAxiom(
 						ontology,
 						dataFactory.getOWLAnnotationAssertionAxiom(
