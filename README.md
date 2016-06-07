@@ -1,7 +1,7 @@
 SnomedCTParser
 ==============
 
-[![Build](https://travis-ci.org/danka74/SnomedCTParser.png)](https://travis-ci.org/danka74/SnomedCTParser)
+[![Build](https://travis-ci.org/danka74/SnomedCTParser.png)](https://travis-ci.org/danka74/SnomedCTParser) [![Dependency Status](https://www.versioneye.com/user/projects/56a1586c89a03205c400010e/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56a1586c89a03205c400010e)
 
 ANTLR 4 parser for the draft 2014 SNOMED CT Compositional Grammar.
 
