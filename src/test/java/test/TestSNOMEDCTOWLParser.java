@@ -9,23 +9,24 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
-import org.coode.owlapi.turtle.TurtleOntologyFormat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.io.OWLParserFactoryRegistry;
+import org.semanticweb.owlapi.formats.TurtleDocumentFormat;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTDocumentFormat;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorer;
+import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorerFactory;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTParserFactory;
 
 /**
@@ -52,9 +53,8 @@ public class TestSNOMEDCTOWLParser {
 		// File("src/test/resources/snomed.owl"));
 		// logger.info("Loaded SNOMED CT ontology");
 
-		OWLParserFactoryRegistry.getInstance().registerParserFactory(
-				new SNOMEDCTParserFactory());
-		manager.addOntologyStorer(new SNOMEDCTOntologyStorer());
+		manager.getOntologyParsers().add(new SNOMEDCTParserFactory());
+		manager.getOntologyStorers().add(new SNOMEDCTOntologyStorerFactory());
 
 	}
 
@@ -84,8 +84,8 @@ public class TestSNOMEDCTOWLParser {
 		// create a file for the new format
 		File output = new File("output_as_Turtle.owl");
 		// save the ontology in Turtle format
-		OWLOntologyFormat format = manager.getOntologyFormat(ontology);
-		TurtleOntologyFormat turtleFormat = new TurtleOntologyFormat();
+		OWLDocumentFormat format = manager.getOntologyFormat(ontology);
+		TurtleDocumentFormat turtleFormat = new TurtleDocumentFormat();
 		if (format.isPrefixOWLOntologyFormat()) {
 			turtleFormat.copyPrefixesFrom(format.asPrefixOWLOntologyFormat());
 		}

@@ -6,140 +6,437 @@ Prefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)
 
 
 Ontology(
+Declaration(Class(<http://snomed.info/id/107784002>))
+Declaration(Class(<http://snomed.info/id/113345001>))
+Declaration(Class(<http://snomed.info/id/118694006>))
+Declaration(Class(<http://snomed.info/id/118698009>))
+Declaration(Class(<http://snomed.info/id/118710009>))
+Declaration(Class(<http://snomed.info/id/118949002>))
+Declaration(Class(<http://snomed.info/id/118956008>))
+Declaration(Class(<http://snomed.info/id/119593002>))
+Declaration(Class(<http://snomed.info/id/120173009>))
+Declaration(Class(<http://snomed.info/id/120205009>))
+Declaration(Class(<http://snomed.info/id/123037004>))
+Declaration(Class(<http://snomed.info/id/123854006>))
+Declaration(Class(<http://snomed.info/id/12646000>))
+Declaration(Class(<http://snomed.info/id/128263001>))
+Declaration(Class(<http://snomed.info/id/128927009>))
+Declaration(Class(<http://snomed.info/id/129264002>))
+Declaration(Class(<http://snomed.info/id/129284003>))
+Declaration(Class(<http://snomed.info/id/138875005>))
+Declaration(Class(<http://snomed.info/id/177853001>))
+Declaration(Class(<http://snomed.info/id/188383006>))
+Declaration(Class(<http://snomed.info/id/19819008>))
+Declaration(Class(<http://snomed.info/id/21371007>))
+Declaration(Class(<http://snomed.info/id/22943007>))
+Declaration(Class(<http://snomed.info/id/238165008>))
+Declaration(Class(<http://snomed.info/id/238223007>))
+Declaration(Class(<http://snomed.info/id/257903006>))
+Declaration(Class(<http://snomed.info/id/26893007>))
+Declaration(Class(<http://snomed.info/id/280542007>))
+Declaration(Class(<http://snomed.info/id/280553001>))
+Declaration(Class(<http://snomed.info/id/362958002>))
+Declaration(Class(<http://snomed.info/id/362981000>))
+Declaration(Class(<http://snomed.info/id/363187007>))
+Declaration(Class(<http://snomed.info/id/363320004>))
+Declaration(Class(<http://snomed.info/id/387713003>))
+Declaration(Class(<http://snomed.info/id/38866009>))
+Declaration(Class(<http://snomed.info/id/414402003>))
+Declaration(Class(<http://snomed.info/id/416152001>))
+Declaration(Class(<http://snomed.info/id/416319003>))
+Declaration(Class(<http://snomed.info/id/416550000>))
+Declaration(Class(<http://snomed.info/id/416631005>))
+Declaration(Class(<http://snomed.info/id/416775004>))
+Declaration(Class(<http://snomed.info/id/416949008>))
+Declaration(Class(<http://snomed.info/id/420473002>))
+Declaration(Class(<http://snomed.info/id/420685002>))
+Declaration(Class(<http://snomed.info/id/4365001>))
+Declaration(Class(<http://snomed.info/id/442083009>))
+Declaration(Class(<http://snomed.info/id/44558001>))
+Declaration(Class(<http://snomed.info/id/49755003>))
+Declaration(Class(<http://snomed.info/id/50465008>))
+Declaration(Class(<http://snomed.info/id/52530000>))
+Declaration(Class(<http://snomed.info/id/609615004>))
+Declaration(Class(<http://snomed.info/id/609616003>))
+Declaration(Class(<http://snomed.info/id/609617007>))
+Declaration(Class(<http://snomed.info/id/609637006>))
+Declaration(Class(<http://snomed.info/id/609638001>))
+Declaration(Class(<http://snomed.info/id/61685007>))
+Declaration(Class(<http://snomed.info/id/63337009>))
+Declaration(Class(<http://snomed.info/id/66019005>))
+Declaration(Class(<http://snomed.info/id/69548008>))
+Declaration(Class(<http://snomed.info/id/71388002>))
+Declaration(Class(<http://snomed.info/id/74943008>))
+Declaration(Class(<http://snomed.info/id/83908009>))
+Declaration(Class(<http://snomed.info/id/84281001>))
+Declaration(Class(<http://snomed.info/id/84744001>))
+Declaration(Class(<http://snomed.info/id/90785001>))
+Declaration(Class(<http://snomed.info/id/91723000>))
+Declaration(ObjectProperty(<http://snomed.info/id/260686004>))
+Declaration(ObjectProperty(<http://snomed.info/id/363700003>))
+Declaration(ObjectProperty(<http://snomed.info/id/363704007>))
+Declaration(ObjectProperty(<http://snomed.info/id/405813007>))
+Declaration(ObjectProperty(<http://snomed.info/id/405816004>))
+Declaration(ObjectProperty(<http://snomed.info/id/609096000>))
+
+############################
+#   Object Properties
+############################
+
+# Object Property: <http://snomed.info/id/260686004> (Method (attribute))
+
+AnnotationAssertion(rdfs:label <http://snomed.info/id/260686004> "Method (attribute)"^^xsd:string)
+
+# Object Property: <http://snomed.info/id/363700003> (Direct morphology (attribute))
+
+AnnotationAssertion(rdfs:label <http://snomed.info/id/363700003> "Direct morphology (attribute)"^^xsd:string)
+
+# Object Property: <http://snomed.info/id/363704007> (Procedure site (attribute))
+
+AnnotationAssertion(rdfs:label <http://snomed.info/id/363704007> "Procedure site (attribute)"^^xsd:string)
+
+# Object Property: <http://snomed.info/id/405813007> (Procedure site - Direct (attribute))
+
+AnnotationAssertion(rdfs:label <http://snomed.info/id/405813007> "Procedure site - Direct (attribute)"^^xsd:string)
+
+# Object Property: <http://snomed.info/id/405816004> (Procedure morphology (attribute))
+
+AnnotationAssertion(rdfs:label <http://snomed.info/id/405816004> "Procedure morphology (attribute)"^^xsd:string)
+
+
+
+############################
+#   Classes
+############################
+
+# Class: <http://snomed.info/id/107784002> (Surgical procedure on lower extremity (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/107784002> "Surgical procedure on lower extremity (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/107784002> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/61685007>) ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/129284003>))) <http://snomed.info/id/387713003>))
+EquivalentClasses(<http://snomed.info/id/107784002> ObjectIntersectionOf(<http://snomed.info/id/387713003> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/129284003>) ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/61685007>)))))
+
+# Class: <http://snomed.info/id/113345001> (Abdominal structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/113345001> "Abdominal structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/113345001> ObjectIntersectionOf(<http://snomed.info/id/416550000> <http://snomed.info/id/416949008> <http://snomed.info/id/609616003>))
+
+# Class: <http://snomed.info/id/118694006> (Procedure on trunk (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/118694006> "Procedure on trunk (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/118694006> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/22943007>)) <http://snomed.info/id/362958002>))
+EquivalentClasses(<http://snomed.info/id/118694006> ObjectIntersectionOf(<http://snomed.info/id/362958002> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/22943007>))))
+
+# Class: <http://snomed.info/id/118698009> (Procedure on abdomen (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/118698009> "Procedure on abdomen (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/118698009> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/113345001>)) <http://snomed.info/id/362958002>))
+EquivalentClasses(<http://snomed.info/id/118698009> ObjectIntersectionOf(<http://snomed.info/id/362958002> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/113345001>))))
+
+# Class: <http://snomed.info/id/118710009> (Procedure on lower extremity (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/118710009> "Procedure on lower extremity (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/118710009> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/61685007>)) <http://snomed.info/id/118949002>))
+EquivalentClasses(<http://snomed.info/id/118710009> ObjectIntersectionOf(<http://snomed.info/id/118949002> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/61685007>))))
+
+# Class: <http://snomed.info/id/118949002> (Procedure on extremity (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/118949002> "Procedure on extremity (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/118949002> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/66019005>)) <http://snomed.info/id/362958002>))
+EquivalentClasses(<http://snomed.info/id/118949002> ObjectIntersectionOf(<http://snomed.info/id/362958002> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/66019005>))))
+
+# Class: <http://snomed.info/id/118956008> (Body structure, altered from its original anatomical structure (morphologic abnormality))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/118956008> "Body structure, altered from its original anatomical structure (morphologic abnormality)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/118956008> <http://snomed.info/id/123037004>)
+
+# Class: <http://snomed.info/id/119593002> (Trunk repair (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/119593002> "Trunk repair (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/119593002> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/405813007> <http://snomed.info/id/22943007>) ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>))) <http://snomed.info/id/4365001>))
+EquivalentClasses(<http://snomed.info/id/119593002> ObjectIntersectionOf(<http://snomed.info/id/4365001> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>) ObjectSomeValuesFrom(<http://snomed.info/id/405813007> <http://snomed.info/id/22943007>)))))
+
+# Class: <http://snomed.info/id/120173009> (Abdomen repair (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/120173009> "Abdomen repair (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/120173009> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/405813007> <http://snomed.info/id/113345001>) ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>))) <http://snomed.info/id/118698009>))
+EquivalentClasses(<http://snomed.info/id/120173009> ObjectIntersectionOf(<http://snomed.info/id/118698009> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>) ObjectSomeValuesFrom(<http://snomed.info/id/405813007> <http://snomed.info/id/113345001>)))))
+
+# Class: <http://snomed.info/id/120205009> (Inguinal region repair (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/120205009> "Inguinal region repair (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/120205009> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/405813007> <http://snomed.info/id/26893007>) ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>))) <http://snomed.info/id/4365001>))
+EquivalentClasses(<http://snomed.info/id/120205009> ObjectIntersectionOf(<http://snomed.info/id/4365001> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>) ObjectSomeValuesFrom(<http://snomed.info/id/405813007> <http://snomed.info/id/26893007>)))))
+
+# Class: <http://snomed.info/id/123037004> (Body structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/123037004> "Body structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/123037004> <http://snomed.info/id/138875005>)
+
+# Class: <http://snomed.info/id/123854006> (Body region wall (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/123854006> "Body region wall (body structure)"^^xsd:string)
-SubClassOf(<http://snomed.info/id/123854006> ObjectIntersectionOf(<http://snomed.info/id/52530000> <http://snomed.info/id/280542007>))
+SubClassOf(<http://snomed.info/id/123854006> ObjectIntersectionOf(<http://snomed.info/id/280542007> <http://snomed.info/id/52530000>))
+
+# Class: <http://snomed.info/id/12646000> (Repair of incarcerated inguinal hernia (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/12646000> "Repair of incarcerated inguinal hernia (procedure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/12646000> <http://snomed.info/id/44558001>)
+
+# Class: <http://snomed.info/id/128263001> (Lower body structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/128263001> "Lower body structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/128263001> <http://snomed.info/id/38866009>)
+
+# Class: <http://snomed.info/id/128927009> (Procedure by method (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/128927009> "Procedure by method (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/128927009> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/129264002>)) <http://snomed.info/id/71388002>))
+EquivalentClasses(<http://snomed.info/id/128927009> ObjectIntersectionOf(<http://snomed.info/id/71388002> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/129264002>))))
+
+# Class: <http://snomed.info/id/129264002> (Action (qualifier value))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/129264002> "Action (qualifier value)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/129264002> <http://snomed.info/id/362981000>)
+
+# Class: <http://snomed.info/id/129284003> (Surgical action (qualifier value))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/129284003> "Surgical action (qualifier value)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/129284003> <http://snomed.info/id/129264002>)
+
+# Class: <http://snomed.info/id/138875005> (SNOMED CT Concept (SNOMED RT+CTV3))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/138875005> "SNOMED CT Concept (SNOMED RT+CTV3)"^^xsd:string)
+
+# Class: <http://snomed.info/id/177853001> (Abdominal wall procedure (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/177853001> "Abdominal wall procedure (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/177853001> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/83908009>)) <http://snomed.info/id/118698009>))
+EquivalentClasses(<http://snomed.info/id/177853001> ObjectIntersectionOf(<http://snomed.info/id/118698009> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/83908009>))))
+
+# Class: <http://snomed.info/id/188383006> (Surgical repair of lower extremity (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/188383006> "Surgical repair of lower extremity (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/188383006> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/405813007> <http://snomed.info/id/61685007>) ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>))) <http://snomed.info/id/363320004>))
+EquivalentClasses(<http://snomed.info/id/188383006> ObjectIntersectionOf(<http://snomed.info/id/363320004> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>) ObjectSomeValuesFrom(<http://snomed.info/id/405813007> <http://snomed.info/id/61685007>)))))
+
+# Class: <http://snomed.info/id/19819008> (Structure of lateral region of trunk (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/19819008> "Structure of lateral region of trunk (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/19819008> <http://snomed.info/id/22943007>)
+
+# Class: <http://snomed.info/id/21371007> (Operation on abdominal region (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/21371007> "Operation on abdominal region (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/21371007> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/113345001>) ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/129284003>))) <http://snomed.info/id/387713003>))
+EquivalentClasses(<http://snomed.info/id/21371007> ObjectIntersectionOf(<http://snomed.info/id/387713003> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/129284003>) ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/113345001>)))))
+
+# Class: <http://snomed.info/id/22943007> (Trunk structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/22943007> "Trunk structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/22943007> <http://snomed.info/id/38866009>)
+
+# Class: <http://snomed.info/id/238165008> (Abdominal wall hernia procedure (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/238165008> "Abdominal wall hernia procedure (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/238165008> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/405816004> <http://snomed.info/id/414402003>) ObjectSomeValuesFrom(<http://snomed.info/id/405813007> <http://snomed.info/id/83908009>))) <http://snomed.info/id/177853001>))
+EquivalentClasses(<http://snomed.info/id/238165008> ObjectIntersectionOf(<http://snomed.info/id/177853001> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/405813007> <http://snomed.info/id/83908009>) ObjectSomeValuesFrom(<http://snomed.info/id/405816004> <http://snomed.info/id/414402003>)))))
+
+# Class: <http://snomed.info/id/238223007> (Procedure for abdominal wall lesion (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/238223007> "Procedure for abdominal wall lesion (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/238223007> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/405816004> <http://snomed.info/id/49755003>) ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/83908009>))) <http://snomed.info/id/177853001>))
+EquivalentClasses(<http://snomed.info/id/238223007> ObjectIntersectionOf(<http://snomed.info/id/177853001> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/83908009>) ObjectSomeValuesFrom(<http://snomed.info/id/405816004> <http://snomed.info/id/49755003>)))))
+
+# Class: <http://snomed.info/id/257903006> (Repair - action (qualifier value))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/257903006> "Repair - action (qualifier value)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/257903006> <http://snomed.info/id/129284003>)
+
+# Class: <http://snomed.info/id/26893007> (Inguinal region structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/26893007> "Inguinal region structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/26893007> ObjectIntersectionOf(<http://snomed.info/id/609617007> <http://snomed.info/id/61685007> <http://snomed.info/id/84281001>))
+
+# Class: <http://snomed.info/id/280542007> (Body wall structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/280542007> "Body wall structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/280542007> <http://snomed.info/id/91723000>)
+
+# Class: <http://snomed.info/id/280553001> (Abdominal wall muscular space (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/280553001> "Abdominal wall muscular space (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/280553001> <http://snomed.info/id/83908009>)
+
+# Class: <http://snomed.info/id/362958002> (Procedure by site (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/362958002> "Procedure by site (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/362958002> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/442083009>)) <http://snomed.info/id/71388002>))
+EquivalentClasses(<http://snomed.info/id/362958002> ObjectIntersectionOf(<http://snomed.info/id/71388002> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/442083009>))))
+
+# Class: <http://snomed.info/id/362981000> (Qualifier value (qualifier value))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/362981000> "Qualifier value (qualifier value)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/362981000> <http://snomed.info/id/138875005>)
+
+# Class: <http://snomed.info/id/363187007> (Limb operation (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/363187007> "Limb operation (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/363187007> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/66019005>) ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/129284003>))) <http://snomed.info/id/118949002>))
+EquivalentClasses(<http://snomed.info/id/363187007> ObjectIntersectionOf(<http://snomed.info/id/118949002> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/129284003>) ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/66019005>)))))
+
+# Class: <http://snomed.info/id/363320004> (Surgical repair procedure by body site (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/363320004> "Surgical repair procedure by body site (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/363320004> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/442083009>) ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>))) <http://snomed.info/id/4365001>))
+EquivalentClasses(<http://snomed.info/id/363320004> ObjectIntersectionOf(<http://snomed.info/id/4365001> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>) ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/442083009>)))))
+
+# Class: <http://snomed.info/id/387713003> (Surgical procedure (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/387713003> "Surgical procedure (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/387713003> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/129284003>)) <http://snomed.info/id/128927009>))
+EquivalentClasses(<http://snomed.info/id/387713003> ObjectIntersectionOf(<http://snomed.info/id/128927009> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/129284003>))))
+
+# Class: <http://snomed.info/id/38866009> (Body part structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/38866009> "Body part structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/38866009> <http://snomed.info/id/52530000>)
+
+# Class: <http://snomed.info/id/414402003> (Hernial opening (morphologic abnormality))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/414402003> "Hernial opening (morphologic abnormality)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/414402003> <http://snomed.info/id/49755003>)
+
+# Class: <http://snomed.info/id/416152001> (Neck and/or chest and/or abdomen structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/416152001> "Neck and/or chest and/or abdomen structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/416152001> <http://snomed.info/id/416319003>)
+
+# Class: <http://snomed.info/id/416319003> (Neck and/or chest and/or abdomen and/or pelvis (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/416319003> "Neck and/or chest and/or abdomen and/or pelvis (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/416319003> <http://snomed.info/id/52530000>)
+
+# Class: <http://snomed.info/id/416550000> (Chest and/or abdomen structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/416550000> "Chest and/or abdomen structure (body structure)"^^xsd:string)
-SubClassOf(<http://snomed.info/id/416550000> ObjectIntersectionOf(<http://snomed.info/id/416775004> <http://snomed.info/id/416152001>))
+SubClassOf(<http://snomed.info/id/416550000> ObjectIntersectionOf(<http://snomed.info/id/416152001> <http://snomed.info/id/416775004>))
+
+# Class: <http://snomed.info/id/416631005> (Pelvis and/or lower extremity structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/416631005> "Pelvis and/or lower extremity structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/416631005> <http://snomed.info/id/69548008>)
+
+# Class: <http://snomed.info/id/416775004> (Chest and/or abdomen and/or pelvis structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/416775004> "Chest and/or abdomen and/or pelvis structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/416775004> <http://snomed.info/id/52530000>)
+
+# Class: <http://snomed.info/id/416949008> (Abdomen and/or pelvis structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/416949008> "Abdomen and/or pelvis structure (body structure)"^^xsd:string)
-SubClassOf(<http://snomed.info/id/416949008> ObjectIntersectionOf(<http://snomed.info/id/416775004> <http://snomed.info/id/416319003>))
+SubClassOf(<http://snomed.info/id/416949008> ObjectIntersectionOf(<http://snomed.info/id/416319003> <http://snomed.info/id/416775004>))
+
+# Class: <http://snomed.info/id/420473002> (Structure of subregion of trunk (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/420473002> "Structure of subregion of trunk (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/420473002> <http://snomed.info/id/22943007>)
+
+# Class: <http://snomed.info/id/420685002> (Structure of subregion of abdomen (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/420685002> "Structure of subregion of abdomen (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/420685002> <http://snomed.info/id/113345001>)
+
+# Class: <http://snomed.info/id/4365001> (Surgical repair (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/4365001> "Surgical repair (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/4365001> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>)) <http://snomed.info/id/128927009>))
+EquivalentClasses(<http://snomed.info/id/4365001> ObjectIntersectionOf(<http://snomed.info/id/128927009> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>))))
+
+# Class: <http://snomed.info/id/442083009> (Anatomical or acquired body structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/442083009> "Anatomical or acquired body structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/442083009> <http://snomed.info/id/123037004>)
+
+# Class: <http://snomed.info/id/44558001> (Repair of inguinal hernia (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/44558001> "Repair of inguinal hernia (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/44558001> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>) ObjectSomeValuesFrom(<http://snomed.info/id/363700003> <http://snomed.info/id/414402003>) ObjectSomeValuesFrom(<http://snomed.info/id/405813007> <http://snomed.info/id/90785001>))) <http://snomed.info/id/50465008>))
+EquivalentClasses(<http://snomed.info/id/44558001> ObjectIntersectionOf(<http://snomed.info/id/50465008> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>) ObjectSomeValuesFrom(<http://snomed.info/id/363700003> <http://snomed.info/id/414402003>) ObjectSomeValuesFrom(<http://snomed.info/id/405813007> <http://snomed.info/id/90785001>)))))
+
+# Class: <http://snomed.info/id/49755003> (Morphologically abnormal structure (morphologic abnormality))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/49755003> "Morphologically abnormal structure (morphologic abnormality)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/49755003> <http://snomed.info/id/118956008>)
+
+# Class: <http://snomed.info/id/50465008> (Hernia repair (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/50465008> "Hernia repair (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/50465008> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/363700003> <http://snomed.info/id/414402003>) ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>))) <http://snomed.info/id/4365001>))
+EquivalentClasses(<http://snomed.info/id/50465008> ObjectIntersectionOf(<http://snomed.info/id/4365001> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>) ObjectSomeValuesFrom(<http://snomed.info/id/363700003> <http://snomed.info/id/414402003>)))))
+
+# Class: <http://snomed.info/id/52530000> (Body region structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/52530000> "Body region structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/52530000> <http://snomed.info/id/91723000>)
+
+# Class: <http://snomed.info/id/609615004> (Structure of wall of abdominal segment of trunk (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/609615004> "Structure of wall of abdominal segment of trunk (body structure)"^^xsd:string)
-SubClassOf(<http://snomed.info/id/609615004> ObjectIntersectionOf(<http://snomed.info/id/609616003> <http://snomed.info/id/123854006>))
+SubClassOf(<http://snomed.info/id/609615004> ObjectIntersectionOf(<http://snomed.info/id/123854006> <http://snomed.info/id/609616003>))
+
+# Class: <http://snomed.info/id/609616003> (Structure of abdominal segment of trunk (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/609616003> "Structure of abdominal segment of trunk (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/609616003> <http://snomed.info/id/63337009>)
+
+# Class: <http://snomed.info/id/609617007> (Structure of pelvic region of trunk (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/609617007> "Structure of pelvic region of trunk (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/609617007> <http://snomed.info/id/63337009>)
+
+# Class: <http://snomed.info/id/609637006> (Procedure on pelvic region of trunk (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/609637006> "Procedure on pelvic region of trunk (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/609637006> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/609617007>)) <http://snomed.info/id/118694006>))
+EquivalentClasses(<http://snomed.info/id/609637006> ObjectIntersectionOf(<http://snomed.info/id/118694006> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/609617007>))))
+
+# Class: <http://snomed.info/id/609638001> (Operation on pelvic region of trunk (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/609638001> "Operation on pelvic region of trunk (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/609638001> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/609617007>) ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/129284003>))) <http://snomed.info/id/609637006>))
+EquivalentClasses(<http://snomed.info/id/609638001> ObjectIntersectionOf(<http://snomed.info/id/609637006> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/129284003>) ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/609617007>)))))
+
+# Class: <http://snomed.info/id/61685007> (Lower limb structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/61685007> "Lower limb structure (body structure)"^^xsd:string)
-SubClassOf(<http://snomed.info/id/61685007> ObjectIntersectionOf(<http://snomed.info/id/66019005> <http://snomed.info/id/416631005>))
+SubClassOf(<http://snomed.info/id/61685007> ObjectIntersectionOf(<http://snomed.info/id/416631005> <http://snomed.info/id/66019005>))
+
+# Class: <http://snomed.info/id/63337009> (Lower trunk structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/63337009> "Lower trunk structure (body structure)"^^xsd:string)
-SubClassOf(<http://snomed.info/id/63337009> ObjectIntersectionOf(<http://snomed.info/id/69548008> <http://snomed.info/id/420473002>))
+SubClassOf(<http://snomed.info/id/63337009> ObjectIntersectionOf(<http://snomed.info/id/420473002> <http://snomed.info/id/69548008>))
+
+# Class: <http://snomed.info/id/66019005> (Limb structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/66019005> "Limb structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/66019005> <http://snomed.info/id/38866009>)
+
+# Class: <http://snomed.info/id/69548008> (Lower body part structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/69548008> "Lower body part structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/69548008> <http://snomed.info/id/128263001>)
+
+# Class: <http://snomed.info/id/71388002> (Procedure (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/71388002> "Procedure (procedure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/71388002> <http://snomed.info/id/138875005>)
+
+# Class: <http://snomed.info/id/74943008> (Operation on trunk (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/74943008> "Operation on trunk (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/74943008> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/22943007>) ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/129284003>))) <http://snomed.info/id/118694006>))
+EquivalentClasses(<http://snomed.info/id/74943008> ObjectIntersectionOf(<http://snomed.info/id/118694006> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/129284003>) ObjectSomeValuesFrom(<http://snomed.info/id/363704007> <http://snomed.info/id/22943007>)))))
+
+# Class: <http://snomed.info/id/83908009> (Abdominal wall structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/83908009> "Abdominal wall structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/83908009> ObjectIntersectionOf(<http://snomed.info/id/113345001> <http://snomed.info/id/280542007> <http://snomed.info/id/609615004>))
+
+# Class: <http://snomed.info/id/84281001> (Structure of lateral region of abdomen (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/84281001> "Structure of lateral region of abdomen (body structure)"^^xsd:string)
-SubClassOf(<http://snomed.info/id/84281001> ObjectIntersectionOf(<http://snomed.info/id/420685002> <http://snomed.info/id/19819008>))
+SubClassOf(<http://snomed.info/id/84281001> ObjectIntersectionOf(<http://snomed.info/id/19819008> <http://snomed.info/id/420685002>))
+
+# Class: <http://snomed.info/id/84744001> (Repair of hernia of abdominal wall (procedure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/84744001> "Repair of hernia of abdominal wall (procedure)"^^xsd:string)
-EquivalentClasses(<http://snomed.info/id/84744001> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>) ObjectSomeValuesFrom(<http://snomed.info/id/363700003> <http://snomed.info/id/414402003>) ObjectSomeValuesFrom(<http://snomed.info/id/405813007> <http://snomed.info/id/83908009>))) <http://snomed.info/id/238165008>))
+EquivalentClasses(<http://snomed.info/id/84744001> ObjectIntersectionOf(<http://snomed.info/id/238165008> ObjectSomeValuesFrom(<http://snomed.info/id/609096000> ObjectIntersectionOf(ObjectSomeValuesFrom(<http://snomed.info/id/260686004> <http://snomed.info/id/257903006>) ObjectSomeValuesFrom(<http://snomed.info/id/363700003> <http://snomed.info/id/414402003>) ObjectSomeValuesFrom(<http://snomed.info/id/405813007> <http://snomed.info/id/83908009>)))))
+
+# Class: <http://snomed.info/id/90785001> (Inguinal canal structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/90785001> "Inguinal canal structure (body structure)"^^xsd:string)
-SubClassOf(<http://snomed.info/id/90785001> ObjectIntersectionOf(<http://snomed.info/id/280553001> <http://snomed.info/id/26893007>))
+SubClassOf(<http://snomed.info/id/90785001> ObjectIntersectionOf(<http://snomed.info/id/26893007> <http://snomed.info/id/280553001>))
+
+# Class: <http://snomed.info/id/91723000> (Anatomical structure (body structure))
+
 AnnotationAssertion(rdfs:label <http://snomed.info/id/91723000> "Anatomical structure (body structure)"^^xsd:string)
 SubClassOf(<http://snomed.info/id/91723000> <http://snomed.info/id/442083009>)
-AnnotationAssertion(rdfs:label <http://snomed.info/id/260686004> "Method (attribute)"^^xsd:string)
-AnnotationAssertion(rdfs:label <http://snomed.info/id/363700003> "Direct morphology (attribute)"^^xsd:string)
-AnnotationAssertion(rdfs:label <http://snomed.info/id/363704007> "Procedure site (attribute)"^^xsd:string)
-AnnotationAssertion(rdfs:label <http://snomed.info/id/405813007> "Procedure site - Direct (attribute)"^^xsd:string)
-AnnotationAssertion(rdfs:label <http://snomed.info/id/405816004> "Procedure morphology (attribute)"^^xsd:string)
+
+
 )

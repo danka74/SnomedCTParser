@@ -10,26 +10,20 @@ import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.PosixParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.coode.owlapi.turtle.TurtleOntologyFormat;
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.formats.FunctionalSyntaxDocumentFormat;
 import org.semanticweb.owlapi.formats.TurtleDocumentFormat;
-import org.semanticweb.owlapi.io.OWLFunctionalSyntaxOntologyFormat;
-import org.semanticweb.owlapi.io.OWLParserFactoryRegistry;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
-import org.semanticweb.owlapi.model.AddOntologyAnnotation;
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAnnotation;
-import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
@@ -37,7 +31,6 @@ import org.semanticweb.owlapi.model.OWLException;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.OWLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.normalform.NormalFormRewriter;
@@ -46,7 +39,7 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTDocumentFormat;
-import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorer;
+import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorerFactory;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTParserFactory;
 
 /**
@@ -78,7 +71,7 @@ public class SNOMEDCTTranslator {
 		// add labels option
 		options.addOption("l", "labels", false, "show labels in output");
 
-		CommandLineParser parser = new PosixParser();
+		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
 		try {
 			cmd = parser.parse(options, args);
@@ -118,10 +111,9 @@ public class SNOMEDCTTranslator {
 
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		// add SNOMED CT parser and storer to manager
-		OWLParserFactoryRegistry.getInstance().registerParserFactory(
-				new SNOMEDCTParserFactory());
-		manager.addOntologyStorer(new SNOMEDCTOntologyStorer());
-
+		manager.getOntologyParsers().add(new SNOMEDCTParserFactory());
+		manager.getOntologyStorers().add(new SNOMEDCTOntologyStorerFactory());
+		
 		OWLOntology ontology = manager
 				.loadOntologyFromOntologyDocument(new File(inputFileName));
 
@@ -166,7 +158,7 @@ public class SNOMEDCTTranslator {
 			OWLOntologyManager outputManager = OWLManager
 					.createOWLOntologyManager();
 			// add SNOMED CT storer to ontology manager
-			outputManager.addOntologyStorer(new SNOMEDCTOntologyStorer());
+			outputManager.getOntologyStorers().add(new SNOMEDCTOntologyStorerFactory());
 			OWLOntology inferredOntology = outputManager.createOntology();
 
 			List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();

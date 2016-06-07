@@ -14,7 +14,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
  */
 public class SNOMEDCTParserFactory extends OWLParserFactoryImpl {
 
-	protected SNOMEDCTParserFactory() {
+	public SNOMEDCTParserFactory() {
 		super(new SNOMEDCTDocumentFormatFactory());
 		// TODO Auto-generated constructor stub
 	}

@@ -3,6 +3,7 @@
  */
 package se.liu.imt.mi.snomedct.expression.tools;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,6 +18,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.normalform.NormalFormRewriter;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 /**
  * Class for implementing a SNOMED CT Distribution Normal Form converter. Some
@@ -38,8 +40,8 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
  */
 public class DistributionNormalFormConverter implements NormalFormRewriter {
 
-//	static Logger logger = Logger
-//			.getLogger(DistributionNormalFormConverter.class);
+	// static Logger logger = Logger
+	// .getLogger(DistributionNormalFormConverter.class);
 
 	OWLOntology ontology;
 	OWLOntologyManager manager;
@@ -235,8 +237,8 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 		boolean isPropertySubsumedBy(OWLObjectPropertyExpression prop1,
 				OWLObjectPropertyExpression prop2) {
 			if (prop1.equals(prop2)
-					|| prop1.getEquivalentProperties(imports).contains(prop2)
-					|| prop2.getSuperProperties(imports).contains(prop1))
+					|| EntitySearcher.getEquivalentProperties(prop1, imports).contains(prop2)
+					|| EntitySearcher.getSuperProperties(prop2, imports).contains(prop1))
 				return true;
 			return false;
 		}
@@ -262,7 +264,7 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 	public OWLClassExpression convertToNormalForm(
 			OWLClassExpression inputExpression) {
 
-//		logger.info("input expression = " + inputExpression.toString());
+		// logger.info("input expression = " + inputExpression.toString());
 
 		// TODO is this correct? or should all attributes be collected as well?
 		if (inputExpression.getClassExpressionType() == ClassExpressionType.OWL_CLASS)
@@ -272,7 +274,7 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 		directSupers.addAll(reasoner.getSuperClasses(inputExpression, true)
 				.getFlattened());
 
-//		logger.info("direct supers = " + directSupers.toString());
+		// logger.info("direct supers = " + directSupers.toString());
 
 		DifferentiaSet differentia = new DifferentiaSet();
 
@@ -284,7 +286,7 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 				// no need to consider other than existential restrictions
 				// (differentia) as genera are already in set of direct supers
 				if (e.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM) {
-//					logger.info("diff = " + e.toString());
+					// logger.info("diff = " + e.toString());
 					// add each restriction to the initial set of differentia
 					differentia.add((OWLObjectSomeValuesFrom) e);
 				}
@@ -317,16 +319,16 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 	 * expressions recursively upwards subsumption hierarchy TODO check if the
 	 * search tree can be pruned
 	 * 
-	 * @param exprSet
+	 * @param supers2
 	 *            The set of classes
 	 * @return Returns a set of (possibly/probably redundant)
 	 *         differentia/restrictions
 	 */
 	private Set<OWLClassExpression> collectDifferentia(
-			Set<OWLClassExpression> exprSet) {
+			Collection<OWLClassExpression> supers2) {
 		Set<OWLClassExpression> differentia = new HashSet<OWLClassExpression>();
 		// iterate through all input expressions
-		for (OWLClassExpression e : exprSet) {
+		for (OWLClassExpression e : supers2) {
 			// different cases for different expression types
 			switch (e.getClassExpressionType()) {
 			// if the expression is a class, then collect differentia of direct
@@ -338,13 +340,12 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 			// that this gives the intended result, or that there is no better
 			// way of achieving the intended result.
 			case OWL_CLASS:
-				Set<OWLClassExpression> supers = ((OWLClass) e)
-						.getSuperClasses(imports);
+				Collection<OWLClassExpression> supers = EntitySearcher
+						.getSuperClasses((OWLClass) e, ontology);
 				if (supers.size() > 0)
-					differentia
-							.addAll(collectDifferentia(supers));
-				Set<OWLClassExpression> eqs = ((OWLClass) e)
-						.getEquivalentClasses(imports);
+					differentia.addAll(collectDifferentia(supers));
+				Collection<OWLClassExpression> eqs = EntitySearcher
+						.getEquivalentClasses((OWLClass) e, imports);
 				if (eqs.size() > 0)
 					differentia.addAll(collectDifferentia(eqs));
 				break;
@@ -376,7 +377,8 @@ public class DistributionNormalFormConverter implements NormalFormRewriter {
 	 */
 	@Override
 	public boolean isInNormalForm(OWLClassExpression arg0) {
-		throw new UnsupportedOperationException("DistributionNormalFormConverter.isInNormalForm not implemented");
+		throw new UnsupportedOperationException(
+				"DistributionNormalFormConverter.isInNormalForm not implemented");
 	}
 
 }
