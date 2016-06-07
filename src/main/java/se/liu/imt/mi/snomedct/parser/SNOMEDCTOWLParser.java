@@ -13,7 +13,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.semanticweb.owlapi.io.AbstractOWLParser;
 import org.semanticweb.owlapi.io.OWLOntologyDocumentSource;
 import org.semanticweb.owlapi.io.OWLParserException;
-import org.semanticweb.owlapi.io.DocumentSources;
 
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -49,20 +48,6 @@ public class SNOMEDCTOWLParser extends AbstractOWLParser {
 	 * (non-Javadoc)
 	 * 
 	 * @see org.semanticweb.owlapi.io.OWLParser#parse(org.semanticweb.owlapi.io.
-	 * OWLOntologyDocumentSource, org.semanticweb.owlapi.model.OWLOntology)
-	 */
-	@Override
-	public OWLDocumentFormat parse(OWLOntologyDocumentSource documentSource,
-			OWLOntology ontology) throws OWLParserException, IOException,
-			OWLOntologyChangeException, UnloadableImportException {
-		return parse(documentSource, ontology,
-				new OWLOntologyLoaderConfiguration());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.semanticweb.owlapi.io.OWLParser#parse(org.semanticweb.owlapi.io.
 	 * OWLOntologyDocumentSource, org.semanticweb.owlapi.model.OWLOntology,
 	 * org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration)
 	 */
@@ -75,10 +60,7 @@ public class SNOMEDCTOWLParser extends AbstractOWLParser {
 
 		SNOMEDCTDocumentFormat format = new SNOMEDCTDocumentFormat();
 
-		InputStream is = null;
-		if (documentSource.getInputStream().isPresent()) {
-			is = documentSource.getInputStream().get();
-		}
+		InputStream is = documentSource.getInputStream();
 
 		OWLOntologyManager manager = ontology.getOWLOntologyManager();
 		OWLDataFactory dataFactory = manager.getOWLDataFactory();

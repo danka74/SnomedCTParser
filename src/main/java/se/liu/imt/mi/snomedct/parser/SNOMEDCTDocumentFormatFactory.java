@@ -14,7 +14,12 @@ import org.semanticweb.owlapi.util.OWLDocumentFormatFactoryImpl;
 public class SNOMEDCTDocumentFormatFactory extends OWLDocumentFormatFactoryImpl {
 
     
-    @Override
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5831606360143264172L;
+
+	@Override
     public String getKey() {
         return "SNOMED CT Compositional Grammar Format";
     }

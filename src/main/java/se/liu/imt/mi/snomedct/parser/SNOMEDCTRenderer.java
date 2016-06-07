@@ -6,6 +6,7 @@ package se.liu.imt.mi.snomedct.parser;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +31,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.profiles.OWL2ELProfile;
 import org.semanticweb.owlapi.profiles.OWLProfileReport;
+import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 /**
@@ -493,7 +495,7 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 	 */
 	private String getLabel(OWLLogicalEntity entity, OWLOntology ontology) {
 		String label = null;
-		Set<OWLAnnotation> annotations = entity.getAnnotations(ontology);
+		Collection<OWLAnnotation> annotations = EntitySearcher.getAnnotations(entity.getIRI(), ontology);
 		for (OWLAnnotation annotation : annotations) {
 			if (annotation.getProperty().getIRI()
 					.equals(OWLRDFVocabulary.RDFS_LABEL.getIRI())) {
