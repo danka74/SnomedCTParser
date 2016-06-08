@@ -5,17 +5,17 @@ package se.liu.imt.mi.snomedct.parser;
 
 import java.io.Writer;
 
+import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyFormat;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
-import org.semanticweb.owlapi.util.AbstractOWLOntologyStorer;
+import org.semanticweb.owlapi.util.AbstractOWLStorer;
+
 
 /**
  * @author daniel
  *
  */
-public class SNOMEDCTOntologyStorer extends AbstractOWLOntologyStorer {
+public class SNOMEDCTOntologyStorer extends AbstractOWLStorer {
 
 	/**
 	 * 
@@ -26,19 +26,8 @@ public class SNOMEDCTOntologyStorer extends AbstractOWLOntologyStorer {
 	 * @see org.semanticweb.owlapi.model.OWLOntologyStorer#canStoreOntology(org.semanticweb.owlapi.model.OWLOntologyFormat)
 	 */
 	@Override
-	public boolean canStoreOntology(OWLOntologyFormat ontologyFormat) {
-		return ontologyFormat.equals(new SNOMEDCTOntologyFormat());
-	}
-
-	/* (non-Javadoc)
-	 * @see org.semanticweb.owlapi.util.AbstractOWLOntologyStorer#storeOntology(org.semanticweb.owlapi.model.OWLOntologyManager, org.semanticweb.owlapi.model.OWLOntology, java.io.Writer, org.semanticweb.owlapi.model.OWLOntologyFormat)
-	 */
-	@Override
-	@Deprecated
-	protected void storeOntology(OWLOntologyManager manager,
-			OWLOntology ontology, Writer writer, OWLOntologyFormat format)
-			throws OWLOntologyStorageException {
-		storeOntology(ontology, writer, format);
+	public boolean canStoreOntology(OWLDocumentFormat ontologyFormat) {
+		return ontologyFormat.equals(new SNOMEDCTDocumentFormat());
 	}
 
 	/* (non-Javadoc)
@@ -46,7 +35,7 @@ public class SNOMEDCTOntologyStorer extends AbstractOWLOntologyStorer {
 	 */
 	@Override
 	protected void storeOntology(OWLOntology ontology, Writer writer,
-			OWLOntologyFormat format) throws OWLOntologyStorageException {
+			OWLDocumentFormat format) throws OWLOntologyStorageException {
 		try {
             SNOMEDCTRenderer ren = new SNOMEDCTRenderer((boolean) format.getParameter("labels", true));
             ren.render(ontology, writer);

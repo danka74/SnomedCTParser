@@ -14,3 +14,4 @@
 #322236009 |paracetamol 500 mg tablet|: 100005|trade name| = "PANADOL"
 #322236009 |paracetamol 500 mg tablet|: 100005|trade name| = "PAN\"ADOL"
 #322236009 |paracetamol 500 mg tablet|: 100005|trade name| = "PAN\\ADOL"
+125605004 | fracture of bone | : 363698007 | finding site | = 71341001 | bone structure of femur |	===125605004:363698007=71341001

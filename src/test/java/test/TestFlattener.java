@@ -1,7 +1,5 @@
 package test;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -11,7 +9,6 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.io.OWLParserFactoryRegistry;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
@@ -25,9 +22,8 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 import se.liu.imt.mi.snomedct.expression.tools.Flattener;
-import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyFormat;
-import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorer;
-import se.liu.imt.mi.snomedct.parser.SNOMEDCTParserFactory;
+import se.liu.imt.mi.snomedct.parser.SNOMEDCTDocumentFormat;
+import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorerFactory;
 
 public class TestFlattener {
 
@@ -48,7 +44,7 @@ public class TestFlattener {
 		OWLOntologyManager outputManager = OWLManager
 				.createOWLOntologyManager();
 		// add SNOMED CT storer to ontology manager
-		outputManager.addOntologyStorer(new SNOMEDCTOntologyStorer());
+		outputManager.getOntologyStorers().add(new SNOMEDCTOntologyStorerFactory());
 		OWLOntology inferredOntology = outputManager.createOntology();
 
 		List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
@@ -97,7 +93,7 @@ public class TestFlattener {
 
 		outputManager.applyChanges(changes);
 
-		outputManager.saveOntology(inferredOntology, new SNOMEDCTOntologyFormat(),
+		outputManager.saveOntology(inferredOntology, new SNOMEDCTDocumentFormat(),
 				IRI.create(new File("flatTest.owl")));
 
 	}

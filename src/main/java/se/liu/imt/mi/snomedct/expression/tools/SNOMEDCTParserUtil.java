@@ -26,6 +26,7 @@ import org.semanticweb.owlapi.model.OWLClassAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionLexer;
 import se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser;
@@ -39,7 +40,7 @@ import se.liu.imt.mi.snomedct.parser.OWLVisitor;
  */
 
 public class SNOMEDCTParserUtil {
-	static final String PC_IRI = "http://snomed.info/expid/";
+	public static final String PC_IRI = "http://snomed.info/expid/";
 
 	public static class ThrowingErrorListener extends BaseErrorListener {
 
@@ -50,8 +51,9 @@ public class SNOMEDCTParserUtil {
 				Object offendingSymbol, int line, int charPositionInLine,
 				String msg, RecognitionException e)
 				throws ParseCancellationException {
-//			List<String> stack = ((Parser) recognizer).getRuleInvocationStack();
-//			Collections.reverse(stack);
+			// List<String> stack = ((Parser)
+			// recognizer).getRuleInvocationStack();
+			// Collections.reverse(stack);
 			String message = "line " + line + ", pos " + charPositionInLine
 					+ ": " + msg;
 			throw new ParseCancellationException(message);
@@ -237,6 +239,52 @@ public class SNOMEDCTParserUtil {
 		return parseExpressionToOWLAxiom(expression, ontology, definiendum,
 				false);
 	}
+	
+	public static OWLAxiom parseExpressionToOWLAxiom(ParseTree tree,
+			OWLOntology ontology, String subj,
+			boolean defaultToPrimitive) {
+		if (subj == null)
+			return parseExpressionToOWLAxiom(tree, ontology,
+					(OWLClass) null, defaultToPrimitive);
+		
+		final OWLOntologyManager manager = ontology.getOWLOntologyManager();
+
+		OWLClass newClass = manager.getOWLDataFactory().getOWLClass(
+				IRI.create(PC_IRI + subj));
+
+		return parseExpressionToOWLAxiom(tree, ontology, newClass,
+				defaultToPrimitive);
+	}
+
+	public static OWLAxiom parseExpressionToOWLAxiom(ParseTree tree,
+			OWLOntology ontology, OWLClass definiendum,
+			boolean defaultToPrimitive) {
+
+		OWLAxiom owlAxiom = null;
+
+		final OWLOntologyManager manager = ontology.getOWLOntologyManager();
+		final OWLDataFactory dataFactory = manager.getOWLDataFactory();
+
+		OWLVisitor visitor = new OWLVisitor(ontology, definiendum);
+		// convert from parse tree to OWLAxiom
+		owlAxiom = (OWLClassAxiom) visitor.visit(tree);
+
+		// add axiom to ontology
+		manager.addAxiom(ontology, owlAxiom);
+
+		// labels for expression parts are kept in a map
+		Map<IRI, OWLAnnotation> annotations = visitor.getLabels();
+		// add labels, if any
+		for (Entry<IRI, OWLAnnotation> label : annotations.entrySet()) {
+			if (EntitySearcher.getAnnotations(label.getKey(), ontology).isEmpty())
+				manager.addAxiom(
+						ontology,
+						dataFactory.getOWLAnnotationAssertionAxiom(
+								label.getKey(), label.getValue()));
+		}
+
+		return owlAxiom;
+	}
 
 	/**
 	 * Parses expression, converts to an OWLAxiom and adds it to ontology,
@@ -258,37 +306,14 @@ public class SNOMEDCTParserUtil {
 	public static OWLAxiom parseExpressionToOWLAxiom(String expression,
 			OWLOntology ontology, OWLClass definiendum,
 			boolean defaultToPrimitive) throws ExpressionSyntaxError {
-		OWLAxiom owlAxiom = null;
-
-		final OWLOntologyManager manager = ontology.getOWLOntologyManager();
-		final OWLDataFactory dataFactory = manager.getOWLDataFactory();
-
 		ParseTree tree = null;
 		if (expression.startsWith("("))
 			tree = parseStatement(expression);
 		else
 			tree = parseExpression(expression);
 
-		OWLVisitor visitor = new OWLVisitor(ontology, definiendum);
-		// convert from parse tree to OWLAxiom
-		owlAxiom = (OWLClassAxiom) visitor.visit(tree);
-
-		// add axiom to ontology
-		manager.addAxiom(ontology, owlAxiom);
-
-		// labels for expression parts are kept in a map
-		Map<IRI, OWLAnnotation> annotations = visitor.getLabels();
-		// add labels, if any
-		for (Entry<IRI, OWLAnnotation> label : annotations.entrySet()) {
-			if (dataFactory.getOWLClass(label.getKey())
-					.getAnnotations(ontology).isEmpty())
-				manager.addAxiom(
-						ontology,
-						dataFactory.getOWLAnnotationAssertionAxiom(
-								label.getKey(), label.getValue()));
-		}
-
-		return owlAxiom;
+		return parseExpressionToOWLAxiom(tree, ontology, definiendum,
+				defaultToPrimitive);
 	}
 
 }

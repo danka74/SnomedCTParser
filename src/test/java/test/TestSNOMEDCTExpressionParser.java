@@ -1,15 +1,10 @@
 package test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.net.URL;
-
-import se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTParserUtil;
-import se.liu.imt.mi.snomedct.parser.OWLVisitor;
-import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorer;
-import se.liu.imt.mi.snomedct.parser.SortedExpressionVisitor;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.log4j.Logger;
@@ -19,6 +14,10 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+
+import se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTParserUtil;
+import se.liu.imt.mi.snomedct.parser.OWLVisitor;
+import se.liu.imt.mi.snomedct.parser.SortedExpressionVisitor;
 
 public class TestSNOMEDCTExpressionParser {
 
@@ -72,25 +71,19 @@ public class TestSNOMEDCTExpressionParser {
 
 //	@Test
 //	public void testConvertToOWL() throws Exception {
-//		manager = OWLManager.createOWLOntologyManager();
+//		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 //
 //		logger.info("Loading SNOMED CT ontology...");
-//		URL snomedFileURL = getClass().getResource(snomedOWLFileName);
-//		if (snomedFileURL == null)
-//			throw new FileNotFoundException("SNOMED CT OWL file '"
-//					+ snomedOWLFileName + "' not found");
-//		ontology = manager.loadOntologyFromOntologyDocument(new File(
-//				snomedFileURL.getFile()));
-//		dataFactory = manager.getOWLDataFactory();
+//		String snomedOWLFileName ="/home/danka74/Documents/SCT/SnomedCT_RF2Release_INT_20160131/Resources/StatedRelationshipsToOwlKRSS/snomedct_owlf.owl";
+//		OWLOntology ontology = manager.loadOntologyFromOntologyDocument(new File(
+//				snomedOWLFileName));
+//		OWLDataFactory dataFactory = manager.getOWLDataFactory();
 //
 //		OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
-//		reasoner = reasonerFactory.createReasoner(ontology);
+//		OWLReasoner reasoner = reasonerFactory.createReasoner(ontology);
 //		long t1 = (new Date()).getTime();
 //		reasoner.flush();
 //		reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
-//
-//		SCTOWLExpressionBuilder owlBuilder = new SCTOWLExpressionBuilder(
-//				ontology, dataFactory);
 //
 //		long interval = (new Date()).getTime() - t1;
 //		logger.info("Classification time: " + interval + " ms");
@@ -108,26 +101,15 @@ public class TestSNOMEDCTExpressionParser {
 //
 //			logger.info(strTokens[0]);
 //
-//			CharStream input = new ANTLRStringStream(strTokens[0]);
-//			SCTExpressionLexer lexer = new SCTExpressionLexer(input);
-//			CommonTokenStream tokens = new CommonTokenStream(lexer);
-//			SCTExpressionParser parser = new SCTExpressionParser(tokens);
-//			SCTExpressionParser.expression_return result = parser.expression();
+//			ParseTree result = SNOMEDCTParserUtil.parseExpression(strTokens[0]);
 //
 //			t1 = (new Date()).getTime();
 //
 //			//
-//			OWLClass new_pc_concept = dataFactory.getOWLClass(IRI.create(PC_IRI
+//			OWLClass new_pc_concept = dataFactory.getOWLClass(IRI.create(SNOMEDCTParserUtil.PC_IRI
 //					+ UUID.randomUUID()));
 //
-//			// translate SCT expression syntax to OWL
-//			OWLClassExpression e = owlBuilder.translateToOWLClassExpression(
-//					(Tree) result.getTree(), null);
-//
-//			List<OWLOntologyChange> axiomList = new LinkedList<OWLOntologyChange>();
-//			axiomList.add(new AddAxiom(ontology, dataFactory
-//					.getOWLEquivalentClassesAxiom(new_pc_concept, e)));
-//			manager.applyChanges(axiomList);
+//			SNOMEDCTParserUtil.parseExpressionToOWLAxiom(result, ontology, new_pc_concept, false);
 //
 //			reasoner.flush();
 //			reasoner.precomputeInferences();
@@ -141,19 +123,6 @@ public class TestSNOMEDCTExpressionParser {
 //					true);
 //
 //			interval = (new Date()).getTime() - t1;
-//
-//			StringWriter sw = new StringWriter();
-//			OWLOntologyFormat of = new DLSyntaxOntologyFormat();
-//			ManchesterOWLSyntaxPrefixNameShortFormProvider ssfp = new ManchesterOWLSyntaxPrefixNameShortFormProvider(
-//					of); // new SimpleShortFormProvider();
-//			ManchesterOWLSyntaxObjectRenderer renderer = new ManchesterOWLSyntaxObjectRenderer(
-//					sw, ssfp);
-//			if (e.getClass() == uk.ac.manchester.cs.owl.owlapi.OWLClassImpl.class)
-//				renderer.visit((OWLClass) e);
-//			else
-//				renderer.visit((OWLObjectIntersectionOf) e);
-//
-//			logger.info(sw.toString());
 //
 //			logger.info("# eq classes: " + equivalentClasses.getSize()
 //					+ ", time: " + interval + " ms");
@@ -191,12 +160,12 @@ public class TestSNOMEDCTExpressionParser {
 //		for (int i = 0; i < indent; i++) {
 //			System.out.print(' ');
 //		}
-//		System.out.print(SCTExpressionParser.tokenNames[tree.getType()]);
+//		System.out.print(tree.toString());
 //		System.out.println(": " + tree.toString());
 //
 //		for (int i = 0; i < tree.getChildCount(); i++) {
 //			printTree(tree.getChild(i), indent + 2);
 //		}
 //	}
-//
+
 }
