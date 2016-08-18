@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -281,7 +282,7 @@ public class SNOMEDCTParserUtil {
 		Map<IRI, OWLAnnotation> annotations = visitor.getLabels();
 		// add labels, if any
 		for (Entry<IRI, OWLAnnotation> label : annotations.entrySet()) {
-			if (EntitySearcher.getAnnotations(label.getKey(), ontology).isEmpty())
+			if (EntitySearcher.getAnnotations(label.getKey(), ontology).findAny().equals(Optional.empty()))
 				manager.addAxiom(
 						ontology,
 						dataFactory.getOWLAnnotationAssertionAxiom(

@@ -60,7 +60,7 @@ public class SNOMEDCTOWLParser extends AbstractOWLParser {
 
 		SNOMEDCTDocumentFormat format = new SNOMEDCTDocumentFormat();
 
-		InputStream is = documentSource.getInputStream();
+		InputStream is = documentSource.getInputStream().get();
 
 		OWLOntologyManager manager = ontology.getOWLOntologyManager();
 		OWLDataFactory dataFactory = manager.getOWLDataFactory();

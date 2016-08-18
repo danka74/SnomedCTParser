@@ -3,6 +3,7 @@
  */
 package se.liu.imt.mi.snomedct.parser;
 
+import java.io.PrintWriter;
 import java.io.Writer;
 
 import org.semanticweb.owlapi.model.OWLDocumentFormat;
@@ -34,7 +35,7 @@ public class SNOMEDCTOntologyStorer extends AbstractOWLStorer {
 	 * @see org.semanticweb.owlapi.util.AbstractOWLOntologyStorer#storeOntology(org.semanticweb.owlapi.model.OWLOntology, java.io.Writer, org.semanticweb.owlapi.model.OWLOntologyFormat)
 	 */
 	@Override
-	protected void storeOntology(OWLOntology ontology, Writer writer,
+	protected void storeOntology(OWLOntology ontology, PrintWriter writer,
 			OWLDocumentFormat format) throws OWLOntologyStorageException {
 		try {
             SNOMEDCTRenderer ren = new SNOMEDCTRenderer((boolean) format.getParameter("labels", true));

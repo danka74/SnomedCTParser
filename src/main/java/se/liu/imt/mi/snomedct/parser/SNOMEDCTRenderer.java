@@ -4,12 +4,14 @@
 package se.liu.imt.mi.snomedct.parser;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.semanticweb.owlapi.io.AbstractOWLRenderer;
@@ -65,7 +67,7 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 	 * owlapi.model.OWLOntology, java.io.Writer)
 	 */
 	@Override
-	public void render(OWLOntology ontology, Writer writer)
+	public void render(OWLOntology ontology, PrintWriter writer)
 			throws OWLRendererException {
 		// check that the ontology is in the OWL 2 EL profile, OWL 2 EL profile
 		// is still more expressive than SNOMED CT Compositional Grammar
@@ -495,15 +497,19 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 	 */
 	private String getLabel(OWLLogicalEntity entity, OWLOntology ontology) {
 		String label = null;
-		Collection<OWLAnnotation> annotations = EntitySearcher.getAnnotations(entity.getIRI(), ontology);
-		for (OWLAnnotation annotation : annotations) {
-			if (annotation.getProperty().getIRI()
-					.equals(OWLRDFVocabulary.RDFS_LABEL.getIRI())) {
-				OWLLiteral val = (OWLLiteral) annotation.getValue();
-				label = val.getLiteral();
-			}
-		}
-		return label;
+		Stream<OWLAnnotation> annotations = EntitySearcher.getAnnotations(entity.getIRI(), ontology);
+		OWLAnnotation annotaion = annotations.filter(a -> a.getProperty().getIRI()
+					.equals(OWLRDFVocabulary.RDFS_LABEL.getIRI()))
+					.findFirst()
+					.get();
+//		for (OWLAnnotation annotation : annotations) {
+//			if (annotation.getProperty().getIRI()
+//					.equals(OWLRDFVocabulary.RDFS_LABEL.getIRI())) {
+//				OWLLiteral val = (OWLLiteral) annotation.getValue();
+//				label = val.getLiteral();
+//			}
+//		}
+		return annotaion.getValue().asLiteral().get().getLiteral();
 	}
 
 	/**
@@ -535,5 +541,6 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 				return false;
 		return true;
 	}
+
 
 }

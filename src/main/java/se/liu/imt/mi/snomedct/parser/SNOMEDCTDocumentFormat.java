@@ -23,16 +23,4 @@ public class SNOMEDCTDocumentFormat extends OWLDocumentFormatImpl {
         return "SNOMED CT Compositional Grammar Format";
 	}
 
-	@Override
-	public PrefixDocumentFormat asPrefixOWLOntologyFormat() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isPrefixOWLOntologyFormat() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

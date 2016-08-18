@@ -6,6 +6,7 @@ package se.liu.imt.mi.snomedct.parser;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.Map.Entry;
@@ -499,7 +500,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 		// add labels, if any
 		for (Entry<IRI, OWLAnnotation> label : annotations.entrySet()) {
 			if (EntitySearcher.getAnnotations(label.getKey(), ontology)
-					.isEmpty())
+					.findAny().equals(Optional.empty()))
 				manager.addAxiom(
 						ontology,
 						dataFactory.getOWLAnnotationAssertionAxiom(
