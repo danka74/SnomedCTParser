@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.semanticweb.elk.util.collections.ArraySet;
-import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -107,7 +106,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 		// ctx.subExpression().size() == 2
 		// ctx.definitionStatus() != null
 
-		logger.info("visitStatement: " + ctx.getText());
+		// logger.info("visitStatement: " + ctx.getText());
 
 		OWLObject subExpression1 = visit(ctx.subExpression(0));
 		OWLObject subExpression2 = visit(ctx.subExpression(1));
@@ -115,13 +114,13 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 
 		if ((ctx.definitionStatus() == null && defaultToPrimitive == false)
 				|| ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.EQ_TO) {
-			logger.info("equivalentTo");
+			// logger.info("equivalentTo");
 			axiom = dataFactory.getOWLEquivalentClassesAxiom(
 					(OWLClassExpression) subExpression1,
 					(OWLClassExpression) subExpression2);
 		} else if ((ctx.definitionStatus() == null && defaultToPrimitive == true)
 				|| ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.SC_OF) {
-			logger.info("subClassOf");
+			// logger.info("subClassOf");
 			axiom = dataFactory.getOWLSubClassOfAxiom(
 					(OWLClassExpression) subExpression1,
 					(OWLClassExpression) subExpression2);
@@ -140,7 +139,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	 */
 	@Override
 	public OWLObject visitExpression(ExpressionContext ctx) {
-		logger.info("visitExpression: " + ctx.getText());
+		// logger.info("visitExpression: " + ctx.getText());
 		OWLObject subExpression = visit(ctx.subExpression());
 		OWLAxiom axiom = null;
 
@@ -150,12 +149,12 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 
 		if ((ctx.definitionStatus() == null && defaultToPrimitive == false)
 				|| ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.EQ_TO) {
-			logger.info("equivalentTo");
+			// logger.info("equivalentTo");
 			axiom = dataFactory.getOWLEquivalentClassesAxiom(definiendum,
 					(OWLClassExpression) subExpression);
 		} else if ((ctx.definitionStatus() == null && defaultToPrimitive == true)
 				|| ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.SC_OF) {
-			logger.info("subClassOf");
+			// logger.info("subClassOf");
 			axiom = dataFactory.getOWLSubClassOfAxiom(definiendum,
 					(OWLClassExpression) subExpression);
 		}
@@ -172,7 +171,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	 */
 	@Override
 	public OWLObject visitRefinement(RefinementContext ctx) {
-		logger.info("visitRefinement: " + ctx.getText());
+		// logger.info("visitRefinement: " + ctx.getText());
 
 		OWLClassExpression expression = null;
 
@@ -210,7 +209,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	 */
 	@Override
 	public OWLObject visitSubExpression(SubExpressionContext ctx) {
-		logger.info("visitSubExpression: " + ctx.getText());
+		// logger.info("visitSubExpression: " + ctx.getText());
 		OWLClassExpression expression = null;
 
 		if (ctx.getChildCount() > 1)
@@ -241,7 +240,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	 */
 	@Override
 	public OWLObject visitFocusConcept(FocusConceptContext ctx) {
-		logger.info("visitFocusConcept: " + ctx.getText());
+		// logger.info("visitFocusConcept: " + ctx.getText());
 		OWLClassExpression expression = null;
 
 		if (ctx.getChildCount() > 1) {
@@ -267,7 +266,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	 */
 	@Override
 	public OWLObject visitConceptReference(ConceptReferenceContext ctx) {
-		logger.info("visitConceptReference: " + ctx.getText());
+		// logger.info("visitConceptReference: " + ctx.getText());
 
 		OWLObject entity = null;
 
@@ -313,7 +312,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	@Override
 	public OWLObject visitAttribute(
 			se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.AttributeContext ctx) {
-		logger.info("visitAttribute: " + ctx.getText());
+		// logger.info("visitAttribute: " + ctx.getText());
 		OWLClassExpression expression = null;
 
 		// if property filler is a concept reference
@@ -376,7 +375,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	 */
 	@Override
 	public OWLObject visitAttributeGroup(AttributeGroupContext ctx) {
-		logger.info("visitAttributeGroup: " + ctx.getText());
+		// logger.info("visitAttributeGroup: " + ctx.getText());
 		OWLClassExpression expression = null;
 
 		OWLClassExpression attrSet = (OWLClassExpression) visitAttributeSet(ctx
