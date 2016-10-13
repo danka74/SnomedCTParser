@@ -63,7 +63,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 			SCTID_IRI + "704319004", SCTID_IRI + "123454321",
 			SCTID_IRI + "704327008", SCTID_IRI + "370132008",
 			SCTID_IRI + "246501002", SCTID_IRI + "411116001",
-			SCTID_IRI + "704346009" };
+			SCTID_IRI + "704346009", SCTID_IRI + "704321009" };
 
 	static Logger logger = Logger.getLogger(OWLVisitor.class);
 

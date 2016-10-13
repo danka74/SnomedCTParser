@@ -7,7 +7,7 @@ import java.io.FileReader;
 import java.net.URL;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger; 
 import org.junit.Before;
 import org.junit.Test;
 import org.semanticweb.owlapi.apibinding.OWLManager;

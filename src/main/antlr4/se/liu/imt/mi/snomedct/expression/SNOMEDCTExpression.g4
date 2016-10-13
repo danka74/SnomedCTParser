@@ -80,7 +80,7 @@ refinement
 	)*
 	| attributeGroup
 	(
-		COMMA attributeGroup
+		COMMA? attributeGroup
 	)*
 ;
 
