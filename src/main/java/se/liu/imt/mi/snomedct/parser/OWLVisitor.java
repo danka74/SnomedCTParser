@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.semanticweb.elk.util.collections.ArraySet;
-import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -25,6 +24,7 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
@@ -60,11 +60,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 
 	private static final String[] neverGrouped = { SCTID_IRI + "123005000",
 			SCTID_IRI + "272741003", SCTID_IRI + "127489000",
-			SCTID_IRI + "704347000", SCTID_IRI + "704318007",
-			SCTID_IRI + "704319004", SCTID_IRI + "123454321",
-			SCTID_IRI + "704327008", SCTID_IRI + "370132008",
-			SCTID_IRI + "246501002", SCTID_IRI + "411116001",
-			SCTID_IRI + "704346009" };
+		    SCTID_IRI + "411116001" };
 
 	static Logger logger = Logger.getLogger(OWLVisitor.class);
 
@@ -107,7 +103,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 		// ctx.subExpression().size() == 2
 		// ctx.definitionStatus() != null
 
-		logger.info("visitStatement: " + ctx.getText());
+		// logger.info("visitStatement: " + ctx.getText());
 
 		OWLObject subExpression1 = visit(ctx.subExpression(0));
 		OWLObject subExpression2 = visit(ctx.subExpression(1));
@@ -115,13 +111,13 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 
 		if ((ctx.definitionStatus() == null && defaultToPrimitive == false)
 				|| ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.EQ_TO) {
-			logger.info("equivalentTo");
+			// logger.info("equivalentTo");
 			axiom = dataFactory.getOWLEquivalentClassesAxiom(
 					(OWLClassExpression) subExpression1,
 					(OWLClassExpression) subExpression2);
 		} else if ((ctx.definitionStatus() == null && defaultToPrimitive == true)
 				|| ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.SC_OF) {
-			logger.info("subClassOf");
+			// logger.info("subClassOf");
 			axiom = dataFactory.getOWLSubClassOfAxiom(
 					(OWLClassExpression) subExpression1,
 					(OWLClassExpression) subExpression2);
@@ -140,7 +136,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	 */
 	@Override
 	public OWLObject visitExpression(ExpressionContext ctx) {
-		logger.info("visitExpression: " + ctx.getText());
+		// logger.info("visitExpression: " + ctx.getText());
 		OWLObject subExpression = visit(ctx.subExpression());
 		OWLAxiom axiom = null;
 
@@ -150,12 +146,12 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 
 		if ((ctx.definitionStatus() == null && defaultToPrimitive == false)
 				|| ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.EQ_TO) {
-			logger.info("equivalentTo");
+			// logger.info("equivalentTo");
 			axiom = dataFactory.getOWLEquivalentClassesAxiom(definiendum,
 					(OWLClassExpression) subExpression);
 		} else if ((ctx.definitionStatus() == null && defaultToPrimitive == true)
 				|| ctx.definitionStatus().start.getType() == SNOMEDCTExpressionLexer.SC_OF) {
-			logger.info("subClassOf");
+			// logger.info("subClassOf");
 			axiom = dataFactory.getOWLSubClassOfAxiom(definiendum,
 					(OWLClassExpression) subExpression);
 		}
@@ -172,7 +168,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	 */
 	@Override
 	public OWLObject visitRefinement(RefinementContext ctx) {
-		logger.info("visitRefinement: " + ctx.getText());
+		// logger.info("visitRefinement: " + ctx.getText());
 
 		OWLClassExpression expression = null;
 
@@ -210,13 +206,24 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	 */
 	@Override
 	public OWLObject visitSubExpression(SubExpressionContext ctx) {
-		logger.info("visitSubExpression: " + ctx.getText());
+		// logger.info("visitSubExpression: " + ctx.getText());
 		OWLClassExpression expression = null;
 
-		if (ctx.getChildCount() > 1)
-			expression = dataFactory.getOWLObjectIntersectionOf(
-					(OWLClassExpression) visitFocusConcept(ctx.focusConcept()),
-					(OWLClassExpression) visitRefinement(ctx.refinement()));
+		if (ctx.getChildCount() > 1) {
+			Set<OWLClassExpression> totalSet = new HashSet<OWLClassExpression>();
+			OWLClassExpression focusConcept = (OWLClassExpression) visitFocusConcept(ctx.focusConcept());
+			if(focusConcept.getClassExpressionType() == ClassExpressionType.OBJECT_INTERSECTION_OF) 
+				totalSet.addAll(((OWLObjectIntersectionOf)focusConcept).getOperands());
+			else
+				totalSet.add(focusConcept);
+			OWLClassExpression refinement = (OWLClassExpression) visitRefinement(ctx.refinement());
+			if(refinement.getClassExpressionType() == ClassExpressionType.OBJECT_INTERSECTION_OF) 
+				totalSet.addAll(((OWLObjectIntersectionOf)refinement).getOperands());
+			else
+				totalSet.add(refinement);
+
+			expression = dataFactory.getOWLObjectIntersectionOf(totalSet);
+		}
 		else
 			expression = (OWLClassExpression) visitFocusConcept(ctx
 					.focusConcept());
@@ -241,7 +248,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	 */
 	@Override
 	public OWLObject visitFocusConcept(FocusConceptContext ctx) {
-		logger.info("visitFocusConcept: " + ctx.getText());
+		// logger.info("visitFocusConcept: " + ctx.getText());
 		OWLClassExpression expression = null;
 
 		if (ctx.getChildCount() > 1) {
@@ -267,7 +274,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	 */
 	@Override
 	public OWLObject visitConceptReference(ConceptReferenceContext ctx) {
-		logger.info("visitConceptReference: " + ctx.getText());
+		// logger.info("visitConceptReference: " + ctx.getText());
 
 		OWLObject entity = null;
 
@@ -313,7 +320,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	@Override
 	public OWLObject visitAttribute(
 			se.liu.imt.mi.snomedct.expression.SNOMEDCTExpressionParser.AttributeContext ctx) {
-		logger.info("visitAttribute: " + ctx.getText());
+		// logger.info("visitAttribute: " + ctx.getText());
 		OWLClassExpression expression = null;
 
 		// if property filler is a concept reference
@@ -376,7 +383,7 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 	 */
 	@Override
 	public OWLObject visitAttributeGroup(AttributeGroupContext ctx) {
-		logger.info("visitAttributeGroup: " + ctx.getText());
+		// logger.info("visitAttributeGroup: " + ctx.getText());
 		OWLClassExpression expression = null;
 
 		OWLClassExpression attrSet = (OWLClassExpression) visitAttributeSet(ctx
@@ -423,38 +430,36 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 		if (ctx.getChildCount() > 1) {
 			Set<OWLClassExpression> groupedExpressionSet = new HashSet<OWLClassExpression>();
 			Set<OWLClassExpression> shouldNotBeGroupedExpressionSet = new HashSet<OWLClassExpression>();
+			Set<OWLClassExpression> totalSet = new HashSet<OWLClassExpression>();
+
 
 			for (SNOMEDCTExpressionParser.AttributeContext attrCtx : ctx
 					.getRuleContexts(SNOMEDCTExpressionParser.AttributeContext.class)) {
 				OWLClassExpression attr = (OWLClassExpression) visitAttribute(attrCtx);
 				if (attr.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM) {
 					if (isNeverGrouped(((OWLObjectSomeValuesFrom) attr)
-							.getProperty()))
+							.getProperty())) {
 						shouldNotBeGroupedExpressionSet.add(attr);
-					else
-						groupedExpressionSet.add(attr);
+					} else {
+						OWLObjectProperty group = dataFactory
+								.getOWLObjectProperty(IRI.create(ROLEGROUP_IRI));
+						OWLClassExpression groupExpression = dataFactory
+								.getOWLObjectSomeValuesFrom(group, attr);
+						groupedExpressionSet.add(groupExpression);
+					}
 
 				} else
 					groupedExpressionSet.add(attr);
 			}
-			if (!shouldNotBeGroupedExpressionSet.isEmpty())
-				expression = dataFactory
-						.getOWLObjectIntersectionOf(shouldNotBeGroupedExpressionSet);
-			if (!groupedExpressionSet.isEmpty()) {
-				OWLObjectProperty attrGroup = dataFactory
-						.getOWLObjectProperty(IRI.create(ROLEGROUP_IRI));
-				OWLClassExpression intersect = dataFactory
-						.getOWLObjectIntersectionOf(groupedExpressionSet);
-				OWLClassExpression groupExpression = dataFactory
-						.getOWLObjectSomeValuesFrom(attrGroup, intersect);
-				if (!shouldNotBeGroupedExpressionSet.isEmpty()) {
-					shouldNotBeGroupedExpressionSet.add(groupExpression);
-					expression = dataFactory
-							.getOWLObjectIntersectionOf(shouldNotBeGroupedExpressionSet);
-				} else
-					expression = groupExpression;
-			}
-		} else {
+			
+			totalSet.addAll(shouldNotBeGroupedExpressionSet);
+			totalSet.addAll(groupedExpressionSet);
+			if(totalSet.size() > 1)
+				expression = dataFactory.getOWLObjectIntersectionOf(totalSet);
+			else
+				expression = totalSet.iterator().next();
+			
+		} else { // i.e. only ony child
 			OWLClassExpression attr = (OWLClassExpression) visitAttribute((AttributeContext) ctx
 					.getChild(0));
 			if (attr.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM

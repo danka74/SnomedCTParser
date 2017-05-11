@@ -22,7 +22,7 @@ mvn install
 <dependency>
     <groupId>se.liu.imt.mi.snomedct</groupId>
     <artifactId>SnomedCTParser</artifactId>
-    <version>0.2</version>
+    <version>0.3</version>
 </dependency>
 ```
 Additionally, there are some utility methods in the se.liu.imt.mi.snomedct.expression.tools package.
@@ -30,7 +30,7 @@ Additionally, there are some utility methods in the se.liu.imt.mi.snomedct.expre
 
 Usage:
 ```
-java -cp SnomedCTParser-0.3-jar-with-dependencies.jar se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTTranslator <input file> [-f [turtle|owlf|sct] -s <SNOMED CT OWL file> -n [stated|distribution|flat] -l]
+java -jar SnomedCTParser-0.3-jar-with-dependencies.jar <input file> [-f [turtle|owlf|sct] -s <SNOMED CT OWL file> -n [stated|distribution|flat] -l]
 ```
 
 The input file is any OWL file or a SNOMED CT Compositional grammar file (using the file format described above).

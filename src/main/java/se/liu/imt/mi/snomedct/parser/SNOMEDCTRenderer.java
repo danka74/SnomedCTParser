@@ -164,9 +164,9 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 					"Left-hand side not an OWL class in equivalence axiom: "
 							+ expressionClass.getClassExpressionType()
 									.toString());
-		
+
 		localWriter.write('(');
-		writeEntity((OWLClass)expressionClass, ontology, localWriter);
+		writeEntity((OWLClass) expressionClass, ontology, localWriter);
 
 		// write "===" for fully defined (or equivalent classes axiom)
 		localWriter.write(")===(");
@@ -228,8 +228,8 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 									.toString());
 
 		localWriter.write('(');
-		writeEntity((OWLClass)expressionClass, ontology, localWriter);
-		
+		writeEntity((OWLClass) expressionClass, ontology, localWriter);
+
 		// write "<<<" for primitive (or subclassof axiom)
 		localWriter.write(")<<<(");
 
@@ -495,7 +495,8 @@ public class SNOMEDCTRenderer extends AbstractOWLRenderer {
 	 */
 	private String getLabel(OWLLogicalEntity entity, OWLOntology ontology) {
 		String label = null;
-		Collection<OWLAnnotation> annotations = EntitySearcher.getAnnotations(entity.getIRI(), ontology);
+		Collection<OWLAnnotation> annotations = EntitySearcher.getAnnotations(
+				entity.getIRI(), ontology);
 		for (OWLAnnotation annotation : annotations) {
 			if (annotation.getProperty().getIRI()
 					.equals(OWLRDFVocabulary.RDFS_LABEL.getIRI())) {
