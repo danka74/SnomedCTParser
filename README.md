@@ -10,7 +10,7 @@ OWL API 4.x compliant classes for loading and storing SNOMED CT Compositional Gr
 File format is a sequence of 
 Compositionl Grammar statements.
 
-###Installation
+### Installation
 
 #### From source
 ```
@@ -26,7 +26,7 @@ mvn install
 </dependency>
 ```
 Additionally, there are some utility methods in the se.liu.imt.mi.snomedct.expression.tools package.
-###SNOMEDCTTranslator
+### SNOMEDCTTranslator
 
 Usage:
 ```
@@ -43,7 +43,7 @@ The -s flag is used to supply a SNOMED CT OWL file (or possibly a module) which 
 
 The -l flag, when present, labels are added to OWL classes/Compositional Grammar expressions.
 
-###SNOMEDCTSignatureGenerator
+### SNOMEDCTSignatureGenerator
 
 Usage:
 ```
