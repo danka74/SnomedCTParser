@@ -2,6 +2,7 @@
 <<<42|hej|+17|hopp|	<<<17+42
 123:{345=567}{789=890}	===123:{345=567},{789=890}
 123:{789=890}{345=567}	===123:{345=567},{789=890}
+123:789=890,345=567	===123:345=567,789=890
 12646000 | repair of incarcerated inguinal hernia (procedure) | + 44558001 | repair of inguinal hernia (procedure) |	===12646000+44558001
 125605004|fracture of bone|	===125605004
 125605004|fracture of bone|:{363698007|finding site|=71341001|bone structure of femur|}	===125605004:{363698007=71341001}

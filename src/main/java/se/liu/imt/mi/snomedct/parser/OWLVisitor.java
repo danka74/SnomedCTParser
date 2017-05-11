@@ -24,6 +24,7 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
@@ -212,10 +213,21 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 		// logger.info("visitSubExpression: " + ctx.getText());
 		OWLClassExpression expression = null;
 
-		if (ctx.getChildCount() > 1)
-			expression = dataFactory.getOWLObjectIntersectionOf(
-					(OWLClassExpression) visitFocusConcept(ctx.focusConcept()),
-					(OWLClassExpression) visitRefinement(ctx.refinement()));
+		if (ctx.getChildCount() > 1) {
+			Set<OWLClassExpression> totalSet = new HashSet<OWLClassExpression>();
+			OWLClassExpression focusConcept = (OWLClassExpression) visitFocusConcept(ctx.focusConcept());
+			if(focusConcept.getClassExpressionType() == ClassExpressionType.OBJECT_INTERSECTION_OF) 
+				totalSet.addAll(((OWLObjectIntersectionOf)focusConcept).getOperands());
+			else
+				totalSet.add(focusConcept);
+			OWLClassExpression refinement = (OWLClassExpression) visitRefinement(ctx.refinement());
+			if(refinement.getClassExpressionType() == ClassExpressionType.OBJECT_INTERSECTION_OF) 
+				totalSet.addAll(((OWLObjectIntersectionOf)refinement).getOperands());
+			else
+				totalSet.add(refinement);
+
+			expression = dataFactory.getOWLObjectIntersectionOf(totalSet);
+		}
 		else
 			expression = (OWLClassExpression) visitFocusConcept(ctx
 					.focusConcept());
@@ -422,38 +434,36 @@ public class OWLVisitor extends SNOMEDCTExpressionBaseVisitor<OWLObject> {
 		if (ctx.getChildCount() > 1) {
 			Set<OWLClassExpression> groupedExpressionSet = new HashSet<OWLClassExpression>();
 			Set<OWLClassExpression> shouldNotBeGroupedExpressionSet = new HashSet<OWLClassExpression>();
+			Set<OWLClassExpression> totalSet = new HashSet<OWLClassExpression>();
+
 
 			for (SNOMEDCTExpressionParser.AttributeContext attrCtx : ctx
 					.getRuleContexts(SNOMEDCTExpressionParser.AttributeContext.class)) {
 				OWLClassExpression attr = (OWLClassExpression) visitAttribute(attrCtx);
 				if (attr.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM) {
 					if (isNeverGrouped(((OWLObjectSomeValuesFrom) attr)
-							.getProperty()))
+							.getProperty())) {
 						shouldNotBeGroupedExpressionSet.add(attr);
-					else
-						groupedExpressionSet.add(attr);
+					} else {
+						OWLObjectProperty group = dataFactory
+								.getOWLObjectProperty(IRI.create(ROLEGROUP_IRI));
+						OWLClassExpression groupExpression = dataFactory
+								.getOWLObjectSomeValuesFrom(group, attr);
+						groupedExpressionSet.add(groupExpression);
+					}
 
 				} else
 					groupedExpressionSet.add(attr);
 			}
-			if (!shouldNotBeGroupedExpressionSet.isEmpty())
-				expression = dataFactory
-						.getOWLObjectIntersectionOf(shouldNotBeGroupedExpressionSet);
-			if (!groupedExpressionSet.isEmpty()) {
-				OWLObjectProperty attrGroup = dataFactory
-						.getOWLObjectProperty(IRI.create(ROLEGROUP_IRI));
-				OWLClassExpression intersect = dataFactory
-						.getOWLObjectIntersectionOf(groupedExpressionSet);
-				OWLClassExpression groupExpression = dataFactory
-						.getOWLObjectSomeValuesFrom(attrGroup, intersect);
-				if (!shouldNotBeGroupedExpressionSet.isEmpty()) {
-					shouldNotBeGroupedExpressionSet.add(groupExpression);
-					expression = dataFactory
-							.getOWLObjectIntersectionOf(shouldNotBeGroupedExpressionSet);
-				} else
-					expression = groupExpression;
-			}
-		} else {
+			
+			totalSet.addAll(shouldNotBeGroupedExpressionSet);
+			totalSet.addAll(groupedExpressionSet);
+			if(totalSet.size() > 1)
+				expression = dataFactory.getOWLObjectIntersectionOf(totalSet);
+			else
+				expression = totalSet.iterator().next();
+			
+		} else { // i.e. only ony child
 			OWLClassExpression attr = (OWLClassExpression) visitAttribute((AttributeContext) ctx
 					.getChild(0));
 			if (attr.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM

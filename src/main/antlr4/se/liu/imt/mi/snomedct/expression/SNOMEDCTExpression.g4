@@ -1,3 +1,10 @@
+/*
+ * Grammar created according to SNOMED CT Compositional Grammar v2.3.1
+ * 
+ * Potential differences to standard:
+ * 	Negative definition of nonwsNonPipe and anyNonEscapedChar
+ *  Allows negative SCTID 
+ */
 grammar SNOMEDCTExpression;
 
 options {
@@ -14,6 +21,7 @@ COMMA: ',';
 EQ: '=';
 LCBRACKET: '{';
 RCBRACKET: '}';
+VBAR: '|';
 
 BLOCK_COMMENT
 : 
