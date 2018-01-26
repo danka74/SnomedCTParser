@@ -45,6 +45,8 @@ The -l flag, when present, labels are added to OWL classes/Compositional Grammar
 
 ### SNOMEDCTSignatureGenerator
 
+Generates signature files for OWL module extraction by e.g. https://github.com/rsgoncalves/module-extractor
+
 Usage:
 ```
 java -cp SnomedCTParser-0.4-jar-with-dependencies.jar se.liu.imt.mi.snomedct.expression.tools.SNOMEDCTSignatureGenerator <input file> [-f <format>] [<output file>]
