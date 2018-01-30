@@ -39,6 +39,7 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTDocumentFormat;
+import se.liu.imt.mi.snomedct.parser.SNOMEDCTExpressionRefsetParserFactory;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTOntologyStorerFactory;
 import se.liu.imt.mi.snomedct.parser.SNOMEDCTParserFactory;
 
@@ -112,6 +113,7 @@ public class SNOMEDCTTranslator {
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		// add SNOMED CT parser and storer to manager
 		manager.getOntologyParsers().add(new SNOMEDCTParserFactory());
+		manager.getOntologyParsers().add(new SNOMEDCTExpressionRefsetParserFactory());
 		manager.getOntologyStorers().add(new SNOMEDCTOntologyStorerFactory());
 		
 		OWLOntology ontology = manager

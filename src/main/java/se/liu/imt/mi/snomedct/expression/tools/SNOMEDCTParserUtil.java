@@ -15,6 +15,8 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
@@ -75,7 +77,8 @@ public class SNOMEDCTParserUtil {
 
 		ParseTree tree = null;
 
-		ANTLRInputStream input = new ANTLRInputStream(is);
+		CharStream input = CharStreams.fromStream(is);
+		// ANTLRInputStream input = new ANTLRInputStream(is);
 		SNOMEDCTExpressionLexer lexer = new SNOMEDCTExpressionLexer(input);
 		lexer.removeErrorListeners();
 		lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
@@ -110,7 +113,8 @@ public class SNOMEDCTParserUtil {
 		ParseTree tree = null;
 
 		// parse string and throw ExpressionSyntaxError if unparsable
-		ANTLRInputStream input = new ANTLRInputStream(expression);
+		CharStream input = CharStreams.fromString(expression);
+//		ANTLRInputStream input = new ANTLRInputStream(expression);
 		SNOMEDCTExpressionLexer lexer = new SNOMEDCTExpressionLexer(input);
 		lexer.removeErrorListeners();
 		lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
@@ -145,7 +149,8 @@ public class SNOMEDCTParserUtil {
 		ParseTree tree = null;
 
 		// parse string and throw ExpressionSyntaxError if unparsable
-		ANTLRInputStream input = new ANTLRInputStream(statement);
+		CharStream input = CharStreams.fromString(statement);
+		//ANTLRInputStream input = new ANTLRInputStream(statement);
 		SNOMEDCTExpressionLexer lexer = new SNOMEDCTExpressionLexer(input);
 		lexer.removeErrorListeners();
 		lexer.addErrorListener(ThrowingErrorListener.INSTANCE);

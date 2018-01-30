@@ -7,6 +7,8 @@ import static org.junit.Assert.assertNotNull;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BailErrorStrategy;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -46,7 +48,8 @@ public class TestSNOMEDCTQueryExpressionParser {
 		for (String testCase : testCases) {
 
 			// parse string and throw ExpressionSyntaxError if unparsable
-			ANTLRInputStream input = new ANTLRInputStream(testCase);
+			CharStream input = CharStreams.fromString(testCase);
+			//ANTLRInputStream input = new ANTLRInputStream(testCase);
 			SNOMEDCTQueryExpressionLexer lexer = new SNOMEDCTQueryExpressionLexer(input);
 
 			Token token;
