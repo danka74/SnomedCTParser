@@ -44,7 +44,7 @@ public class TestExpressionRefsetParser {
 	@Test
 	public void test() throws OWLOntologyCreationException, OWLOntologyStorageException {
 		URL expressionsURL = getClass()
-				.getResource("/der2_sscccRefset_LOINCExpressionAssociationSnapshot_INT_20170731.txt");
+				.getResource("/der2_sscccRefset_fake_LOINCExpressionAssociationSnapshot_INT_20170731.txt");
 		ontology = manager.loadOntologyFromOntologyDocument(new File(expressionsURL.getFile()));
 
 		// create a file for the new format
